@@ -9,7 +9,20 @@
     "PA_START": 46,
     "PA_PER_LEVEL": 46,
     "AUTO_PER_LEVEL": 3,
-    "MAX_LEVEL": 50
+    "MAX_LEVEL": 50,
+    "hakiThresholds": { "base": 500, "medio": 1200 },
+    "weightTiers": [
+      { "maxFUE": 250,   "base": 25,  "div": 25 },
+      { "maxFUE": 500,   "base": 50,  "div": 20 },
+      { "maxFUE": 750,   "base": 75,  "div": 10 },
+      { "maxFUE": 99999, "base": 100, "div": 5  }
+    ],
+    "refReactions": [
+      { "range": "≥ 0",       "color": "var(--stat-good)",  "result": "Percibes y puedes reaccionar completamente" },
+      { "range": "−1 a −10",  "color": "var(--stat-warn)",  "result": "Solo percibes mirando directamente la zona de origen del ataque" },
+      { "range": "−11 a −20", "color": "var(--stat-bad)",   "result": "Solo percibes si el ataque cubre >20m Y estás a >10m del origen" },
+      { "range": "≤ −21",     "color": "var(--stat-bad)",   "result": "Recibes el ataque irremediablemente, sin capacidad de reacción" }
+    ]
   },
   "masteryBonuses": [
     { "grade": 1, "off": 5,  "def": 5  },
