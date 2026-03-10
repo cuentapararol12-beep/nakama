@@ -6,8 +6,8 @@
     "description": "Archivo de datos del constructor de personajes. Edita este JSON en GitHub para actualizar el sistema."
   },
   "config": {
-    "PA_START": 26,
-    "PA_PER_LEVEL": 46,
+    "PA_START": 40,
+    "PA_PER_LEVEL": 40,
     "AUTO_PER_LEVEL": 3,
     "MAX_LEVEL": 50,
     "hakiThresholds": { "base": 500, "medio": 1200 },
