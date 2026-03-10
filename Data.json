@@ -7,7 +7,7 @@
   },
   "config": {
     "PA_START": 0,
-    "PA_PER_LEVEL": 40,
+    "PA_PER_LEVEL": 46,
     "AUTO_PER_LEVEL": 3,
     "MAX_LEVEL": 50,
     "hakiThresholds": { "base": 500, "medio": 1200 },
