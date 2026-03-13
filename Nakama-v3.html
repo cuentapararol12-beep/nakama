@@ -1,0 +1,2189 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="rosa" data-layout="rpg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nakama no Mi - Constructor de Personaje</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --radius-lg: 16px; --radius: 12px; --radius-sm: 8px;
+  --font-display: 'Cinzel Decorative', serif;
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="rosa"] {
+  --bg-overlay: rgba(60,10,28,0.82);
+  --panel-bg: rgba(92,31,55,0.88);
+  --panel-bg-hover: rgba(119,42,68,0.95);
+  --panel-border: #7A2746;
+  --panel-border-bright: #E34B7F;
+  --glass-bg: rgba(92,31,55,0.75);
+  --accent-primary: #F25C8D;
+  --accent-secondary: #F7A1B8;
+  --accent-glow: rgba(242,92,141,0.4);
+  --accent-alpha: rgba(242,92,141,0.15);
+  --text-main: #E6D3B3;
+  --text-muted: #8A7F73;
+  --text-bright: #ffffff;
+  --stat-good: #4ade80;
+  --stat-bad: #fb7185;
+  --stat-warn: #facc15;
+  --stat-magic: #e879f9;
+  --stat-vit: #fb7185;
+  --stat-ene: #60a5fa;
+  --stat-esp: #c084fc;
+  --shadow-sm: 0 4px 16px rgba(60,10,28,0.5);
+  --shadow-lg: 0 12px 40px rgba(60,10,28,0.8);
+  --good-bg: rgba(74,222,128,0.1);
+  --bad-bg: rgba(251,113,133,0.1);
+  --bar-vit: linear-gradient(90deg,#7A2746,#fb7185);
+  --bar-ene: linear-gradient(90deg,#1e3a8a,#60a5fa);
+  --bar-esp: linear-gradient(90deg,#4c1d95,#c084fc);
+  --scrollbar: #7A2746;
+}
+[data-theme="azul"] {
+  --bg-overlay: rgba(4,6,11,0.88);
+  --panel-bg: rgba(16,24,40,0.90);
+  --panel-bg-hover: rgba(20,31,48,0.97);
+  --panel-border: #1e2a3e;
+  --panel-border-bright: #2a3b57;
+  --glass-bg: rgba(16,24,40,0.75);
+  --accent-primary: #c9a227;
+  --accent-secondary: #f0cf6e;
+  --accent-glow: rgba(201,162,39,0.35);
+  --accent-alpha: rgba(201,162,39,0.12);
+  --text-main: #c8bfa8;
+  --text-muted: #8b8372;
+  --text-bright: #ffffff;
+  --stat-good: #00e5cc;
+  --stat-bad: #ff4757;
+  --stat-warn: #ffa502;
+  --stat-magic: #a55eea;
+  --stat-vit: #ff6b81;
+  --stat-ene: #70a1ff;
+  --stat-esp: #a55eea;
+  --shadow-sm: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.7);
+  --good-bg: rgba(0,229,204,0.1);
+  --bad-bg: rgba(255,71,87,0.1);
+  --bar-vit: linear-gradient(90deg,#8b0000,#ff4757);
+  --bar-ene: linear-gradient(90deg,#004d40,#00e5cc);
+  --bar-esp: linear-gradient(90deg,#4a0080,#a55eea);
+  --scrollbar: #1e2a3e;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body {
+  font-family: var(--font-body);
+  font-size: 14px; line-height: 1.5;
+  color: var(--text-main);
+  min-height: 100vh; overflow-x: hidden;
+  background-image: url('https://i.imgur.com/0ZZoQTF.png');
+  background-repeat: repeat; background-size: auto;
+  background-attachment: fixed; position: relative;
+}
+body::before {
+  content:''; position:fixed; inset:0;
+  background:var(--bg-overlay); z-index:0; transition:background 0.5s ease;
+}
+body > * {position:relative;z-index:1;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-primary);}
+[data-tip]{position:relative;cursor:help;border-bottom:1px dotted var(--accent-primary);display:inline-block;}
+[data-tip]:hover::after{
+  content:attr(data-tip); position:absolute; bottom:120%; left:50%; transform:translateX(-50%);
+  background:var(--panel-bg); color:var(--text-bright);
+  border:1px solid var(--accent-primary); box-shadow:var(--shadow-lg);
+  padding:8px 12px; border-radius:var(--radius-sm);
+  font-family:var(--font-body); font-size:0.72rem; white-space:pre-wrap;
+  width:max-content; max-width:280px; z-index:9999; pointer-events:none; text-align:center;
+}
+.card{
+  background:var(--panel-bg); border:1px solid var(--panel-border);
+  border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm);
+  backdrop-filter:blur(10px); transition:var(--transition);
+}
+.card-title{
+  font-family:var(--font-heading); font-size:0.85rem; font-weight:700;
+  color:var(--accent-secondary); letter-spacing:1px; text-transform:uppercase;
+  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--panel-border);
+  display:flex; align-items:center; gap:8px;
+}
+.btn{
+  background:transparent; border:1px solid var(--panel-border-bright);
+  color:var(--text-main); font-family:var(--font-heading); font-size:0.72rem; font-weight:600;
+  padding:8px 14px; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition);
+  display:inline-flex; align-items:center; gap:6px;
+  text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap;
+}
+.btn:hover{background:rgba(255,255,255,0.05);color:var(--text-bright);}
+.btn-primary{border-color:var(--accent-primary);color:var(--accent-primary);background:var(--accent-alpha);}
+.btn-primary:hover{background:var(--accent-primary);color:#fff;box-shadow:0 0 15px var(--accent-glow);}
+.btn-danger{border-color:var(--stat-bad);color:var(--stat-bad);}
+.btn-danger:hover{background:var(--stat-bad);color:#fff;}
+input[type="text"],input[type="number"],select{
+  background:rgba(0,0,0,0.25); border:1px solid var(--panel-border);
+  color:var(--text-bright); font-family:var(--font-mono); font-size:0.85rem;
+  padding:8px 12px; border-radius:var(--radius-sm); outline:none; width:100%; transition:var(--transition);
+}
+input:focus,select:focus{border-color:var(--accent-primary);box-shadow:0 0 10px var(--accent-glow);}
+.toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;margin:6px 0;}
+.toggle-wrap input{display:none;}
+.toggle{width:40px;height:20px;background:rgba(0,0,0,0.4);border:1px solid var(--panel-border);border-radius:10px;position:relative;transition:var(--transition);flex-shrink:0;}
+.toggle::after{content:'';position:absolute;top:1px;left:2px;width:16px;height:16px;background:var(--text-muted);border-radius:50%;transition:var(--transition);}
+.toggle-wrap input:checked + .toggle{background:var(--good-bg);border-color:var(--stat-good);}
+.toggle-wrap input:checked + .toggle::after{transform:translateX(20px);background:var(--stat-good);box-shadow:0 0 8px var(--stat-good);}
+.toggle-label{font-size:0.8rem;font-weight:500;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-family:var(--font-mono);font-size:0.8rem;border-bottom:1px dashed rgba(255,255,255,0.05);}
+.info-row:last-child{border-bottom:none;}
+.info-key{color:var(--text-muted);}
+.info-val{color:var(--text-bright);font-weight:600;text-align:right;}
+.info-val.good{color:var(--stat-good);text-shadow:0 0 8px var(--stat-good);}
+.info-val.bad{color:var(--stat-bad);}
+.info-val.warn{color:var(--stat-warn);}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-family:var(--font-mono);font-size:0.65rem;font-weight:600;background:var(--panel-bg);border:1px solid var(--panel-border);margin:2px;}
+.badge.gold{border-color:var(--accent-primary);color:var(--accent-primary);}
+.badge.green{border-color:var(--stat-good);color:var(--stat-good);}
+.badge.red{border-color:var(--stat-bad);color:var(--stat-bad);}
+.badge.purple{border-color:var(--stat-magic);color:var(--stat-magic);}
+.badge.blue{border-color:var(--stat-ene);color:var(--stat-ene);}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:rgba(0,0,0,0.18);border:1px solid var(--panel-border);border-radius:var(--radius-sm);margin-bottom:7px;cursor:pointer;transition:var(--transition);}
+.list-item:hover{border-color:var(--accent-primary);background:rgba(0,0,0,0.35);}
+.list-item.selected,.list-item.sel-pos{border-color:var(--stat-good);background:var(--good-bg);}
+.list-item.sel-neg{border-color:var(--stat-bad);background:var(--bad-bg);}
+.list-item.sel-race{border-color:var(--accent-primary);background:var(--accent-alpha);box-shadow:0 0 12px var(--accent-glow);}
+.list-title{font-family:var(--font-heading);font-weight:700;color:var(--text-bright);font-size:0.82rem;margin-bottom:2px;}
+.list-desc{font-size:0.7rem;color:var(--text-muted);line-height:1.3;}
+.rpg-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.75rem;margin-top:10px;}
+.rpg-table th{color:var(--accent-secondary);font-weight:600;padding:8px;text-align:left;border-bottom:1px solid var(--panel-border-bright);background:rgba(0,0,0,0.3);}
+.rpg-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text-muted);}
+.stat-tag{padding:3px 7px;border-radius:4px;font-family:var(--font-mono);font-size:0.65rem;font-weight:600;}
+.stat-tag.pos{background:rgba(74,222,128,0.1);color:var(--stat-good);border:1px solid rgba(74,222,128,0.3);}
+.stat-tag.neg{background:rgba(251,113,133,0.1);color:var(--stat-bad);border:1px solid rgba(251,113,133,0.3);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+/* HEADER */
+header{
+  background:var(--panel-bg);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--panel-border);
+  padding:0 24px; display:flex; justify-content:space-between; align-items:center;
+  height:64px; position:sticky; top:0; z-index:200; box-shadow:var(--shadow-lg);
+}
+.logo{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--accent-primary);letter-spacing:2px;text-shadow:0 0 20px var(--accent-glow);}
+.logo em{color:var(--accent-secondary);font-style:normal;}
+.header-center{display:flex;align-items:center;gap:8px;}
+.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.layout-pill{display:flex;background:rgba(0,0,0,0.3);border:1px solid var(--panel-border-bright);border-radius:20px;overflow:hidden;padding:3px;gap:2px;}
+.layout-pill button{border:none;border-radius:16px;padding:5px 14px;font-family:var(--font-heading);font-size:0.65rem;font-weight:700;cursor:pointer;transition:var(--transition);text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);background:transparent;}
+.layout-pill button.active{background:var(--accent-primary);color:#fff;box-shadow:0 0 12px var(--accent-glow);}
+.theme-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid var(--panel-border-bright);display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--transition);}
+.theme-dot:hover{border-color:var(--accent-primary);transform:scale(1.15);}
+.rpg-layout{
+  display:grid; grid-template-columns:300px 1fr 340px; gap:16px;
+  padding:16px; max-width:1700px; margin:0 auto;
+  align-items: start;
+}
+.col-left,.col-right{
+  position:sticky; top:80px;
+  max-height:calc(100vh - 100px);
+  overflow-y:auto; padding-right:4px;
+}
+.col-center{
+  display:flex; flex-direction:column; gap:14px; padding-right:4px;
+}
+.classic-layout{max-width:1340px;margin:0 auto;padding:16px 20px 80px;}
+.nav-tabs{
+  display:flex; gap:4px; border-bottom:2px solid var(--panel-border);
+  padding-bottom:8px; margin-bottom:14px; overflow-x:auto; scrollbar-width:none;
+  position:sticky; top:0; z-index:10;
+  background:var(--panel-bg); backdrop-filter:blur(8px);
+  border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+  padding:8px 8px 8px 8px; margin-bottom:0;
+}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{
+  background:transparent; border:none; color:var(--text-muted);
+  font-family:var(--font-heading); font-size:0.68rem; font-weight:700;
+  letter-spacing:0.5px; text-transform:uppercase;
+  padding:8px 12px; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition);
+  white-space:nowrap; flex-shrink:0;
+}
+.nav-tab:hover{background:var(--panel-bg-hover);color:var(--text-bright);}
+.nav-tab.active{background:var(--accent-alpha);color:var(--accent-primary);border:1px solid var(--accent-primary);box-shadow:inset 0 0 10px var(--accent-glow);}
+.tab-content{display:none;animation:fadeIn 0.3s ease;padding-top:14px;}
+.tab-content.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.tabs-wrapper{
+  background:var(--panel-bg); border:1px solid var(--panel-border);
+  border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm);
+}
+.tabs-body{padding:0 16px 16px;}
+.attr-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
+.attr-card{
+  background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);
+  border-radius:var(--radius-sm);padding:12px 8px;
+  display:flex;flex-direction:column;align-items:center;
+  transition:var(--transition);text-align:center;gap:4px;
+}
+.attr-card:hover{border-color:var(--accent-primary);background:rgba(0,0,0,0.35);transform:translateY(-2px);}
+.attr-icon{font-size:1.5rem;color:var(--accent-secondary);width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+.attr-name{font-family:var(--font-heading);color:var(--text-bright);font-weight:700;font-size:0.82rem;letter-spacing:1px;}
+.attr-breakdown{font-family:var(--font-mono);font-size:0.58rem;color:var(--text-muted);background:rgba(0,0,0,0.25);border-radius:4px;padding:4px;width:100%;margin:3px 0;}
+.attr-total{font-family:var(--font-mono);font-size:1.8rem;font-weight:700;color:var(--accent-secondary);line-height:1;text-shadow:0 0 10px rgba(0,0,0,0.5);}
+.attr-controls{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;}
+.attr-btn{width:26px;height:26px;border-radius:5px;border:1px solid var(--panel-border-bright);background:var(--panel-bg);color:var(--text-main);font-size:0.85rem;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;}
+.attr-btn:hover{background:var(--accent-primary);color:#fff;border-color:var(--accent-primary);}
+.attr-input{width:38px;text-align:center;padding:3px;font-size:0.85rem;border-color:var(--panel-border-bright);}
+.identity-input{
+  font-family:var(--font-display) !important;font-size:1.4rem !important;text-align:center;
+  border:none !important;border-bottom:2px solid var(--accent-primary) !important;
+  background:transparent !important;color:var(--accent-primary) !important;
+  padding:4px !important;border-radius:0 !important;margin-bottom:10px;font-weight:700;
+}
+.level-wrapper{display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0;}
+.lvl-btn{width:32px;height:32px;border-radius:50%;cursor:pointer;background:var(--panel-bg);border:1px solid var(--accent-primary);color:var(--accent-primary);display:flex;align-items:center;justify-content:center;transition:var(--transition);font-size:1rem;}
+.lvl-btn:hover{background:var(--accent-primary);color:#fff;box-shadow:0 0 10px var(--accent-glow);}
+.lvl-display{text-align:center;}
+.lvl-num{font-family:var(--font-mono);font-size:2.8rem;font-weight:900;color:var(--accent-secondary);line-height:1;}
+.lvl-lbl{font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;}
+.rpg-bar{margin-bottom:12px;}
+.rpg-bar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-family:var(--font-heading);font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.rpg-bar-val{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;}
+.rpg-bar-bg{height:8px;background:rgba(0,0,0,0.4);border-radius:4px;overflow:hidden;}
+.rpg-bar-fill{height:100%;width:100%;border-radius:4px;transition:width 0.5s ease;}
+.bar-vit .rpg-bar-header,.bar-vit .rpg-bar-val{color:var(--stat-vit);}
+.bar-vit .rpg-bar-fill{background:var(--bar-vit);box-shadow:0 0 8px var(--stat-vit);}
+.bar-ene .rpg-bar-header,.bar-ene .rpg-bar-val{color:var(--stat-ene);}
+.bar-ene .rpg-bar-fill{background:var(--bar-ene);box-shadow:0 0 8px var(--stat-ene);}
+.bar-esp .rpg-bar-header,.bar-esp .rpg-bar-val{color:var(--stat-esp);}
+.bar-esp .rpg-bar-fill{background:var(--bar-esp);box-shadow:0 0 8px var(--stat-esp);}
+.regen-text{font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);text-align:right;margin-top:2px;}
+.pa-display{text-align:center;padding-top:14px;border-top:1px dashed var(--panel-border);margin-top:14px;}
+.pa-num{font-family:var(--font-mono);font-size:2.8rem;font-weight:900;color:var(--stat-good);text-shadow:0 0 15px rgba(74,222,128,0.3);line-height:1;}
+.pa-lbl{font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;}
+.radar-box{display:flex;justify-content:center;align-items:center;margin-bottom:10px;padding:8px;background:radial-gradient(circle at center,rgba(0,0,0,0.3) 0%,transparent 70%);border-radius:50%;}
+.bbcode-panel{background:rgba(0,0,0,0.3);border:1px solid var(--panel-border-bright);border-radius:var(--radius);padding:16px;margin-top:10px;}
+.bbcode-text{font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;background:rgba(0,0,0,0.2);padding:10px;border-radius:var(--radius-sm);border:1px solid var(--panel-border);margin-bottom:10px;}
+.btn-bbcode{background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));border:none;color:#fff;font-family:var(--font-heading);font-size:0.78rem;font-weight:700;padding:10px 20px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:8px;box-shadow:0 4px 14px var(--accent-glow);text-transform:uppercase;letter-spacing:1px;}
+.btn-bbcode:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-glow);}
+.btn-bbcode.copied{background:linear-gradient(135deg,var(--stat-good),#22c55e);}
+.mastery-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--panel-border);cursor:pointer;transition:var(--transition);}
+.mastery-dot.filled{background:var(--accent-primary);border-color:var(--accent-primary);box-shadow:0 0 6px var(--accent-glow);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:9999;justify-content:center;align-items:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--panel-bg);border:1px solid var(--accent-primary);border-radius:var(--radius-lg);padding:24px;width:90%;max-width:560px;box-shadow:var(--shadow-lg);}
+.modal-title{font-family:var(--font-heading);font-size:1rem;color:var(--accent-secondary);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.modal-box textarea{width:100%;height:220px;background:rgba(0,0,0,0.4);color:var(--text-bright);border:1px solid var(--panel-border);border-radius:var(--radius-sm);padding:12px;font-family:var(--font-mono);font-size:0.75rem;outline:none;resize:none;margin-bottom:14px;}
+.modal-box textarea:focus{border-color:var(--accent-primary);}
+.umbral-row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;font-family:var(--font-mono);font-size:0.72rem;border-bottom:1px dashed rgba(255,255,255,0.04);}
+.umbral-row:last-child{border-bottom:none;}
+.big-vitals{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+.big-vital{text-align:center;padding:20px 14px;background:var(--panel-bg);border:1px solid;border-radius:var(--radius-lg);backdrop-filter:blur(10px);}
+.big-vital-val{font-family:var(--font-mono);font-size:2.2rem;font-weight:700;line-height:1;margin:8px 0;}
+.big-vital-lbl{font-family:var(--font-heading);font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;}
+.big-vital-regen{font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);}
+.bv-vit{border-color:rgba(251,113,133,0.4);}.bv-vit .big-vital-val,.bv-vit .big-vital-lbl{color:var(--stat-vit);}
+.bv-ene{border-color:rgba(96,165,250,0.4);}.bv-ene .big-vital-val,.bv-ene .big-vital-lbl{color:var(--stat-ene);}
+.bv-esp{border-color:rgba(192,132,252,0.4);}.bv-esp .big-vital-val,.bv-esp .big-vital-lbl{color:var(--stat-esp);}
+.dashboard-hero{
+  background:var(--glass-bg);backdrop-filter:blur(14px);
+  border:1px solid var(--panel-border-bright); border-radius:var(--radius-lg);
+  padding:20px 28px; display:flex; align-items:center; justify-content:space-between;
+  gap:20px; box-shadow:var(--shadow-lg); margin-bottom:20px; flex-wrap:wrap;
+}
+.dash-circle{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.dash-circle-wrap{width:68px;height:68px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);border:2px solid var(--accent-primary);border-radius:50%;box-shadow:0 0 18px var(--accent-glow);position:relative;}
+.dash-circle-val{font-family:var(--font-mono);font-size:1.7rem;font-weight:700;color:var(--accent-secondary);}
+.dash-circle-lbl{font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+.dash-name-input{font-family:var(--font-display) !important;font-size:1.3rem !important;border:none !important;border-bottom:2px solid var(--accent-primary) !important;background:transparent !important;color:var(--accent-primary) !important;padding:4px !important;border-radius:0 !important;font-weight:700;min-width:200px;}
+.resumen-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.resumen-section{background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);border-radius:var(--radius);padding:16px;}
+.resumen-section-title{font-family:var(--font-heading);font-size:0.72rem;font-weight:700;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--panel-border);}
+.stat-highlight{background:rgba(0,0,0,0.3);border-radius:var(--radius-sm);padding:12px 16px;text-align:center;border:1px solid var(--panel-border);}
+.stat-highlight-val{font-family:var(--font-mono);font-size:1.6rem;font-weight:700;line-height:1;}
+.stat-highlight-lbl{font-family:var(--font-heading);font-size:0.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-top:4px;}
+.akuma-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.akuma-type-card{background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:pointer;transition:var(--transition);}
+.akuma-type-card:hover{border-color:var(--accent-primary);background:rgba(0,0,0,0.35);}
+.akuma-type-card.selected{border-color:var(--accent-primary);background:var(--accent-alpha);box-shadow:0 0 12px var(--accent-glow);}
+.akuma-type-card.logia.selected{border-color:var(--stat-ene);background:rgba(96,165,250,0.1);}
+.akuma-type-card.paramecia.selected{border-color:var(--stat-good);background:rgba(74,222,128,0.1);}
+.akuma-type-card.zoan.selected{border-color:var(--stat-warn);background:rgba(250,204,21,0.1);}
+.akuma-type-icon{font-size:1.5rem;margin-bottom:6px;color:var(--accent-secondary);}
+.akuma-type-name{font-family:var(--font-heading);font-size:0.75rem;font-weight:700;color:var(--text-bright);}
+.akuma-type-desc{font-size:0.62rem;color:var(--text-muted);margin-top:4px;}
+.zoan-sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.speed-row{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;font-family:var(--font-mono);font-size:0.75rem;border-bottom:1px dashed rgba(255,255,255,0.04);}
+.speed-row:last-child{border-bottom:none;}
+.ref-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:5px 8px;border-bottom:1px dashed rgba(255,255,255,0.04);font-size:0.68rem;}
+.ref-row:last-child{border-bottom:none;}
+.section-divider{font-family:var(--font-heading);font-size:0.7rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;padding:8px 0 6px 0;border-bottom:1px solid var(--panel-border);margin:12px 0 8px 0;display:flex;align-items:center;gap:6px;}
+@media(max-width:1300px){.rpg-layout{grid-template-columns:270px 1fr 310px;}}
+@media(max-width:1100px){
+  .rpg-layout{grid-template-columns:1fr;height:auto;}
+  .col-left,.col-right{position:static;max-height:none;}
+  .attr-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:768px){
+  .attr-grid{grid-template-columns:repeat(2,1fr);}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+  .rpg-layout{gap:12px;padding:10px;}
+  .header-center{display:none;}
+  .akuma-type-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:480px){.attr-grid{grid-template-columns:1fr 1fr;}.logo{font-size:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="ioModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="ioModalTitle"><i class="fas fa-file-export"></i> Datos del Personaje</span>
+      <button class="btn" style="border:none;padding:4px;" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <textarea id="ioDataText"></textarea>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="ioActionBtn" onclick="executeIO()"><i class="fas fa-check"></i> Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="logo">Nakama <em>no Mi</em></div>
+  <div class="header-center">
+    <div class="layout-pill">
+      <button id="btnRPG" onclick="setLayout('rpg')" class="active">RPG</button>
+      <button id="btnClassic" onclick="setLayout('classic')">Clasico</button>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="theme-dot" onclick="toggleTheme()" title="Cambiar tema" id="themeBtn">
+      <i class="fas fa-palette" style="font-size:12px;"></i>
+    </div>
+    <button class="btn" onclick="openModal('import')"><i class="fas fa-file-import"></i> Importar</button>
+    <button class="btn btn-primary" onclick="openModal('export')"><i class="fas fa-file-export"></i> Exportar</button>
+  </div>
+</header>
+
+<div id="layoutWrapper"></div>
+
+<script>
+
+let D = {};
+let currentLayout = 'rpg';
+
+let state = {
+  name:'', level:1, race:'Humano',
+  customAttrs:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
+  passiveExtras:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
+  selectedKarmas:{},
+  weapon:{cat:'filo',sub:'Espada / Katana / Lanza / Hacha',tier:0,mode:'normal',shield:'no'},
+  akuma:{type:'none',zoanSub:'normal'},
+  haki:{busho:false,ken:false,haos:false},
+  masteries:[{type:'Cuerpo a Cuerpo',grade:1}],
+  oficios:{},
+  combatCalc:{transformation:'humano',style:'desarmado'},
+  zoanBonuses:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
+  // ── NUEVO FORMATO DE TÉCNICAS ──────────────────────────────────────
+  tecnicas:[{
+    id:1,
+    nombre:'Técnica 1',
+    rango:1,
+    tipo:'normal',
+    estiloCombate:'desarmado',
+    tipoDano:'contundente',
+    componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
+    addGolpeBlanco:false,
+    costeENE:0,
+    costeESP:0,
+    tr:0,
+    efectos:'',
+    notas:''
+  }]
+};
+
+// ============================================================
+// MATH ENGINE
+// ============================================================
+const rnd = x => Math.round(x);
+function autoBase(a){return(a==='CH'||a==='CA')?0:3+(state.level-1)*D.config.AUTO_PER_LEVEL;}
+function cval(a){return state.customAttrs[a]||0;}
+function getLevelCap(){return state.level*10+50;}
+function getRaceBonus(a){const r=D.races[state.race];return r?(r.bonuses[a]||0):0;}
+function getKarmaMod(a){
+  let m=0;
+  for(const[id,sel]of Object.entries(state.selectedKarmas)){
+    if(!sel)continue;
+    if(id==='tuerto'&&(a==='REF'||a==='PRE'))m-=50;
+    if(id==='ciego'&&(a==='PRE'||a==='REF'))m-=100;
+    if(id==='mal_oido'&&a==='REF')m-=25;
+    if(id==='sordo'&&a==='REF')m-=50;
+    if(id==='pierna_amputada'&&a==='AGI')m-=100;
+    if(id==='arrepentido'&&a==='VOL')m-=40;
+  }
+  return m;
+}
+function getPExtra(a){return(state.passiveExtras&&state.passiveExtras[a])||0;}
+function getZoanBonus(a){
+  const trans=state.combatCalc?.transformation||'humano';
+  if(trans==='humano'||!state.akuma?.type?.startsWith('zoan'))return 0;
+  return(state.zoanBonuses&&state.zoanBonuses[a])||0;
+}
+function getAttr(a){return autoBase(a)+cval(a)+getRaceBonus(a);}
+function getEff(a){return getAttr(a)+getKarmaMod(a)+getPExtra(a)+getZoanBonus(a);}
+function calcVIT(){const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),A=getEff('AGI'),V=getEff('VOL'),n=state.level;return rnd((F*5+R*6+Ds*2+A+V)*(1+n/33.33));}
+function calcENE(){const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),P=getEff('PRE'),A=getEff('AGI'),Rf=getEff('REF'),I=getEff('INT'),V=getEff('VOL'),Ca=getEff('CA'),n=state.level;return Math.floor(F*4+R*5+Ds+P+A+Rf+I*3+V+Ca+Math.floor(n/10)*500+Math.floor(n/25)*1000);}
+function calcESP(){const V=getEff('VOL'),C=getEff('CH'),n=state.level;return rnd(V*3+C*3+Math.floor(n/15)*250);}
+
+function calcPhysRes(){
+  const R=getEff('RES');
+  if(R>=400)return 300;
+  if(R>=300)return 200;
+  if(R>=100)return 100;
+  if(R>=50)return rnd(R*0.5);
+  return 0;
+}
+function calcElRes(){
+  const R=getEff('RES');
+  if(R>=400)return 300;
+  if(R>=300)return 200;
+  if(R>=150)return 100;
+  if(R>=50)return rnd(R*0.5);
+  return 0;
+}
+function calcRes(){return calcPhysRes();}
+
+function calcGB(){const F=getEff('FUE');if(F>=300)return F+150;if(F>=150)return F+50;return F;}
+function calcHits(v){if(v<=150)return 1;if(v<=300)return 2;if(v<=450)return 3;if(v<=600)return 4;return 5;}
+function totalUsed(){return D.attrs.reduce((s,a)=>s+(state.customAttrs[a]||0),0);}
+function freePA(){return D.config.PA_START+state.level*D.config.PA_PER_LEVEL-totalUsed();}
+
+function calcInventorySpaces(){
+  const F=getEff('FUE');
+  let sp=Math.floor(F/15)*3;
+  if(state.selectedKarmas['organizado'])sp+=5;
+  if(state.selectedKarmas['bolsillo_magico'])sp+=5;
+  if(state.selectedKarmas['desorganizado'])sp-=5;
+  return Math.max(0,sp);
+}
+
+function calcWeightCapacity(){
+  const F=getEff('FUE');
+  const tier=D.config.weightTiers.find(t=>F<=t.maxFUE)||D.config.weightTiers[D.config.weightTiers.length-1];
+  return rnd(tier.base+(F*F/tier.div));
+}
+
+function calcDeathThresholds(){
+  const vol=getEff('VOL'),res=getEff('RES'),vit=calcVIT(),ene=calcENE();
+  const isBuccaneer=state.race==='Buccaneer';
+  const vitDeathMult=isBuccaneer?4:2;
+  return{
+    vitKO:0, vitIrrec:-vol, vitDeath:-vol*vitDeathMult,
+    vitBigKO:rnd(vit*0.9), vitBigDeath:vit,
+    eneKO:0, eneDeath:-res,
+    espKO:0, espDeath:-Math.ceil(vol/2),
+    isBuccaneer
+  };
+}
+
+function getAkumaRegen(){
+  const t=state.akuma.type,n=state.level;
+  if(t==='none')return{c:0,f:0};
+  if(t==='logia')return{c:0,f:0};
+  if(t==='paramecia')return{c:0,f:0};
+  if(t==='zoan_normal')return{c:n,f:n*2};
+  if(t==='zoan_pre')return{c:n*2,f:n*3};
+  if(t==='zoan_mito')return{c:n*3,f:n*4};
+  return{c:0,f:0};
+}
+
+function getZoanEneRegen(n){
+  const t=state.akuma.type;
+  if(t==='zoan_normal')return{c:n*2,f:n*3};
+  if(t==='zoan_pre')return{c:n*3,f:n*4};
+  if(t==='zoan_mito')return{c:n*4,f:n*5};
+  return{c:n,f:n*2};
+}
+
+function getAkumaLabel(){
+  const t=state.akuma.type;
+  if(t==='none')return'Ninguna';
+  if(t==='logia')return'Logia';
+  if(t==='paramecia')return'Paramecia';
+  if(t==='zoan_normal')return'Zoan Normal';
+  if(t==='zoan_pre')return'Zoan Prehistorica';
+  return'Zoan Mitologica';
+}
+
+function getWeaponStats(){
+  const catD=D.weapons[state.weapon.cat];if(!catD)return null;
+  const subD=catD.subs[state.weapon.sub];if(!subD)return null;
+  const FUE=getEff('FUE'),DES=getEff('DES'),PRE=getEff('PRE');
+  let fM=1,dM=1;if(state.weapon.mode.includes('dual')){fM=0.5;dM=0.5;}
+  const base=subD.bases[state.weapon.tier]||0,sc=subD.scales;
+  let dmg=base;
+  if(subD.special==='gloves')dmg=FUE+base+(sc.FUE||0)*FUE;
+  else{dmg+=rnd((sc.FUE||0)*FUE*fM);if(subD.usePRE)dmg+=rnd((sc.PRE||0)*PRE+(sc.DES||0)*DES*dM);else dmg+=rnd((sc.DES||0)*DES*dM);}
+  const hitsAttr=(subD.special==='gloves')?getEff('AGI'):DES;
+  let nH=calcHits(hitsAttr);if(state.weapon.shield==='yes')nH=calcHits(Math.max(0,hitsAttr-20));
+  if(state.weapon.mode==='dual' && subD.special!=='gloves') dmg=dmg*2;
+  return{name:state.weapon.sub,tier:state.weapon.tier+1,dmg,hits:nH,dpt:dmg*nH};
+}
+
+function getKarmaBalance(){
+  let b=0;
+  [...D.karmasPos,...D.karmasNeg].forEach(k=>{if(state.selectedKarmas[k.id])b+=k.val;});
+  return b;
+}
+
+// ============================================================
+// MUTATORS
+// ============================================================
+function changeLevel(d){
+  state.level=Math.max(1,Math.min(D.config.MAX_LEVEL,state.level+d));
+  const cap=getLevelCap();
+  for(const a of D.attrs)state.customAttrs[a]=Math.min(state.customAttrs[a]||0,Math.max(0,cap-autoBase(a)));
+  let ovr=totalUsed()-(D.config.PA_START+state.level*D.config.PA_PER_LEVEL);
+  if(ovr>0)for(const a of D.attrs){if(ovr<=0)break;let r=Math.min(state.customAttrs[a],ovr);state.customAttrs[a]-=r;ovr-=r;}
+  renderAll();
+}
+function onAttrChange(attr,val){
+  val=Math.max(0,parseInt(val)||0);
+  const cap=getLevelCap(),maxC=Math.max(0,cap-autoBase(attr)),old=state.customAttrs[attr]||0;
+  let diff=val-old;
+  if(diff>0){const can=Math.min(diff,freePA());val=old+can;}
+  state.customAttrs[attr]=Math.min(val,maxC);
+  renderAll();
+}
+function resetAttrs(){for(const a of D.attrs)state.customAttrs[a]=0;renderAll();}
+function onPassiveExtra(attr,val){
+  if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+  state.passiveExtras[attr]=parseInt(val)||0;
+  renderAll();
+}
+function onZoanBonus(attr,val){
+  if(!state.zoanBonuses)state.zoanBonuses={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+  state.zoanBonuses[attr]=parseInt(val)||0;
+  renderAll();
+}
+
+// ── NUEVO SISTEMA DE TÉCNICAS ─────────────────────────────────────────────
+
+function onTecnicaChange(id, field, val){
+  if(!state.tecnicas)state.tecnicas=[];
+  const t=state.tecnicas.find(t=>t.id===id);
+  if(!t)return;
+
+  if(field==='addGolpeBlanco') t[field]=val;
+  else if(field==='rango'||field==='costeENE'||field==='costeESP'||field==='tr')
+    t[field]=parseInt(val)||0;
+  else if(field.startsWith('comp_')){
+    const parts=field.split('_');
+    const idx=parseInt(parts[1]);
+    const sub=parts[2];
+    if(!t.componentes[idx])t.componentes[idx]={atributo:'FUE',multiplicador:0,valorBase:0};
+    if(sub==='multiplicador'||sub==='valorBase') t.componentes[idx][sub]=parseFloat(val)||0;
+    else t.componentes[idx][sub]=val;
+  }
+  else t[field]=val;
+  renderCombatCalc();
+}
+
+function onAddComponente(tecId){
+  const t=state.tecnicas.find(t=>t.id===tecId);
+  if(!t||t.componentes.length>=3)return;
+  t.componentes.push({atributo:'FUE',multiplicador:0,valorBase:0});
+  renderCombatCalc();
+}
+
+function onRemoveComponente(tecId,idx){
+  const t=state.tecnicas.find(t=>t.id===tecId);
+  if(!t||t.componentes.length<=1)return;
+  t.componentes.splice(idx,1);
+  renderCombatCalc();
+}
+
+function onAddTecnica(){
+  if(!state.tecnicas)state.tecnicas=[];
+  const maxId=state.tecnicas.reduce((m,t)=>Math.max(m,t.id),0);
+  state.tecnicas.push({
+    id:maxId+1,
+    nombre:`Técnica ${maxId+1}`,
+    rango:1,
+    tipo:'normal',
+    estiloCombate:'desarmado',
+    tipoDano:'contundente',
+    componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
+    addGolpeBlanco:false,
+    costeENE:0,
+    costeESP:0,
+    tr:0,
+    efectos:'',
+    notas:''
+  });
+  renderCombatCalc();
+}
+
+function onRemoveTecnica(id){
+  if(!state.tecnicas||state.tecnicas.length<=1)return;
+  state.tecnicas=state.tecnicas.filter(t=>t.id!==id);
+  renderCombatCalc();
+}
+
+function onCombatCalcChange(field,val){
+  if(!state.combatCalc)state.combatCalc={transformation:'humano',style:'desarmado'};
+  state.combatCalc[field]=val;
+  document.querySelectorAll('#calcTransform').forEach(el=>el.value=state.combatCalc.transformation||'humano');
+  document.querySelectorAll('#calcStyle').forEach(el=>el.value=state.combatCalc.style||'desarmado');
+  renderCombatCalc();
+}
+
+/* ---- AUXILIARES DE TÉCNICAS ---- */
+
+function calcWhiteDmgByStyle(estilo){
+  const F=getEff('FUE'),Ds=getEff('DES'),P=getEff('PRE');
+  const ws=getWeaponStats();
+  switch(estilo){
+    case 'desarmado':{
+      if(F>=300)return{dmg:F+150,nota:'FUE+150 (≥300)'};
+      if(F>=150)return{dmg:F+50,nota:'FUE+50 (≥150)'};
+      return{dmg:F,nota:'FUE base'};
+    }
+    case 'arma_simple':{
+      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
+      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
+      const sc=sd?.scales||{};
+      let dmg=sd?.bases[state.weapon.tier]||0;
+      if(sd?.usePRE)dmg+=Math.round((sc.DES||0)*Ds+(sc.PRE||0)*P);
+      else dmg+=Math.round((sc.FUE||0)*F+(sc.DES||0)*Ds);
+      return{dmg,nota:`${ws.name} T${ws.tier}`};
+    }
+    case 'arma_dual':{
+      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
+      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
+      const sc=sd?.scales||{};
+      const hasAmbi=state.selectedKarmas['ambidiestro'];
+      const desScale=hasAmbi?(sc.DES||0):(sc.DES||0)*0.5;
+      const perArma=(sd?.bases[state.weapon.tier]||0)+Math.round(F*0.5)+Math.round(Ds*desScale);
+      return{dmg:perArma*2,nota:`${ws.name} T${ws.tier} ×2${hasAmbi?' (Ambi)':''}`};
+    }
+    case 'disparo':{
+      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
+      return{dmg:ws.dmg,nota:`${ws.name} T${ws.tier} (PRE)`};
+    }
+    case 'flexible':{
+      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
+      return{dmg:ws.dmg,nota:`${ws.name} T${ws.tier}`};
+    }
+    case 'haki':{
+      const C=getEff('CH'),R=getEff('RES');
+      return{dmg:Math.round((C+R)/2),nota:'Busoshoku (CH+RES)/2'};
+    }
+    case 'akuma':{
+      const CA=getEff('CA');
+      return{dmg:CA,nota:'Base CA'};
+    }
+    default:return{dmg:0,nota:'—'};
+  }
+}
+
+function calcTecnicaDmg(tec){
+  let dmgComp=tec.componentes.reduce((sum,c)=>{
+    const atVal=getEff(c.atributo||'FUE');
+    return sum+Math.round((c.valorBase||0)+(atVal*(c.multiplicador||0)));
+  },0);
+
+  let dmgBlanco=0;
+  if(tec.addGolpeBlanco){
+    const wb=calcWhiteDmgByStyle(tec.estiloCombate||'desarmado');
+    dmgBlanco=wb.dmg;
+  }
+
+  let total=dmgComp+dmgBlanco;
+
+  if(tec.tipo==='extralimite') total=Math.round(total*1.25);
+  if(tec.tipo==='dual') total=total*2;
+  if(tec.tipo==='sinergia') total=Math.round(total*1.25);
+
+  return{total,dmgComp,dmgBlanco};
+}
+
+/* ---- COMBAT CALCULATOR (legacy helpers kept for whiteDmg display) ---- */
+function calcMeleeWhiteDmg(){
+  const F=getEff('FUE');
+  if(F>=300) return F+150;
+  if(F>=150) return F+50;
+  return F;
+}
+
+function renderPassiveExtras(){
+  document.querySelectorAll('#passiveExtrasPanel').forEach(el=>{
+  if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+  const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
+  const labels={FUE:'Fuerza',RES:'Resistencia',DES:'Destreza',PRE:'Precisión',AGI:'Agilidad',REF:'Reflejos',INT:'Inteligencia',VOL:'Voluntad',CH:'Control Haki',CA:'Control Akuma'};
+  el.innerHTML=D.attrs.map(a=>{
+    const v=state.passiveExtras[a]||0;
+    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+      <span style="width:22px;text-align:center;font-size:0.9rem;">${emojis[a]}</span>
+      <span style="flex:1;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">${labels[a]}</span>
+      <input type="number" value="${v}" min="-9999" max="9999" step="1"
+        style="width:72px;text-align:center;font-size:0.78rem;padding:4px 6px;"
+        onchange="onPassiveExtra('${a}',this.value)" oninput="onPassiveExtra('${a}',this.value)">
+      <span style="width:50px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">
+        ${v>0?'+'+v:v}
+      </span>
+    </div>`;
+  }).join('');
+  });
+}
+
+function renderCombatCalc(){
+  document.querySelectorAll('#combatCalcBody').forEach(el=>{
+  const style=state.combatCalc?.style||'desarmado';
+  const trans=state.combatCalc?.transformation||'humano';
+  const isZoan=state.akuma?.type?.startsWith('zoan')||false;
+  const needWeapon=style==='arma_simple'||style==='arma_dual';
+  if(!state.tecnicas||!state.tecnicas.length)
+    state.tecnicas=[{
+      id:1,nombre:'Técnica 1',rango:1,tipo:'normal',
+      estiloCombate:'desarmado',tipoDano:'contundente',
+      componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
+      addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
+    }];
+
+  document.querySelectorAll('#calcTransform').forEach(sel=>{
+    const cur=state.combatCalc?.transformation||'humano';
+    if(!isZoan&&cur!=='humano'){state.combatCalc.transformation='humano';}
+    sel.innerHTML=`<option value="humano"${(state.combatCalc?.transformation||'humano')==='humano'?' selected':''}>Base (Humano)</option>`
+      +(isZoan?`<option value="hibrido"${(state.combatCalc?.transformation)==='hibrido'?' selected':''}>Híbrido</option>`
+               +`<option value="completo"${(state.combatCalc?.transformation)==='completo'?' selected':''}>Completo (animal)</option>`:'');
+  });
+
+  let weaponSel='';
+  if(needWeapon&&D&&D.weapons){
+    let catOpts='';
+    for(const[k,v]of Object.entries(D.weapons))catOpts+=`<option value="${k}" ${state.weapon.cat===k?'selected':''}>${v.name}</option>`;
+    let subOpts='';
+    const catD=D.weapons[state.weapon.cat];
+    if(catD)for(const[sn,sd]of Object.entries(catD.subs))for(let t=0;t<5;t++)
+      subOpts+=`<option value="${sn}|${t}" ${state.weapon.sub===sn&&state.weapon.tier===t?'selected':''}>${sn} T${t+1} (nv${sd.tierLevels[t]}+)</option>`;
+    const ws2=getWeaponStats();
+    const equipped=ws2?`<span style="color:var(--stat-good);font-size:0.68rem;">✅ ${ws2.name} T${ws2.tier}</span>`
+                      :`<span style="color:var(--stat-bad);font-size:0.68rem;">Sin arma</span>`;
+    weaponSel=`<div style="background:rgba(0,0,0,0.18);border:1px solid var(--panel-border);border-radius:8px;padding:9px;margin-bottom:10px;">
+      <div style="font-size:0.65rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;"><i class="fas fa-shield-alt"></i> Arma Equipada &nbsp;${equipped}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Categoría</div>
+          <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponCatChange(this)">${catOpts}</select></div>
+        <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Arma y Tier</div>
+          <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponDetailChange(this)">${subOpts}</select></div>
+      </div>
+    </div>`;
+  }
+
+  let zoanPanel='';
+  if(isZoan&&trans!=='humano'){
+    const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
+    const zb=state.zoanBonuses||{};
+    const rows=D.attrs.map(a=>{
+      const v=zb[a]||0;
+      return `<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+        <span style="width:18px;text-align:center;font-size:0.82rem;">${emojis[a]}</span>
+        <span style="flex:1;font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);">${a}</span>
+        <input type="number" value="${v}" min="-9999" max="9999" step="1"
+          style="width:64px;text-align:center;font-size:0.72rem;padding:3px 5px;"
+          oninput="onZoanBonus('${a}',this.value)">
+        <span style="width:44px;text-align:right;font-family:var(--font-mono);font-size:0.68rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">${v>0?'+'+v:v}</span>
+      </div>`;
+    }).join('');
+    zoanPanel=`<div style="border:1px solid rgba(168,85,247,0.4);border-radius:8px;padding:10px;margin-bottom:10px;background:rgba(168,85,247,0.05);">
+      <div style="font-size:0.65rem;color:#c084fc;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;"><i class="fas fa-dragon"></i> Bonos Zoan — ${trans==='hibrido'?'Forma Híbrida':'Forma Completa'}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">Introduce los bonos de stat de tu Akuma Zoan. Consulta la Guía de Akumas (tablas de imagen) para los valores exactos.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 14px;">${rows}</div>
+    </div>`;
+  } else if(isZoan&&trans==='humano'){
+    zoanPanel=`<div style="font-size:0.67rem;color:var(--text-muted);padding:4px 0 8px 2px;"><i class="fas fa-info-circle"></i> Selecciona Híbrido o Completo para introducir los bonos Zoan de esa transformación.</div>`;
+  }
+
+  const ws=getWeaponStats();
+  let whiteDmg=0,whiteDmgNote='',noWeapon=false;
+  if(style==='desarmado'){
+    whiteDmg=calcMeleeWhiteDmg();
+    const F=getEff('FUE');
+    whiteDmgNote=F>=300?'FUE≥300 (+150)':F>=150?'FUE≥150 (+50)':'FUE básico';
+  } else if(style==='arma_simple'){
+    if(ws){
+      const F=getEff('FUE'),Ds=getEff('DES'),P=getEff('PRE');
+      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
+      const sc=sd?.scales||{};
+      let dmg=sd?.bases[state.weapon.tier]||0;
+      if(sd?.usePRE)dmg+=Math.round((sc.DES||0)*Ds+(sc.PRE||0)*P);
+      else dmg+=Math.round((sc.FUE||0)*F+(sc.DES||0)*Ds);
+      whiteDmg=dmg;
+      whiteDmgNote=`T${ws.tier}·Base${sd?.bases[state.weapon.tier]}+FUE×${sc.FUE||0}+DES×${sc.DES||0}${sd?.usePRE?'+PRE×'+(sc.PRE||0):''}`;
+    } else noWeapon=true;
+  } else if(style==='arma_dual'){
+    if(ws){
+      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
+      const sc=sd?.scales||{};
+      const F=getEff('FUE'),Ds=getEff('DES');
+      const hasAmbi=state.selectedKarmas['ambidiestro'];
+      const desScale=hasAmbi?(sc.DES||0):(sc.DES||0)*0.5;
+      const perWeapon=(sd?.bases[state.weapon.tier]||0)+Math.round(F*0.5)+Math.round(Ds*desScale);
+      whiteDmg=perWeapon*2;
+      whiteDmgNote=`T${ws.tier}×2·FUE×0.5/arma${hasAmbi?',DES íntegra':`,DES×${desScale.toFixed(2)}/arma`}`;
+    } else noWeapon=true;
+  }
+  const dmgStr=noWeapon?'—':whiteDmg;
+  const dmgColor=noWeapon?'var(--text-muted)':'var(--stat-good)';
+
+  // ── COLORES Y ETIQUETAS POR TIPO ──────────────────────────────
+  const tipoColors={
+    normal:'var(--text-muted)',
+    extralimite:'var(--stat-warn)',
+    dual:'var(--stat-ene)',
+    sinergia:'var(--stat-good)',
+    ultimate:'var(--stat-magic)',
+    finisher:'var(--stat-bad)'
+  };
+  const tipoLabels={
+    normal:'Normal',
+    extralimite:'Extra-Límite +25%dmg',
+    dual:'Dual ×2 req/dmg/TR',
+    sinergia:'Sinergia +25%dmg',
+    ultimate:'Ultimate',
+    finisher:'Finisher (1×/tema)'
+  };
+  const estiloLabels={
+    desarmado:'✊ Desarmado',
+    arma_simple:'⚔️ Arma Simple',
+    arma_dual:'⚔️⚔️ Arma Dual',
+    disparo:'🎯 Disparo',
+    flexible:'🪢 Flexible/Látigo',
+    haki:'✨ Haki',
+    akuma:'🌊 Akuma',
+    mixto:'⚡ Mixto'
+  };
+  const danoLabels={
+    contundente:'🟤 Contundente',
+    cortante:'⚪ Cortante',
+    perforante:'🔵 Perforante',
+    elemental_fuego:'🔴 Elem. Fuego',
+    elemental_rayo:'🟡 Elem. Rayo',
+    elemental_hielo:'🔷 Elem. Hielo',
+    elemental_veneno:'🟢 Elem. Veneno',
+    elemental_otro:'🟣 Elem. Otro',
+    espiritual:'💜 Espiritual'
+  };
+
+  // ── GENERAR FILAS DE TÉCNICAS ─────────────────────────────────
+  const tecRows=state.tecnicas.map(tec=>{
+    const {total,dmgComp,dmgBlanco}=calcTecnicaDmg(tec);
+    const wb=tec.addGolpeBlanco?calcWhiteDmgByStyle(tec.estiloCombate):{dmg:0,nota:''};
+    const color=tipoColors[tec.tipo]||'var(--text-muted)';
+    const esExtraLimite=tec.tipo==='extralimite';
+    const esDual=tec.tipo==='dual';
+    const esFinisher=tec.tipo==='finisher';
+
+    const desgloseComp=tec.componentes.map(c=>{
+      const v=getEff(c.atributo||'FUE');
+      return `${c.valorBase>0?c.valorBase+'+':''}${c.atributo}[${v}]×${c.multiplicador}`;
+    }).join(' + ');
+
+    const desgloseTotal=`(${desgloseComp})${tec.addGolpeBlanco?` + GB[${wb.dmg}]`:''}${esExtraLimite?' ×1.25':''}${esDual?' ×2':''}`;
+
+    const compRows=tec.componentes.map((c,idx)=>{
+      const atOpts=D.attrs.map(a=>`<option value="${a}"${c.atributo===a?' selected':''}>${a}</option>`).join('');
+      return `<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap;">
+        <input type="number" value="${c.valorBase}" min="0" max="99999" step="1" placeholder="Base"
+          title="Valor base fijo" style="width:52px;font-size:0.68rem;padding:2px 4px;text-align:center;"
+          oninput="onTecnicaChange(${tec.id},'comp_${idx}_valorBase',this.value)">
+        <span style="color:var(--text-muted);font-size:0.7rem;">+</span>
+        <select style="font-size:0.68rem;padding:2px 4px;"
+          onchange="onTecnicaChange(${tec.id},'comp_${idx}_atributo',this.value)">${atOpts}</select>
+        <span style="color:var(--text-muted);font-size:0.7rem;">×</span>
+        <input type="number" value="${c.multiplicador}" min="0" max="99" step="0.1"
+          title="Multiplicador" style="width:46px;font-size:0.68rem;padding:2px 4px;text-align:center;"
+          oninput="onTecnicaChange(${tec.id},'comp_${idx}_multiplicador',this.value)">
+        ${tec.componentes.length>1?`<button onclick="onRemoveComponente(${tec.id},${idx})"
+          style="background:none;border:none;color:var(--stat-bad);cursor:pointer;font-size:0.75rem;padding:0 3px;"
+          title="Quitar componente">✕</button>`:''}
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--accent-secondary);">
+          = ${Math.round((c.valorBase||0)+getEff(c.atributo||'FUE')*(c.multiplicador||0))}
+        </span>
+      </div>`;
+    }).join('');
+
+    return `<div style="background:rgba(0,0,0,0.22);border:1px solid ${color};border-radius:var(--radius);padding:12px;margin-bottom:10px;">
+
+      <!-- CABECERA: nombre + tipo + rango -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <input type="text" value="${tec.nombre}" placeholder="Nombre..."
+          style="flex:1;min-width:130px;font-family:var(--font-heading);font-weight:700;font-size:0.82rem;
+                 padding:4px 8px;background:rgba(0,0,0,0.3);border:1px solid ${color};border-radius:5px;color:${color};"
+          oninput="onTecnicaChange(${tec.id},'nombre',this.value)">
+
+        <div title="Rango de la técnica (1-10)" style="display:flex;align-items:center;gap:3px;">
+          <span style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;">R</span>
+          <select style="font-size:0.7rem;padding:3px 4px;width:42px;"
+            onchange="onTecnicaChange(${tec.id},'rango',this.value)">
+            ${[1,2,3,4,5,6,7,8,9,10].map(r=>`<option value="${r}"${tec.rango===r?' selected':''}>${r}</option>`).join('')}
+          </select>
+        </div>
+
+        <select style="font-size:0.68rem;padding:3px 5px;border-color:${color};color:${color};background:rgba(0,0,0,0.3);"
+          onchange="onTecnicaChange(${tec.id},'tipo',this.value)">
+          ${Object.entries(tipoLabels).map(([k,v])=>`<option value="${k}"${tec.tipo===k?' selected':''}>${v}</option>`).join('')}
+        </select>
+
+        ${state.tecnicas.length>1?`<button onclick="onRemoveTecnica(${tec.id})"
+          style="background:none;border:1px solid var(--stat-bad);color:var(--stat-bad);border-radius:4px;
+                 padding:3px 8px;cursor:pointer;font-size:0.68rem;" title="Eliminar técnica">✕</button>`:''}
+      </div>
+
+      <!-- FILA 1: Estilo de combate + Tipo de daño -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div>
+          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Estilo de combate</div>
+          <select style="font-size:0.7rem;padding:3px 5px;"
+            onchange="onTecnicaChange(${tec.id},'estiloCombate',this.value)">
+            ${Object.entries(estiloLabels).map(([k,v])=>`<option value="${k}"${tec.estiloCombate===k?' selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Tipo de daño</div>
+          <select style="font-size:0.7rem;padding:3px 5px;"
+            onchange="onTecnicaChange(${tec.id},'tipoDano',this.value)">
+            ${Object.entries(danoLabels).map(([k,v])=>`<option value="${k}"${tec.tipoDano===k?' selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <!-- FILA 2: Componentes de daño -->
+      <div style="background:rgba(0,0,0,0.2);border-radius:5px;padding:8px;margin-bottom:8px;">
+        <div style="font-size:0.6rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+          📐 Fórmula de daño
+          ${tec.componentes.length<3?`<button onclick="onAddComponente(${tec.id})"
+            style="background:rgba(255,255,255,0.05);border:1px solid var(--accent-secondary);color:var(--accent-secondary);
+                   border-radius:4px;padding:1px 7px;font-size:0.62rem;cursor:pointer;margin-left:6px;">+ componente</button>`:''}
+        </div>
+        ${compRows}
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin-top:4px;">
+          <input type="checkbox" ${tec.addGolpeBlanco?'checked':''}
+            onchange="onTecnicaChange(${tec.id},'addGolpeBlanco',this.checked)" style="margin:0;">
+          <span style="font-size:0.68rem;color:var(--text-muted);">
+            + Daño Blanco del estilo
+            ${tec.addGolpeBlanco?`<span style="color:var(--stat-good);">(+${wb.dmg} — ${wb.nota})</span>`:''}
+          </span>
+        </label>
+      </div>
+
+      <!-- FILA 3: Coste + TR -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
+        <div>
+          <div style="font-size:0.6rem;color:var(--stat-ene);text-transform:uppercase;margin-bottom:2px;">⚡ Coste ENE</div>
+          <input type="number" value="${tec.costeENE||0}" min="0" step="1"
+            style="font-size:0.75rem;padding:3px 6px;text-align:center;"
+            oninput="onTecnicaChange(${tec.id},'costeENE',this.value)">
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--stat-esp);text-transform:uppercase;margin-bottom:2px;">💜 Coste ESP</div>
+          <input type="number" value="${tec.costeESP||0}" min="0" step="1"
+            style="font-size:0.75rem;padding:3px 6px;text-align:center;"
+            oninput="onTecnicaChange(${tec.id},'costeESP',this.value)">
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--stat-warn);text-transform:uppercase;margin-bottom:2px;">🔄 TR (turnos)</div>
+          <input type="number" value="${tec.tr||0}" min="0" max="20" step="1"
+            style="font-size:0.75rem;padding:3px 6px;text-align:center;"
+            oninput="onTecnicaChange(${tec.id},'tr',this.value)">
+        </div>
+      </div>
+
+      <!-- FILA 4: Efectos + Notas -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+        <div>
+          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">⚠️ Efectos / Estados</div>
+          <input type="text" value="${tec.efectos||''}" placeholder="Ej: Entumecimiento, Derribo..."
+            style="font-size:0.68rem;padding:3px 6px;"
+            oninput="onTecnicaChange(${tec.id},'efectos',this.value)">
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">📝 Notas</div>
+          <input type="text" value="${tec.notas||''}" placeholder="Descripción breve..."
+            style="font-size:0.68rem;padding:3px 6px;"
+            oninput="onTecnicaChange(${tec.id},'notas',this.value)">
+        </div>
+      </div>
+
+      <!-- RESULTADO FINAL -->
+      <div style="display:flex;align-items:center;justify-content:space-between;
+                  background:rgba(0,0,0,0.3);border-radius:5px;padding:8px 12px;
+                  border-top:1px solid ${color};">
+        <div style="font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);">
+          ${desgloseTotal}
+          ${tec.costeENE>0?`<span style="color:var(--stat-ene);margin-left:6px;">-${tec.costeENE}ENE</span>`:''}
+          ${tec.costeESP>0?`<span style="color:var(--stat-esp);margin-left:4px;">-${tec.costeESP}ESP</span>`:''}
+          ${tec.tr>0?`<span style="color:var(--stat-warn);margin-left:4px;">TR:${tec.tr}</span>`:''}
+          ${esFinisher?`<span style="color:var(--stat-bad);margin-left:4px;">⚠️ 1×/tema</span>`:''}
+        </div>
+        <div style="font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:${color};">
+          ${total.toLocaleString()}
+          <span style="font-size:0.6rem;color:var(--text-muted);margin-left:4px;">${danoLabels[tec.tipoDano]||''}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const tecnicasBlock=`
+    <div style="margin-top:14px;border-top:1px solid var(--panel-border);padding-top:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div>
+          <span style="font-family:var(--font-heading);font-size:0.7rem;color:#f472b6;
+                       text-transform:uppercase;letter-spacing:1px;">
+            <i class="fas fa-bolt"></i> Técnicas (${state.tecnicas.length})
+          </span>
+          <div style="font-size:0.6rem;color:var(--text-muted);margin-top:2px;">
+            Fórmula: <code style="color:var(--accent-secondary);">∑(Base + Atrib × Mult) [+ Daño Blanco]</code>
+          </div>
+        </div>
+        <button onclick="onAddTecnica()"
+          style="background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.45);
+                 color:#f472b6;border-radius:6px;padding:5px 14px;font-size:0.7rem;cursor:pointer;
+                 font-family:var(--font-heading);text-transform:uppercase;letter-spacing:0.5px;">
+          + Nueva Técnica
+        </button>
+      </div>
+      ${tecRows}
+    </div>`;
+
+  el.innerHTML=`
+    ${weaponSel}
+    ${zoanPanel}
+    <table class="rpg-table" style="margin-bottom:0;">
+      <thead><tr>
+        <th style="width:30%">Ataque</th>
+        <th style="width:22%;text-align:center;">Daño Blanco</th>
+        <th>Desglose</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--text-bright);font-weight:600;">${style==='desarmado'?'✊ Melé':style==='arma_simple'?'⚔️ Simple':'⚔️⚔️ Dual'}</td>
+          <td style="color:${dmgColor};font-weight:700;font-size:1.05rem;text-align:center;">${dmgStr}</td>
+          <td style="color:var(--text-muted);font-size:0.68rem;">${noWeapon?'Selecciona un arma arriba':whiteDmgNote}</td>
+        </tr>
+      </tbody>
+    </table>
+    ${tecnicasBlock}`;
+  });
+}
+
+
+function autoDistribute(){
+  const pts=freePA();if(pts<=0)return;
+  const each=Math.floor(pts/D.attrs.length),rem=pts%D.attrs.length,cap=getLevelCap();
+  for(let i=0;i<D.attrs.length;i++){
+    const a=D.attrs[i],mc=Math.max(0,cap-autoBase(a));
+    state.customAttrs[a]=Math.min(mc,(state.customAttrs[a]||0)+each+(i<rem?1:0));
+  }
+  renderAll();
+}
+function onKarmaToggle(id){state.selectedKarmas[id]=!state.selectedKarmas[id];renderAll();}
+function onAkumaChange(type){state.akuma.type=type;renderAll();}
+function onHakiChange(){
+  state.haki.busho=document.getElementById('hakiBusho')?.checked||false;
+  state.haki.ken=document.getElementById('hakiKen')?.checked||false;
+  state.haki.haos=document.getElementById('hakiHaos')?.checked||false;
+  renderAll();
+}
+function onWeaponCatChange(){
+  const sel=document.getElementById('weapCat');
+  if(!sel)return;
+  state.weapon.cat=sel.value;
+  const subs=D.weapons[state.weapon.cat].subs;
+  state.weapon.sub=Object.keys(subs)[0];
+  state.weapon.tier=0;
+  const subSel=document.getElementById('weapTier');
+  if(subSel){
+    subSel.innerHTML='';
+    for(const[sn,sd]of Object.entries(subs)){
+      for(let t=0;t<5;t++){
+        const opt=document.createElement('option');
+        opt.value=`${sn}|${t}`;
+        opt.textContent=`${sn} T${t+1} (nv${sd.tierLevels[t]}+)`;
+        if(sn===state.weapon.sub&&t===0)opt.selected=true;
+        subSel.appendChild(opt);
+      }
+    }
+  }
+  renderAll();
+}
+function onWeaponDetailChange(){
+  const st=document.getElementById('weapTier')?.value.split('|');
+  if(st&&st.length===2){state.weapon.sub=st[0];state.weapon.tier=parseInt(st[1]);}
+  state.weapon.mode=document.getElementById('weapMode')?.value||'normal';
+  state.weapon.shield=document.getElementById('weapShield')?.value||'no';
+  renderAll();
+}
+function onOficioToggle(k){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k].level=state.oficios[k].level>0?0:1;renderAll();}
+function onOficioLevel(k,v){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k].level=parseInt(v)||1;renderAll();}
+function onOficioSpec(k,i,v){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k]['spec'+i]=parseInt(v)||0;renderAll();}
+function onOficioSuper(k,c){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k].super=c;renderAll();}
+function addMaestria(){state.masteries.push({type:'Cuerpo a Cuerpo',grade:1});renderAll();}
+function updMaestriaType(i,v){state.masteries[i].type=v;renderAll();}
+function updMaestriaGrade(i,g){state.masteries[i].grade=g;renderAll();}
+function delMaestria(i){state.masteries.splice(i,1);renderAll();}
+function onNameChange(v){state.name=v;}
+
+// ============================================================
+// LAYOUT SYSTEM
+// ============================================================
+function setLayout(layout){
+  currentLayout=layout;
+  document.documentElement.setAttribute('data-layout',layout);
+  document.getElementById('btnRPG').classList.toggle('active',layout==='rpg');
+  document.getElementById('btnClassic').classList.toggle('active',layout==='classic');
+  const wrap=document.getElementById('layoutWrapper');
+  wrap.style.opacity='0';
+  setTimeout(()=>{buildLayout();wrap.style.opacity='1';wrap.style.transition='opacity 0.35s ease';renderAll();},200);
+}
+
+function buildLayout(){
+  const wrapper=document.getElementById('layoutWrapper');
+  if(currentLayout==='rpg')wrapper.innerHTML=buildRPGLayout();
+  else wrapper.innerHTML=buildClassicLayout();
+}
+
+function buildRPGLayout(){
+  return `<div class="rpg-layout">
+    <div class="col-left">
+      <div class="card" style="border-color:var(--accent-primary)">
+        <div style="text-align:center;">
+          <input type="text" id="charName" class="identity-input" value="${state.name}" placeholder="Nombre del personaje..." oninput="onNameChange(this.value)">
+          <div style="font-family:var(--font-heading);color:var(--text-muted);font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;" id="displayRace">${state.race}</div>
+        </div>
+        <div class="level-wrapper">
+          <button class="lvl-btn" onclick="changeLevel(-1)"><i class="fas fa-minus"></i></button>
+          <div class="lvl-display"><div class="lvl-num" id="hNivel">${state.level}</div><div class="lvl-lbl">Nivel</div></div>
+          <button class="lvl-btn" onclick="changeLevel(1)"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="rpg-bar bar-vit">
+          <div class="rpg-bar-header"><span>VIT</span><span class="rpg-bar-val" id="barVIT">0</span></div>
+          <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillVIT" style="width:100%"></div></div>
+          <div class="regen-text" id="regenVIT">Regen: 0/turno</div>
+        </div>
+        <div class="rpg-bar bar-ene">
+          <div class="rpg-bar-header"><span>ENE</span><span class="rpg-bar-val" id="barENE">0</span></div>
+          <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillENE" style="width:100%"></div></div>
+          <div class="regen-text" id="regenENE">Regen: +1/turno</div>
+        </div>
+        <div class="rpg-bar bar-esp">
+          <div class="rpg-bar-header"><span>ESP</span><span class="rpg-bar-val" id="barESP">0</span></div>
+          <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillESP" style="width:100%"></div></div>
+          <div class="regen-text" id="regenESP">Regen: +0/turno</div>
+        </div>
+        <div class="pa-display">
+          <div class="pa-num" id="hPA">${freePA()}</div>
+          <div class="pa-lbl">PA Libres</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-heart-broken"></i> Umbrales de Dolor (VOL)</div>
+        <div id="umbralesPanel"></div>
+      </div>
+      <div class="card" style="border-color:rgba(251,113,133,0.4);">
+        <div class="card-title" style="color:var(--stat-bad);"><i class="fas fa-skull-crossbones"></i> Límites Críticos</div>
+        <div id="criticalThresholdsPanel"></div>
+      </div>
+    </div>
+
+    <div class="col-center">
+      <div class="tabs-wrapper">
+        <nav class="nav-tabs">
+          <button class="nav-tab active" onclick="switchTab('atributos',this)">Atributos</button>
+          <button class="nav-tab" onclick="switchTab('raza',this)">Raza y Akuma</button>
+          <button class="nav-tab" onclick="switchTab('combate',this)">Combate</button>
+          <button class="nav-tab" onclick="switchTab('haki',this)">Haki</button>
+          <button class="nav-tab" onclick="switchTab('maestrias',this)">Maestrias</button>
+          <button class="nav-tab" onclick="switchTab('oficios',this)">Oficios</button>
+          <button class="nav-tab" onclick="switchTab('karma',this)">Karmas</button>
+        </nav>
+        <div class="tabs-body">
+          <div id="tab-atributos" class="tab-content active">${buildAttrTab()}</div>
+          <div id="tab-raza" class="tab-content">${buildRazaTab()}</div>
+          <div id="tab-combate" class="tab-content">${buildCombateTab()}</div>
+          <div id="tab-haki" class="tab-content">${buildHakiTab()}</div>
+          <div id="tab-maestrias" class="tab-content">${buildMaestriasTab()}</div>
+          <div id="tab-oficios" class="tab-content">${buildOficiosTab()}</div>
+          <div id="tab-karma" class="tab-content">${buildKarmaTab()}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card" style="border-color:var(--accent-primary)">
+        <div class="card-title"><i class="fas fa-chart-area"></i> Radar de Poder</div>
+        <div class="radar-box"><canvas id="statRadar" width="220" height="220"></canvas></div>
+        <div class="info-row"><span class="info-key">Control Haki</span><span class="info-val" id="resCH" style="color:var(--stat-magic)">${getEff('CH')}</span></div>
+        <div class="info-row"><span class="info-key">Control Akuma</span><span class="info-val" id="resCA" style="color:var(--stat-ene)">${getEff('CA')}</span></div>
+      </div>
+
+      <div class="card" id="resumenCard">
+        <div class="card-title"><i class="fas fa-id-card"></i> Hoja de Personaje</div>
+        <div id="resumenBody"></div>
+      </div>
+      <div class="bbcode-panel">
+        <div class="card-title" style="border:none;padding-bottom:8px;margin-bottom:8px;"><i class="fas fa-code"></i> BBCode para foro</div>
+        <div class="bbcode-text" id="bbcodeText">Configura tu personaje para generar el BBCode...</div>
+        <button class="btn-bbcode" id="bbcodeBtn" onclick="copyBBCode()"><i class="fas fa-copy"></i> Copiar BBCode</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildClassicLayout(){
+  return `<div class="classic-layout">
+    <div class="dashboard-hero">
+      <div>
+        <div style="font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Nombre del Personaje</div>
+        <input type="text" id="charName" class="dash-name-input" value="${state.name}" placeholder="Introduce un nombre..." oninput="onNameChange(this.value)">
+      </div>
+      <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;">
+        <div class="dash-circle">
+          <div class="dash-circle-wrap">
+            <button class="lvl-btn" style="position:absolute;left:-14px;width:22px;height:22px;font-size:0.7rem;" onclick="changeLevel(-1)">-</button>
+            <span class="dash-circle-val" id="hNivel">${state.level}</span>
+            <button class="lvl-btn" style="position:absolute;right:-14px;width:22px;height:22px;font-size:0.7rem;" onclick="changeLevel(1)">+</button>
+          </div>
+          <span class="dash-circle-lbl">Nivel</span>
+        </div>
+        <div class="dash-circle">
+          <div class="dash-circle-wrap" style="border-color:var(--stat-good);box-shadow:0 0 18px rgba(74,222,128,0.2)">
+            <span class="dash-circle-val" id="hPA" style="color:var(--stat-good);font-size:1.6rem;">${freePA()}</span>
+          </div>
+          <span class="dash-circle-lbl">PA Libres</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-danger" onclick="resetAttrs()"><i class="fas fa-undo"></i> Reset</button>
+        <button class="btn btn-primary" onclick="autoDistribute()"><i class="fas fa-magic"></i> Auto</button>
+      </div>
+    </div>
+    <div class="big-vitals">
+      <div class="big-vital bv-vit">
+        <div class="big-vital-lbl">Vitalidad</div>
+        <div class="big-vital-val" id="barVIT">0</div>
+        <div class="big-vital-regen" id="regenVIT">Regen: 0/turno</div>
+      </div>
+      <div class="big-vital bv-ene">
+        <div class="big-vital-lbl">Energia</div>
+        <div class="big-vital-val" id="barENE">0</div>
+        <div class="big-vital-regen" id="regenENE">Regen: +1/turno</div>
+      </div>
+      <div class="big-vital bv-esp">
+        <div class="big-vital-lbl">Espiritu</div>
+        <div class="big-vital-val" id="barESP">0</div>
+        <div class="big-vital-regen" id="regenESP">Regen: CH/6 turno</div>
+      </div>
+    </div>
+    <div class="tabs-wrapper">
+      <nav class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('atributos',this)">Atributos</button>
+        <button class="nav-tab" onclick="switchTab('raza',this)">Raza y Akuma</button>
+        <button class="nav-tab" onclick="switchTab('combate',this)">Combate</button>
+        <button class="nav-tab" onclick="switchTab('haki',this)">Haki</button>
+        <button class="nav-tab" onclick="switchTab('maestrias',this)">Maestrias</button>
+        <button class="nav-tab" onclick="switchTab('oficios',this)">Oficios</button>
+        <button class="nav-tab" onclick="switchTab('karma',this)">Karmas</button>
+        <button class="nav-tab" onclick="switchTab('resumen',this)">Resumen</button>
+      </nav>
+      <div class="tabs-body">
+        <div id="tab-atributos" class="tab-content active">${buildAttrTab()}</div>
+        <div id="tab-raza" class="tab-content">${buildRazaTab()}</div>
+        <div id="tab-combate" class="tab-content">${buildCombateTab()}</div>
+        <div id="tab-haki" class="tab-content">${buildHakiTab()}</div>
+        <div id="tab-maestrias" class="tab-content">${buildMaestriasTab()}</div>
+        <div id="tab-oficios" class="tab-content">${buildOficiosTab()}</div>
+        <div id="tab-karma" class="tab-content">${buildKarmaTab()}</div>
+        <div id="tab-resumen" class="tab-content">${buildResumenTab()}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// TAB BUILDERS
+// ============================================================
+function buildAttrTab(){
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+    <span style="font-family:var(--font-mono);font-size:0.7rem;background:var(--panel-bg);border:1px solid var(--stat-warn);color:var(--stat-warn);padding:4px 10px;border-radius:20px;" data-tip="Nivel x 10 + 50">
+      Cap Max: <strong id="capAtrib">${getLevelCap()}</strong>
+    </span>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" style="padding:4px 10px;font-size:0.65rem;" onclick="autoDistribute()"><i class="fas fa-magic"></i> Auto</button>
+      <button class="btn btn-danger" style="padding:4px 10px;font-size:0.65rem;" onclick="resetAttrs()"><i class="fas fa-undo"></i> Reset</button>
+    </div>
+  </div>
+  <div id="attrPanel" class="attr-grid"></div>
+  <div style="margin-top:18px;border-top:1px solid var(--panel-border);padding-top:14px;">
+    <div style="font-family:var(--font-heading);font-size:0.72rem;color:var(--stat-ene);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+      <i class="fas fa-plus-circle"></i> Puntos Pasivos Extras
+    </div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:10px;">
+      Bonos fijos <b>no PA</b>: Akuma, historia, eventos. Fórmula: <code style="color:var(--accent-secondary);">Stat = Base(PA) + Raza + Karma + Extras</code>
+    </div>
+    <div id="passiveExtrasPanel"></div>
+  </div>`;
+}
+
+function buildRazaTab(){
+  return `<div class="grid-2" style="margin-bottom:20px;">
+    <div>
+      <h3 style="font-family:var(--font-heading);color:var(--text-muted);margin-bottom:10px;font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;">Razas Puras</h3>
+      <div id="raceGridPure"></div>
+    </div>
+    <div>
+      <h3 style="font-family:var(--font-heading);color:var(--text-muted);margin-bottom:10px;font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;">Razas Hibridas</h3>
+      <div id="raceGridHybrid"></div>
+    </div>
+  </div>
+  <div class="card" style="border-color:var(--accent-primary)">
+    <div class="card-title"><i class="fas fa-dragon"></i> Akuma no Mi</div>
+    <div id="akumaGridContainer"></div>
+  </div>`;
+}
+
+function buildCombateTab(){
+  let catOpts='';
+  for(const[k,v]of Object.entries(D.weapons))catOpts+=`<option value="${k}" ${state.weapon.cat===k?'selected':''}>${v.name}</option>`;
+  let subOpts='';
+  const catD=D.weapons[state.weapon.cat];
+  if(catD)for(const[sn,sd]of Object.entries(catD.subs))for(let t=0;t<5;t++)subOpts+=`<option value="${sn}|${t}" ${state.weapon.sub===sn&&state.weapon.tier===t?'selected':''}>${sn} T${t+1} (nv${sd.tierLevels[t]}+)</option>`;
+  return `<div class="card" style="border-color:var(--accent-primary);margin-bottom:16px;">
+    <div class="card-title"><i class="fas fa-hammer"></i> Configuracion de Arma</div>
+    <div class="grid-2">
+      <div>
+        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;">Categoria</label>
+        <select id="weapCat" onchange="onWeaponCatChange()">${catOpts}</select>
+        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;margin-top:8px;">Arma y Tier</label>
+        <select id="weapTier" onchange="onWeaponDetailChange()">${subOpts}</select>
+      </div>
+      <div>
+        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;">Modo</label>
+        <select id="weapMode" onchange="onWeaponDetailChange()">
+          <option value="normal" ${state.weapon.mode==='normal'?'selected':''}>Normal</option>
+          <option value="dual" ${state.weapon.mode==='dual'?'selected':''}>Arma Dual (x0.5)</option>
+        </select>
+        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;margin-top:8px;">Escudo</label>
+        <select id="weapShield" onchange="onWeaponDetailChange()">
+          <option value="no" ${state.weapon.shield==='no'?'selected':''}>Sin escudo</option>
+          <option value="yes" ${state.weapon.shield==='yes'?'selected':''}>Con escudo (-20 AGI hits)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="weaponStats">
+    <div class="card-title"><i class="fas fa-chart-bar"></i> Estadisticas de Combate</div>
+    <div id="combatStatsBody"></div>
+  </div>
+  <div class="card" style="border-color:rgba(250,204,21,0.35);margin-top:16px;">
+    <div class="card-title" style="color:var(--stat-warn);"><i class="fas fa-fist-raised"></i> Calculadora de Daño Bélico</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div>
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Transformación</div>
+        <select id="calcTransform" onchange="onCombatCalcChange('transformation',this.value)">
+          <option value="humano">Base (Humano)</option>
+          <option value="hibrido">Híbrido</option>
+          <option value="completo">Completo (animal)</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Estilo de Combate</div>
+        <select id="calcStyle" onchange="onCombatCalcChange('style',this.value)">
+          <option value="desarmado">✊ Desarmado (melé)</option>
+          <option value="arma_simple">⚔️ Arma Simple</option>
+          <option value="arma_dual">⚔️⚔️ Armas Duales</option>
+        </select>
+      </div>
+    </div>
+    <div id="combatCalcBody"></div>
+  </div>`;
+}
+
+function buildHakiTab(){
+  return `<div class="grid-3">
+    <div class="card" id="cardBusho">
+      <div class="card-title"><label class="toggle-wrap" style="margin:0;gap:10px;"><input type="checkbox" id="hakiBusho" ${state.haki.busho?'checked':''} onchange="onHakiChange()"><div class="toggle"></div><span>Busoshoku</span></label></div>
+      <div id="bushoStats"></div>
+    </div>
+    <div class="card" id="cardKen">
+      <div class="card-title"><label class="toggle-wrap" style="margin:0;gap:10px;"><input type="checkbox" id="hakiKen" ${state.haki.ken?'checked':''} onchange="onHakiChange()"><div class="toggle"></div><span>Kenbunshoku</span></label></div>
+      <div id="kenStats"></div>
+    </div>
+    <div class="card" id="cardHaos">
+      <div class="card-title"><label class="toggle-wrap" style="margin:0;gap:10px;"><input type="checkbox" id="hakiHaos" ${state.haki.haos?'checked':''} onchange="onHakiChange()"><div class="toggle"></div><span>Haoshoku</span></label></div>
+      <div id="haosStats"></div>
+    </div>
+  </div>`;
+}
+
+function buildMaestriasTab(){
+  const bonusRows=D.masteryBonuses.map(b=>`<tr><td style="color:var(--accent-secondary)">G${b.grade}</td><td style="color:var(--stat-good)">+${b.off} daño</td><td style="color:var(--stat-ene)">+${b.def} mit.</td></tr>`).join('');
+  return `<div class="card">
+    <div class="card-title" style="justify-content:space-between;"><span><i class="fas fa-medal"></i> Maestrias Belicas</span><button class="btn btn-primary" style="padding:4px 10px;font-size:0.65rem;" onclick="addMaestria()"><i class="fas fa-plus"></i> Anadir</button></div>
+    <div id="maestriasPanel"></div>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title"><i class="fas fa-info-circle"></i> Tabla de Maestrias</div>
+    <table class="rpg-table"><thead><tr><th>Grado</th><th>Bono Ofensivo</th><th>Bono Defensivo</th></tr></thead><tbody>${bonusRows}</tbody></table>
+  </div>`;
+}
+
+function buildOficiosTab(){
+  return `<div id="oficiosGrid" class="grid-2"></div>`;
+}
+
+function buildKarmaTab(){
+  return `<input type="text" id="karmaSearch" placeholder="Buscar karma..." style="margin-bottom:14px;" oninput="renderKarmas()">
+  <div class="grid-2">
+    <div>
+      <div style="font-family:var(--font-heading);font-size:0.78rem;color:var(--stat-good);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--stat-good);">Karmas Positivos</div>
+      <div id="karmaListPos"></div>
+    </div>
+    <div>
+      <div style="font-family:var(--font-heading);font-size:0.78rem;color:var(--stat-bad);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--stat-bad);">Karmas Negativos</div>
+      <div id="karmaListNeg"></div>
+    </div>
+  </div>`;
+}
+
+function buildResumenTab(){
+  return `<div id="resumenFullBlock"></div>
+  <div class="bbcode-panel" style="margin-top:16px;">
+    <div class="card-title" style="border:none;padding-bottom:8px;margin-bottom:8px;"><i class="fas fa-code"></i> Exportar a BBCode</div>
+    <div class="bbcode-text" id="bbcodeText">Activa esta pestana para generar el BBCode...</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button class="btn-bbcode" id="bbcodeBtn" onclick="copyBBCode()"><i class="fas fa-copy"></i> Copiar BBCode</button>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// RENDER ENGINE
+// ============================================================
+function renderAll(){
+  const pa=freePA();
+  document.querySelectorAll('#hPA').forEach(el=>{el.textContent=pa;el.style.color=pa<0?'var(--stat-bad)':pa===0?'var(--stat-warn)':'var(--stat-good)';});
+  document.querySelectorAll('#hNivel').forEach(el=>el.textContent=state.level);
+  document.querySelectorAll('#capAtrib').forEach(el=>el.textContent=getLevelCap());
+  document.querySelectorAll('#displayRace').forEach(el=>el.textContent=state.race);
+  renderVitals();
+  renderAttrPanel();
+  renderRaceGrid();
+  renderAkumaGrid();
+  renderCombatStats();
+  renderHakiStats();
+  renderMaestrias();
+  renderOficios();
+  renderKarmas();
+  renderResumen();
+  renderPassiveExtras();
+  renderCombatCalc();
+  document.querySelectorAll('#calcTransform').forEach(el=>el.value=state.combatCalc?.transformation||'humano');
+  document.querySelectorAll('#calcStyle').forEach(el=>el.value=state.combatCalc?.style||'desarmado');
+  setTimeout(drawRadar,20);
+}
+
+function renderAkumaGrid(){
+  const container=document.getElementById('akumaGridContainer');if(!container)return;
+  const akuma=state.akuma.type;
+  container.innerHTML=`<div class="akuma-type-grid">
+    <div class="akuma-type-card ${akuma==='none'?'selected':''}" onclick="onAkumaChange('none')">
+      <div class="akuma-type-icon"><i class="fas fa-times-circle"></i></div>
+      <div class="akuma-type-name">Ninguna</div>
+      <div class="akuma-type-desc">Sin fruta del diablo</div>
+    </div>
+    <div class="akuma-type-card paramecia ${akuma==='paramecia'?'selected':''}" onclick="onAkumaChange('paramecia')">
+      <div class="akuma-type-icon" style="color:var(--stat-good)"><i class="fas fa-hand-sparkles"></i></div>
+      <div class="akuma-type-name">Paramecia</div>
+      <div class="akuma-type-desc">Poderes sobrehumanos variados</div>
+    </div>
+    <div class="akuma-type-card logia ${akuma==='logia'?'selected':''}" onclick="onAkumaChange('logia')">
+      <div class="akuma-type-icon" style="color:var(--stat-ene)"><i class="fas fa-cloud-bolt"></i></div>
+      <div class="akuma-type-name">Logia</div>
+      <div class="akuma-type-desc">Transformacion elemental</div>
+    </div>
+    <div class="akuma-type-card" style="background:rgba(0,0,0,0.1);border-style:dashed;cursor:default;">
+      <div class="akuma-type-icon" style="color:var(--stat-warn)"><i class="fas fa-paw"></i></div>
+      <div class="akuma-type-name">Zoan</div>
+      <div class="akuma-type-desc">Selecciona subtipo abajo</div>
+    </div>
+  </div>
+  <div class="zoan-sub-grid">
+    <div class="akuma-type-card zoan ${akuma==='zoan_normal'?'selected':''}" onclick="onAkumaChange('zoan_normal')">
+      <div class="akuma-type-name">Zoan Normal</div>
+      <div class="akuma-type-desc">Regen: +Nv combate / +Nvx2 fuera</div>
+    </div>
+    <div class="akuma-type-card zoan ${akuma==='zoan_pre'?'selected':''}" onclick="onAkumaChange('zoan_pre')">
+      <div class="akuma-type-name">Zoan Prehistorica</div>
+      <div class="akuma-type-desc">Regen: +Nvx2 combate / +Nvx3 fuera</div>
+    </div>
+    <div class="akuma-type-card zoan ${akuma==='zoan_mito'?'selected':''}" onclick="onAkumaChange('zoan_mito')">
+      <div class="akuma-type-name">Zoan Mitologica</div>
+      <div class="akuma-type-desc">Regen: +Nvx3 combate / +Nvx4 fuera</div>
+    </div>
+  </div>`;
+}
+
+function renderVitals(){
+  const vit=calcVIT(),ene=calcENE(),esp=calcESP(),nv=state.level;
+  const zR=getAkumaRegen();
+  document.querySelectorAll('#barVIT').forEach(el=>el.textContent=vit.toLocaleString());
+  document.querySelectorAll('#barENE').forEach(el=>el.textContent=ene.toLocaleString());
+  document.querySelectorAll('#barESP').forEach(el=>el.textContent=esp.toLocaleString());
+  document.querySelectorAll('#regenVIT').forEach(el=>el.textContent=`Combate: +${zR.c} | Fuera: +${zR.f}`);
+  const eneR=getZoanEneRegen(nv);
+  document.querySelectorAll('#regenENE').forEach(el=>el.textContent=`Combate: +${eneR.c} | Fuera: +${eneR.f}`);
+  document.querySelectorAll('#regenESP').forEach(el=>el.textContent=`Combate: +${(getEff('CH')/6).toFixed(1)} | Fuera: +${(getEff('CH')/4).toFixed(1)}`);
+
+  const um=document.getElementById('umbralesPanel');
+  if(um){
+    const V=getEff('VOL'),b=Math.floor(V/150)+1;
+    const effects=[
+      'Interrumpe acciones de concentración',
+      'Interrumpe concentración y cargas',
+      'Interrumpe TODAS las acciones',
+      'Corta Haki + Desorientación 3 seg.',
+      'Corta transformaciones Akuma'
+    ];
+    let buccBonus=0;
+    if(state.race==='Buccaneer'){
+      buccBonus=150;
+      if(state.level>=10)buccBonus+=300;
+      if(state.level>=25)buccBonus+=500;
+    }
+    um.innerHTML=[1,2,3,4,5].map((u,i)=>`
+      <div class="umbral-row">
+        <div>
+          <span style="color:var(--text-muted)">Umbral ${u}</span>
+          <div style="font-size:0.6rem;color:var(--text-muted);opacity:0.8;margin-top:1px;">${effects[i]}</div>
+        </div>
+        <span style="color:var(--stat-warn);font-weight:bold;">> ${V*(b+i)+buccBonus}${buccBonus>0?` <span style="font-size:0.6rem;color:var(--stat-magic);">(+${buccBonus}🛡️)</span>`:''}</span>
+      </div>`).join('');
+  }
+
+  renderDeathThresholds();
+}
+
+function renderDeathThresholds(){
+  const el=document.getElementById('criticalThresholdsPanel');if(!el)return;
+  const t=calcDeathThresholds();
+  el.innerHTML=`
+    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--stat-vit);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid rgba(251,113,133,0.2);">Vitalidad</div>
+    <div class="umbral-row"><span class="info-key">Inconsciente</span><span style="color:var(--stat-warn);">≤ 0</span></div>
+    <div class="umbral-row"><span class="info-key">Irrecuperable</span><span style="color:var(--stat-bad);">≤ ${t.vitIrrec}</span></div>
+    <div class="umbral-row"><span class="info-key">Muerte${t.isBuccaneer?' <span style="color:var(--stat-magic);font-size:0.6rem;">(Buccaneer)</span>':''}</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.vitDeath}</span></div>
+    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--stat-ene);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(96,165,250,0.2);">Energia</div>
+    <div class="umbral-row"><span class="info-key">Inconsciente</span><span style="color:var(--stat-warn);">≤ 0</span></div>
+    <div class="umbral-row"><span class="info-key">Muerte</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.eneDeath}</span></div>
+    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--stat-esp);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(192,132,252,0.2);">Espiritu</div>
+    <div class="umbral-row"><span class="info-key">Inconsciente</span><span style="color:var(--stat-warn);">< 0</span></div>
+    <div class="umbral-row"><span class="info-key">Muerte</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.espDeath}</span></div>
+    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(255,255,255,0.06);">Golpe Único</div>
+    <div class="umbral-row"><span class="info-key">→ KO (90% VIT)</span><span style="color:var(--stat-warn);">≥ ${t.vitBigKO.toLocaleString()}</span></div>
+    <div class="umbral-row"><span class="info-key">→ Muerte (100%)</span><span style="color:var(--stat-bad);font-weight:bold;">≥ ${t.vitBigDeath.toLocaleString()}</span></div>`;
+}
+
+function renderAttrPanel(){
+  const panel=document.getElementById('attrPanel');if(!panel)return;
+  panel.innerHTML='';
+  const cap=getLevelCap();
+  for(const attr of D.attrs){
+    const meta=D.attrMeta[attr],auto=autoBase(attr),cv=cval(attr),rb=getRaceBonus(attr),km=getKarmaMod(attr);
+    const pe=getPExtra(attr);
+    const total=(auto+cv)+rb+km+pe;
+    const div=document.createElement('div');
+    div.className='attr-card';
+    let extText=(rb+km)!==0||pe!==0?` Ext:${(rb+km+pe)>0?'+':''}${rb+km+pe}`:'';
+    if(pe!==0)extText+=` (✨${pe>0?'+':''}${pe})`;
+    div.innerHTML=`<div class="attr-icon">${meta.emoji}</div>
+      <div class="attr-name" data-tip="${meta.desc}\n\nFórmula: Base(PA) + Raza + Karma + Extras\n= ${auto+cv} + ${rb} + ${km} + ${pe} = ${total}">${attr}</div>
+      <div class="attr-breakdown">
+        <div>Auto: ${auto} | Inv: ${cv}</div>
+        <div>Cap: ${auto+cv}/${cap}${extText}</div>
+      </div>
+      <div class="attr-total">${total}</div>
+      <div class="attr-controls">
+        <button class="attr-btn" onclick="onAttrChange('${attr}',${cv}-1)"><i class="fas fa-minus"></i></button>
+        <input class="attr-input" type="number" value="${cv}" onchange="onAttrChange('${attr}',this.value)">
+        <button class="attr-btn" onclick="onAttrChange('${attr}',${cv}+1)"><i class="fas fa-plus"></i></button>
+      </div>`;
+    panel.appendChild(div);
+  }
+}
+
+function renderRaceGrid(){
+  const pure=document.getElementById('raceGridPure'),hyb=document.getElementById('raceGridHybrid');
+  if(!pure)return;
+  pure.innerHTML='';hyb.innerHTML='';
+  for(const[name,data]of Object.entries(D.races)){
+    const div=document.createElement('div');
+    div.className='list-item '+(state.race===name?'sel-race':'');
+    const tags=Object.entries(data.bonuses).map(([k,v])=>`<span class="stat-tag ${v>0?'pos':'neg'}">${v>0?'+':''}${v} ${k}</span>`).join(' ');
+    div.innerHTML=`<div><div class="list-title">${name}</div><div class="list-desc">${data.special}</div></div><div style="flex-shrink:0;text-align:right;">${tags}</div>`;
+    div.onclick=()=>{state.race=name;renderAll();};
+    (data.type==='pure'?pure:hyb).appendChild(div);
+  }
+}
+
+function renderCombatStats(){
+  const el=document.getElementById('combatStatsBody');if(!el)return;
+  const w=getWeaponStats();
+  const physR=calcPhysRes(),elR=calcElRes();
+  const inv=calcInventorySpaces(),wt=calcWeightCapacity();
+  const REF=getEff('REF'),AGI=getEff('AGI'),DES=getEff('DES'),PRE=getEff('PRE');
+  const CH=getEff('CH'),CA=getEff('CA'),VOL=getEff('VOL'),FUE=getEff('FUE');
+  const move=rnd(AGI/10),jump=rnd((FUE+AGI)/20);
+
+  const speedRows=[
+    {label:'Reacción',attr:'REF',val:REF,color:'var(--stat-warn)',desc:'Velocidad de percepción y respuesta general'},
+    {label:'CaC',attr:'AGI',val:AGI,color:'var(--accent-secondary)',desc:'Ataques cuerpo a cuerpo'},
+    {label:'Arma / Recarga',attr:'DES',val:DES,color:'var(--accent-secondary)',desc:'Ataques con arma y recarga de munición'},
+    {label:'Disparo',attr:'PRE',val:PRE,color:'var(--accent-secondary)',desc:'Ataques a distancia'},
+    ...(state.haki.busho||state.haki.ken||state.haki.haos?[{label:'Manifestar Haki',attr:'CH',val:CH,color:'var(--stat-magic)',desc:'Activar cualquier tipo de Haki'}]:[]),
+    ...(state.akuma.type!=='none'?[{label:'Crear / Transformar Akuma',attr:'CA',val:CA,color:'var(--stat-ene)',desc:'Transformaciones y manifestaciones del Akuma no Mi'}]:[]),
+    ...(state.akuma.type==='logia'?[{label:'Desplazamiento Logia',attr:'(CA+AGI)/2',val:rnd((CA+AGI)/2),color:'var(--stat-ene)',desc:'Velocidad de movimiento en forma elemental'}]:[]),
+    ...(state.haki.haos?[{label:'Onda Haoshoku',attr:'VOL',val:VOL,color:'var(--stat-magic)',desc:'Velocidad de propagación de la onda Haoshoku'}]:[]),
+  ];
+
+  el.innerHTML=`
+  ${w?`
+  <div class="section-divider"><i class="fas fa-fire-alt"></i> Daño y Defensa</div>
+  <div class="grid-2" style="margin-bottom:4px;">
+    <div>
+      <div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
+      <div class="info-row"><span class="info-key">Daño por golpe</span><span class="info-val">${w.dmg}</span></div>
+      <div class="info-row"><span class="info-key">Golpes / turno</span><span class="info-val">${w.hits}</span></div>
+      <div class="info-row" style="background:var(--bad-bg);padding:5px 6px;border-radius:5px;margin-top:3px;"><span class="info-key" style="color:var(--stat-bad);font-weight:bold;">DPT Máximo</span><span class="info-val bad" style="font-size:1.1rem;">${w.dpt.toLocaleString()}</span></div>
+    </div>
+    <div>
+      <div class="info-row"><span class="info-key">Golpe Blanco</span><span class="info-val">${calcGB()}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-99: RES×0.5 | 100-299: 100 fijo | 300-399: 200 | 400+: 300">Mit. Física</span><span class="info-val good">${physR}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-149: RES×0.5 | 150-299: 100 | 300-399: 200 | 400+: 300">Mit. Elemental</span><span class="info-val" style="color:var(--stat-ene)">${elR}</span></div>
+      <div class="info-row"><span class="info-key">Movimiento</span><span class="info-val">${move} m/turno</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Con inercia (2 turnos corriendo): distancia y salto +50%">Salto (inercia)</span><span class="info-val">${jump} m</span></div>
+    </div>
+  </div>
+  `:''}
+
+  <div class="section-divider"><i class="fas fa-bolt"></i> Velocidades de Combate</div>
+  <div style="margin-bottom:12px;">
+    ${speedRows.map(s=>`
+      <div class="speed-row">
+        <span style="color:var(--text-muted);" data-tip="${s.desc}">${s.label} <span style="font-size:0.62rem;opacity:0.6;">(${s.attr})</span></span>
+        <span style="color:${s.color};font-weight:700;font-family:var(--font-mono);">${s.val}</span>
+      </div>`).join('')}
+    <div style="margin-top:8px;padding:8px;background:rgba(0,0,0,0.2);border-radius:var(--radius-sm);border-left:3px solid var(--stat-warn);">
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);line-height:1.6;">
+        <span style="color:var(--stat-warn);font-weight:600;">Tu REF: ${REF}</span> — Reaccionas a velocidades ≤ ${REF}<br>
+        <span style="color:var(--stat-warn);">Ciega parcial:</span> ${REF+1}–${REF+10} (solo ves si miras al origen del ataque)<br>
+        <span style="color:var(--stat-bad);">Ciega grave:</span> ${REF+11}–${REF+20} (solo si cubre >20m y estás a >10m del origen)<br>
+        <span style="color:var(--stat-bad);font-weight:700;">Invisible:</span> ≥ ${REF+21} (recibes irremediablemente)
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><i class="fas fa-eye"></i> Tabla de Reflejos</div>
+  <div style="margin-bottom:12px;">
+    ${D.config.refReactions.map(r=>`
+      <div class="ref-row">
+        <span style="font-family:var(--font-mono);font-size:0.68rem;color:${r.color};font-weight:700;white-space:nowrap;flex-shrink:0;">${r.range}</span>
+        <span style="font-size:0.65rem;color:var(--text-muted);text-align:right;">${r.result}</span>
+      </div>`).join('')}
+    <div style="margin-top:6px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);padding:5px 8px;">
+      La diferencia es: REF propio − Velocidad del ataque recibido
+    </div>
+  </div>
+
+  <div class="section-divider"><i class="fas fa-backpack"></i> Físico e Inventario</div>
+  <div class="grid-2">
+    <div>
+      <div class="info-row"><span class="info-key" data-tip="(FUE / 15) × 3, modificado por karmas">Espacios inv.</span><span class="info-val">${inv}</span></div>
+      <div class="info-row"><span class="info-key">Cap. peso (2 manos)</span><span class="info-val">${wt.toLocaleString()} kg</span></div>
+      <div class="info-row"><span class="info-key">Cap. peso (1 mano)</span><span class="info-val">${rnd(wt/2).toLocaleString()} kg</span></div>
+    </div>
+    <div>
+      <div class="info-row"><span class="info-key">Caída sin daño</span><span class="info-val">${rnd(getEff('RES')/5)+1} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="AGI / 10 = metros por turno">Vel. carrera</span><span class="info-val">${move} m/t</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Con inercia activa: +50%">Vel. inercia</span><span class="info-val">${rnd(move*1.5)} m/t</span></div>
+    </div>
+  </div>`;
+}
+
+function renderHakiStats(){
+  const C=getEff('CH'),I=getEff('INT'),R=getEff('RES'),V=getEff('VOL');
+  const bExp=C*3+R*2,kExp=C*3+I*2,hExp=C*3+V*2;
+  const {base:hBase,medio:hMedio}=D.config.hakiThresholds;
+  const tier=e=>e>=hMedio?`<span style="color:var(--stat-magic)">Medio (≥${hMedio})</span>`:e>=hBase?`<span style="color:var(--stat-good)">Base (≥${hBase})</span>`:`<span style="color:var(--text-muted)">Sin desbloquear</span>`;
+  const cards=[
+    ['cardBusho',state.haki.busho,'var(--stat-ene)','bushoStats',`
+      <div class="info-row"><span class="info-key">Experiencia</span><span class="info-val">${bExp}</span></div>
+      <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(bExp)}</span></div>
+      <div class="info-row"><span class="info-key">Defensa fija</span><span class="info-val good">+${C+R}</span></div>
+      <div class="info-row"><span class="info-key">Daño fijo</span><span class="info-val good">+${rnd((C+R)/2)}</span></div>`],
+    ['cardKen',state.haki.ken,'var(--stat-good)','kenStats',`
+      <div class="info-row"><span class="info-key">Experiencia</span><span class="info-val">${kExp}</span></div>
+      <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(kExp)}</span></div>
+      <div class="info-row"><span class="info-key">Radio base</span><span class="info-val good">${C+I} m</span></div>
+      <div class="info-row"><span class="info-key">Radio medio</span><span class="info-val good">${rnd((C+I)/10)} m</span></div>`],
+    ['cardHaos',state.haki.haos,'var(--stat-magic)','haosStats',`
+      <div class="info-row"><span class="info-key">Experiencia</span><span class="info-val">${hExp}</span></div>
+      <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(hExp)}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Haoshoku Base: 1m por cada 10 pts de atributo">Radio Base</span><span class="info-val good">${rnd((C+V)/10)} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Haoshoku Medio: 1m por cada 20 pts de atributo">Radio Medio</span><span class="info-val good">${rnd((C+V)/20)} m</span></div>
+      <div class="info-row"><span class="info-key">Muerte inst.</span><span class="info-val bad">A ×3 VOL rival</span></div>`]
+  ];
+  cards.forEach(([cId,active,color,sId,content])=>{
+    const card=document.getElementById(cId);
+    if(card){card.style.borderColor=active?color:'var(--panel-border)';card.style.opacity=active?'1':'0.5';}
+    const s=document.getElementById(sId);
+    if(s)s.innerHTML=content;
+  });
+  document.querySelectorAll('#resCH').forEach(el=>el.textContent=getEff('CH'));
+  document.querySelectorAll('#resCA').forEach(el=>el.textContent=getEff('CA'));
+}
+
+function renderMaestrias(){
+  const el=document.getElementById('maestriasPanel');if(!el)return;
+  el.innerHTML='';
+  state.masteries.forEach((m,i)=>{
+    const row=document.createElement('div');
+    row.className='list-item';row.style.cursor='default';
+    row.innerHTML=`<select style="width:200px;background:var(--panel-bg)" onchange="updMaestriaType(${i},this.value)">${D.masteriesList.map(ml=>`<option value="${ml}" ${m.type===ml?'selected':''}>${ml}</option>`).join('')}</select>
+      <div style="display:flex;gap:5px;align-items:center;">${[1,2,3,4,5].map(g=>`<div class="mastery-dot ${m.grade>=g?'filled':''}" onclick="updMaestriaGrade(${i},${g})"></div>`).join('')}</div>
+      <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-secondary)">G${m.grade}</span>
+      <button class="btn btn-danger" style="padding:3px 8px;" onclick="delMaestria(${i})"><i class="fas fa-trash"></i></button>`;
+    el.appendChild(row);
+  });
+}
+
+function renderOficios(){
+  const grid=document.getElementById('oficiosGrid');if(!grid)return;
+  grid.innerHTML='';
+  for(const[key,d]of Object.entries(D.oficios)){
+    const s=state.oficios[key]||{level:0,spec1:0,spec2:0,super:false};
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.borderColor=s.level>0?'var(--accent-primary)':'var(--panel-border)';
+    card.innerHTML=`<div class="card-title" style="justify-content:space-between;cursor:pointer;" onclick="onOficioToggle('${key}')">
+      <span>${d.name}${s.level>0?` <span style="color:var(--stat-good);font-size:0.7rem;">(Nv${s.level})</span>`:''}</span>
+      <i class="fas ${s.level>0?'fa-check-circle':'fa-circle'}" style="color:${s.level>0?'var(--stat-good)':'var(--panel-border)'}"></i>
+    </div>
+    ${s.level>0?`<div>
+      <div class="info-row" style="margin-bottom:8px;"><span>Nivel (1-3)</span><input type="number" class="attr-input" style="width:50px;" value="${s.level}" min="1" max="3" onchange="onOficioLevel('${key}',this.value)"></div>
+      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">${d.specs[0]}</span><input type="range" min="0" max="3" value="${s.spec1}" onchange="onOficioSpec('${key}',1,this.value)" style="width:80px;"></div>
+      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">${d.specs[1]}</span><input type="range" min="0" max="3" value="${s.spec2}" onchange="onOficioSpec('${key}',2,this.value)" style="width:80px;"></div>
+      <label class="toggle-wrap" style="margin-top:8px;"><input type="checkbox" ${s.super?'checked':''} onchange="onOficioSuper('${key}',this.checked)"><div class="toggle"></div><span class="toggle-label" style="color:var(--stat-magic)">${d.super}</span></label>
+    </div>`:''}`;
+    grid.appendChild(card);
+  }
+}
+
+function renderKarmas(){
+  const pos=document.getElementById('karmaListPos'),neg=document.getElementById('karmaListNeg');
+  if(!pos)return;
+  const search=(document.getElementById('karmaSearch')?.value||'').toLowerCase();
+  pos.innerHTML='';neg.innerHTML='';
+  for(const k of D.karmasPos){
+    if(search&&!k.name.toLowerCase().includes(search)&&!k.effect.toLowerCase().includes(search))continue;
+    const sel=state.selectedKarmas[k.id];
+    const d=document.createElement('div');
+    d.className='list-item '+(sel?'sel-pos':'');
+    d.innerHTML=`<div><div class="list-title">${k.name}</div><div class="list-desc">${k.effect}</div></div><div style="font-family:var(--font-mono);font-weight:bold;color:var(--stat-good);flex-shrink:0;margin-left:8px;">+${k.val}</div>`;
+    d.onclick=()=>onKarmaToggle(k.id);
+    pos.appendChild(d);
+  }
+  for(const k of D.karmasNeg){
+    if(search&&!k.name.toLowerCase().includes(search)&&!k.effect.toLowerCase().includes(search))continue;
+    const sel=state.selectedKarmas[k.id];
+    const d=document.createElement('div');
+    d.className='list-item '+(sel?'sel-neg':'');
+    d.innerHTML=`<div><div class="list-title">${k.name}</div><div class="list-desc">${k.effect}</div></div><div style="font-family:var(--font-mono);font-weight:bold;color:var(--stat-bad);flex-shrink:0;margin-left:8px;">${k.val}</div>`;
+    d.onclick=()=>onKarmaToggle(k.id);
+    neg.appendChild(d);
+  }
+}
+
+function renderResumen(){
+  const w=getWeaponStats();
+  const bal=getKarmaBalance();
+  const activeKarmasPos=[...D.karmasPos].filter(k=>state.selectedKarmas[k.id]);
+  const activeKarmasNeg=[...D.karmasNeg].filter(k=>state.selectedKarmas[k.id]);
+  const hakiBadges=[
+    state.haki.busho?'<span class="badge blue">Busoshoku</span>':'',
+    state.haki.ken?'<span class="badge green">Kenbunshoku</span>':'',
+    state.haki.haos?'<span class="badge purple">Haoshoku</span>':''
+  ].filter(Boolean).join(' ');
+  const mastBadges=state.masteries.map(m=>`<span class="badge gold">${m.type} G${m.grade}</span>`).join(' ');
+  const ofBadges=Object.entries(state.oficios).filter(([k,o])=>o.level>0).map(([k,o])=>`<span class="badge gold">${D.oficios[k].name} Nv${o.level}</span>`).join(' ');
+  const t=calcDeathThresholds();
+  const physR=calcPhysRes(),elR=calcElRes();
+  const inv=calcInventorySpaces(),wt=calcWeightCapacity();
+
+  const resRPG=`<div style="display:flex;flex-direction:column;gap:0;">
+    <div class="info-row" style="padding:10px 0;"><span class="info-key" style="font-size:0.9rem;">Nombre</span><span class="info-val" style="font-size:1.1rem;color:var(--accent-secondary)">${state.name||'Sin Nombre'}</span></div>
+    <div class="info-row"><span class="info-key">Raza</span><span class="info-val">${state.race}</span></div>
+    <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${state.level}</span></div>
+    <div class="info-row"><span class="info-key">Akuma no Mi</span><span class="info-val">${getAkumaLabel()}</span></div>
+    <div class="info-row"><span class="info-key">Karma Balance</span><span class="info-val ${bal>0?'good':bal<0?'bad':'warn'}">${bal>0?'+':''}${bal}</span></div>
+    <div style="height:1px;background:var(--panel-border);margin:6px 0;"></div>
+    <div class="info-row"><span class="info-key" style="color:var(--stat-vit)">VIT Max</span><span class="info-val" style="color:var(--stat-vit);">${calcVIT().toLocaleString()}</span></div>
+    <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">ENE Max</span><span class="info-val" style="color:var(--stat-ene);">${calcENE().toLocaleString()}</span></div>
+    <div class="info-row"><span class="info-key" style="color:var(--stat-esp)">ESP Max</span><span class="info-val" style="color:var(--stat-esp);">${calcESP().toLocaleString()}</span></div>
+    <div style="height:1px;background:var(--panel-border);margin:6px 0;"></div>
+    ${w?`<div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
+    <div class="info-row"><span class="info-key">DPT Max</span><span class="info-val bad">${w.dpt.toLocaleString()}</span></div>`:''}
+    <div class="info-row"><span class="info-key">Mit. Física / Elem.</span><span class="info-val">${physR} / ${elR}</span></div>
+    <div class="info-row"><span class="info-key">Inventario</span><span class="info-val">${inv} espacios</span></div>
+    <div class="info-row"><span class="info-key">Peso max.</span><span class="info-val">${wt.toLocaleString()} kg</span></div>
+    ${hakiBadges?`<div style="margin-top:6px;">${hakiBadges}</div>`:''}
+    ${mastBadges?`<div style="margin-top:4px;">${mastBadges}</div>`:''}
+    ${ofBadges?`<div style="margin-top:4px;">${ofBadges}</div>`:''}
+  </div>`;
+
+  const resClassic=`
+  <div style="background:linear-gradient(135deg,var(--panel-bg),rgba(0,0,0,0.3));border:1px solid var(--accent-primary);border-radius:var(--radius-lg);padding:24px;text-align:center;margin-bottom:20px;">
+    <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--accent-primary);text-shadow:0 0 20px var(--accent-glow);margin-bottom:4px;">${state.name||'Sin Nombre'}</div>
+    <div style="font-family:var(--font-heading);color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:3px;">${state.race} &nbsp;|&nbsp; Nivel ${state.level} &nbsp;|&nbsp; ${getAkumaLabel()}</div>
+    <div style="margin-top:12px;"><span class="badge ${bal>0?'green':bal<0?'red':'gold'}" style="font-size:0.75rem;padding:5px 14px;">Karma: ${bal>0?'+':''}${bal}</span></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+    <div class="stat-highlight" style="border-color:rgba(251,113,133,0.4);"><div class="stat-highlight-val" style="color:var(--stat-vit);">${calcVIT().toLocaleString()}</div><div class="stat-highlight-lbl">Vitalidad</div></div>
+    <div class="stat-highlight" style="border-color:rgba(96,165,250,0.4);"><div class="stat-highlight-val" style="color:var(--stat-ene);">${calcENE().toLocaleString()}</div><div class="stat-highlight-lbl">Energia</div></div>
+    <div class="stat-highlight" style="border-color:rgba(192,132,252,0.4);"><div class="stat-highlight-val" style="color:var(--stat-esp);">${calcESP().toLocaleString()}</div><div class="stat-highlight-lbl">Espiritu</div></div>
+  </div>
+  <div class="resumen-grid">
+    <div class="resumen-section">
+      <div class="resumen-section-title"><i class="fas fa-fist-raised"></i> Atributos</div>
+      ${D.attrs.slice(0,8).map(a=>`<div class="info-row"><span class="info-key">${D.attrMeta[a].label}</span><span class="info-val">${getEff(a)}</span></div>`).join('')}
+      <div class="info-row"><span class="info-key" style="color:var(--stat-magic)">Control Haki</span><span class="info-val" style="color:var(--stat-magic)">${getEff('CH')}</span></div>
+      <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">Control Akuma</span><span class="info-val" style="color:var(--stat-ene)">${getEff('CA')}</span></div>
+    </div>
+    <div class="resumen-section">
+      <div class="resumen-section-title"><i class="fas fa-sword"></i> Combate</div>
+      ${w?`<div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
+      <div class="info-row"><span class="info-key">Daño por golpe</span><span class="info-val">${w.dmg}</span></div>
+      <div class="info-row"><span class="info-key">Golpes/turno</span><span class="info-val">${w.hits}</span></div>
+      <div class="info-row" style="background:var(--bad-bg);padding:5px 8px;border-radius:4px;"><span class="info-key" style="color:var(--stat-bad);font-weight:700;">DPT Máximo</span><span class="info-val bad" style="font-size:1.1rem;">${w.dpt.toLocaleString()}</span></div>`:''}
+      <div class="info-row"><span class="info-key">Golpe Blanco</span><span class="info-val">${calcGB()}</span></div>
+      <div class="info-row"><span class="info-key">Mit. Física</span><span class="info-val good">${physR}</span></div>
+      <div class="info-row"><span class="info-key">Mit. Elemental</span><span class="info-val" style="color:var(--stat-ene)">${elR}</span></div>
+      <div class="info-row"><span class="info-key">Movimiento</span><span class="info-val">${rnd(getEff('AGI')/10)} m/turno</span></div>
+    </div>
+  </div>
+  <div class="resumen-grid" style="margin-bottom:16px;">
+    <div class="resumen-section">
+      <div class="resumen-section-title"><i class="fas fa-bolt"></i> Velocidades</div>
+      <div class="info-row"><span class="info-key">Reacción (REF)</span><span class="info-val" style="color:var(--stat-warn)">${getEff('REF')}</span></div>
+      <div class="info-row"><span class="info-key">CaC (AGI)</span><span class="info-val">${getEff('AGI')}</span></div>
+      <div class="info-row"><span class="info-key">Arma (DES)</span><span class="info-val">${getEff('DES')}</span></div>
+      <div class="info-row"><span class="info-key">Disparo (PRE)</span><span class="info-val">${getEff('PRE')}</span></div>
+    </div>
+    <div class="resumen-section">
+      <div class="resumen-section-title"><i class="fas fa-skull-crossbones"></i> Límites Críticos</div>
+      <div class="info-row"><span class="info-key" style="color:var(--stat-vit)">VIT Muerte${t.isBuccaneer?' (Bucc.)':''}</span><span class="info-val bad">${t.vitDeath}</span></div>
+      <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">ENE Muerte</span><span class="info-val bad">${t.eneDeath}</span></div>
+      <div class="info-row"><span class="info-key" style="color:var(--stat-esp)">ESP Muerte</span><span class="info-val bad">${t.espDeath}</span></div>
+      <div class="info-row"><span class="info-key">Golpe único KO</span><span class="info-val warn">≥ ${t.vitBigKO.toLocaleString()}</span></div>
+      <div class="info-row"><span class="info-key">Inventario</span><span class="info-val">${inv} esp. / ${wt.toLocaleString()} kg</span></div>
+    </div>
+  </div>
+  ${hakiBadges||mastBadges||ofBadges?`
+  <div class="resumen-section" style="margin-bottom:16px;">
+    <div class="resumen-section-title"><i class="fas fa-star"></i> Habilidades</div>
+    ${hakiBadges?`<div style="margin-bottom:8px;"><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:var(--font-heading);">Haki</div>${hakiBadges}</div>`:''}
+    ${mastBadges?`<div style="margin-bottom:8px;"><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:var(--font-heading);">Maestrias</div>${mastBadges}</div>`:''}
+    ${ofBadges?`<div><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:var(--font-heading);">Oficios</div>${ofBadges}</div>`:''}
+  </div>`:''}
+  ${activeKarmasPos.length||activeKarmasNeg.length?`
+  <div class="resumen-grid">
+    ${activeKarmasPos.length?`<div class="resumen-section" style="border-color:rgba(74,222,128,0.3);">
+      <div class="resumen-section-title" style="color:var(--stat-good);">Karmas Positivos</div>
+      ${activeKarmasPos.map(k=>`<span class="badge green">${k.name} +${k.val}</span>`).join('')}
+    </div>`:''}
+    ${activeKarmasNeg.length?`<div class="resumen-section" style="border-color:rgba(251,113,133,0.3);">
+      <div class="resumen-section-title" style="color:var(--stat-bad);">Karmas Negativos</div>
+      ${activeKarmasNeg.map(k=>`<span class="badge red">${k.name} ${k.val}</span>`).join('')}
+    </div>`:''}
+  </div>`:''}`;
+
+  document.querySelectorAll('#resumenBody').forEach(el=>el.innerHTML=resRPG);
+  document.querySelectorAll('#resumenFullBlock').forEach(el=>el.innerHTML=resClassic);
+  generateBBCode();
+}
+
+function generateBBCode(){
+  const w=getWeaponStats();
+  const bal=getKarmaBalance();
+  const hakiList=[state.haki.busho&&'Busoshoku',state.haki.ken&&'Kenbunshoku',state.haki.haos&&'Haoshoku'].filter(Boolean).join(', ')||'Ninguno';
+  const mastList=state.masteries.map(m=>`${m.type} (G${m.grade})`).join(', ')||'Ninguna';
+  const ofList=Object.entries(state.oficios).filter(([k,o])=>o.level>0).map(([k,o])=>`${D.oficios[k].name} Nv${o.level}`).join(', ')||'Ninguno';
+  const karmaPosL=[...D.karmasPos].filter(k=>state.selectedKarmas[k.id]).map(k=>k.name).join(', ')||'Ninguno';
+  const karmaNegL=[...D.karmasNeg].filter(k=>state.selectedKarmas[k.id]).map(k=>k.name).join(', ')||'Ninguno';
+  const attrsLine=D.attrs.slice(0,8).map(a=>`${a}:${getEff(a)}`).join(' | ');
+  const physR=calcPhysRes(),elR=calcElRes(),inv=calcInventorySpaces(),wt=calcWeightCapacity();
+  const t=calcDeathThresholds();
+
+  // ── NUEVO: BBCode de técnicas con formato completo ──
+  const tecLines=(state.tecnicas||[]).map(tec=>{
+    const{total}=calcTecnicaDmg(tec);
+    const compStr=tec.componentes.map(c=>`${c.valorBase?c.valorBase+'+':''}${c.atributo}×${c.multiplicador}`).join('+');
+    return `  · ${tec.nombre} [R${tec.rango}|${tec.tipo}] — ${tec.estiloCombate} — `
+          +`Daño: ${total.toLocaleString()} (${compStr}${tec.addGolpeBlanco?'+GB':''})`
+          +`${tec.costeENE>0?' ENE:-'+tec.costeENE:''}${tec.costeESP>0?' ESP:-'+tec.costeESP:''}`
+          +`${tec.tr>0?' TR:'+tec.tr:''}${tec.tipoDano?' ['+tec.tipoDano+']':''}`
+          +`${tec.efectos?' Efectos:'+tec.efectos:''}`;
+  }).join('\n');
+
+  const bb=`[center][b][size=18]${state.name||'Sin Nombre'}[/size][/b]
+[color=gray]${state.race} -- Nivel ${state.level} -- Akuma: ${getAkumaLabel()}[/color][/center]
+
+[b]--- ATRIBUTOS ---[/b]
+${attrsLine}
+CH:${getEff('CH')} | CA:${getEff('CA')}
+
+[b]--- VITALES ---[/b]
+[color=red][b]VIT:[/b][/color] ${calcVIT().toLocaleString()}
+[color=lightblue][b]ENE:[/b][/color] ${calcENE().toLocaleString()}
+[color=violet][b]ESP:[/b][/color] ${calcESP().toLocaleString()}
+
+[b]--- COMBATE ---[/b]
+${w?`[b]Arma:[/b] ${w.name} T${w.tier}
+[b]Daño:[/b] ${w.dmg}  |  [b]Hits/turno:[/b] ${w.hits}
+[color=red][b]DPT Máximo:[/b] ${w.dpt.toLocaleString()}[/color]`:'[b]Arma:[/b] Sin configurar'}
+[b]Golpe Blanco:[/b] ${calcGB()}
+[b]Mit. Física:[/b] ${physR}  |  [b]Mit. Elemental:[/b] ${elR}
+[b]Movimiento:[/b] ${rnd(getEff('AGI')/10)} m/turno  |  [b]Salto:[/b] ${rnd((getEff('FUE')+getEff('AGI'))/20)} m
+
+[b]--- VELOCIDADES ---[/b]
+[b]Reacción (REF):[/b] ${getEff('REF')}  |  [b]CaC (AGI):[/b] ${getEff('AGI')}
+[b]Arma (DES):[/b] ${getEff('DES')}  |  [b]Disparo (PRE):[/b] ${getEff('PRE')}
+
+[b]--- LÍMITES CRÍTICOS ---[/b]
+[b]VIT Muerte:[/b] ≤ ${t.vitDeath}${t.isBuccaneer?' (Buccaneer x4)':''}  |  [b]ENE Muerte:[/b] ≤ ${t.eneDeath}  |  [b]ESP Muerte:[/b] ≤ ${t.espDeath}
+
+[b]--- FÍSICO ---[/b]
+[b]Inventario:[/b] ${inv} espacios  |  [b]Peso max.:[/b] ${wt.toLocaleString()} kg
+
+[b]--- HAKI ---[/b]
+[b]Haki activo:[/b] ${hakiList}
+
+[b]--- TÉCNICAS ---[/b]
+${tecLines}
+
+[b]--- ESPECIALIDADES ---[/b]
+[b]Maestrias:[/b] ${mastList}
+[b]Oficios:[/b] ${ofList}
+
+[b]--- KARMAS ---[/b]
+[b]Balance:[/b] ${bal>0?'+':''}${bal}
+[color=green][b]Positivos:[/b][/color] ${karmaPosL}
+[color=red][b]Negativos:[/b][/color] ${karmaNegL}`;
+  document.querySelectorAll('#bbcodeText').forEach(el=>el.textContent=bb);
+}
+
+function copyBBCode(){
+  const text=document.getElementById('bbcodeText')?.textContent||'';
+  navigator.clipboard.writeText(text).then(()=>{
+    document.querySelectorAll('#bbcodeBtn').forEach(btn=>{btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i> Copiado!';});
+    setTimeout(()=>{document.querySelectorAll('#bbcodeBtn').forEach(btn=>{btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i> Copiar BBCode';});},2000);
+});
+}
+// ============================================================
+// RADAR
+// ============================================================
+function drawRadar(){
+  const canvas=document.getElementById('statRadar');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const cx=canvas.width/2,cy=canvas.height/2,radius=Math.min(cx,cy)-22;
+  const vals=D.radarAttrs.map(a=>getEff(a));
+  const maxVal=Math.max(getLevelCap(),...vals);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const rs=getComputedStyle(document.documentElement);
+  const cBorder=rs.getPropertyValue('--panel-border-bright').trim();
+  const cText=rs.getPropertyValue('--text-bright').trim();
+  const cAccent=rs.getPropertyValue('--accent-primary').trim();
+  const cAlpha=rs.getPropertyValue('--accent-alpha').trim();
+  const N=D.radarAttrs.length;
+  
+  ctx.strokeStyle=cBorder;ctx.lineWidth=1;
+  for(let lv=1;lv<=4;lv++){
+    ctx.beginPath();
+    for(let i=0;i<N;i++){
+      const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*(lv/4);
+      if(i===0)ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+      else ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+    }
+    ctx.closePath();ctx.stroke();
+  }
+  
+  ctx.fillStyle=cText;ctx.font='bold 9px "JetBrains Mono"';ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let i=0;i<N;i++){
+    const a=(Math.PI*2/N)*i-Math.PI/2;
+    ctx.strokeStyle=cBorder;ctx.beginPath();
+    ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*radius,cy+Math.sin(a)*radius);ctx.stroke();
+    ctx.fillText(D.radarAttrs[i],cx+Math.cos(a)*(radius+14),cy+Math.sin(a)*(radius+14));
+  }
+  
+  ctx.beginPath();ctx.strokeStyle=cAccent;ctx.lineWidth=2;ctx.fillStyle=cAlpha;
+  for(let i=0;i<N;i++){
+    const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*Math.min(vals[i]/maxVal,1);
+    if(i===0)ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+    else ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+  }
+  ctx.closePath();ctx.fill();ctx.stroke();
+  
+  ctx.fillStyle=cAccent;
+  for(let i=0;i<N;i++){
+    const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*Math.min(vals[i]/maxVal,1);
+    ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,3,0,Math.PI*2);ctx.fill();
+  }
+}
+// ============================================================
+// TABS / THEME / IO
+// ============================================================
+function switchTab(id,btn){
+document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+const el=document.getElementById('tab-'+id);
+if(el)el.classList.add('active');
+if(btn)btn.classList.add('active');
+if(id==='resumen')renderResumen();
+setTimeout(drawRadar,50);
+}
+function toggleTheme(){
+const html=document.documentElement;
+const next=html.getAttribute('data-theme')==='rosa'?'azul':'rosa';
+html.setAttribute('data-theme',next);
+setTimeout(drawRadar,100);
+}
+let ioMode='export';
+function openModal(mode){
+ioMode=mode;
+document.getElementById('ioModal').classList.add('open');
+const ta=document.getElementById('ioDataText');
+const title=document.getElementById('ioModalTitle');
+if(mode==='export'){
+title.innerHTML='<i class="fas fa-file-export"></i> Exportar Personaje';
+const s={...state,name:document.getElementById('charName')?.value||state.name};
+ta.value=JSON.stringify(s,null,2);ta.readOnly=true;
+document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-copy"></i> Copiar';
+}else{
+title.innerHTML='<i class="fas fa-file-import"></i> Importar Personaje';
+ta.value='';ta.readOnly=false;ta.placeholder='Pega el JSON exportado...';
+document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-check"></i> Cargar';
+}
+}
+function closeModal(){document.getElementById('ioModal').classList.remove('open');}
+
+function executeIO(){
+if(ioMode==='export'){
+  navigator.clipboard.writeText(document.getElementById('ioDataText').value);
+  alert('JSON copiado al portapapeles!');
+}else{
+  try{
+    const p=JSON.parse(document.getElementById('ioDataText').value);
+    if(!p.passiveExtras)p.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+    if(!p.combatCalc)p.combatCalc={transformation:'humano',style:'desarmado'};
+    if(!p.zoanBonuses)p.zoanBonuses={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+
+    // ── Migración de técnicas al nuevo formato ─────────────────────
+    if(!p.tecnicas||!Array.isArray(p.tecnicas)||!p.tecnicas.length){
+      p.tecnicas=[{
+        id:1,nombre:'Técnica 1',rango:1,tipo:'normal',
+        estiloCombate:'desarmado',tipoDano:'contundente',
+        componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
+        addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
+      }];
+    }else{
+      // Normalizar técnicas antiguas que solo tenían el formato simple
+      p.tecnicas=p.tecnicas.map(t=>{
+        if(!t.componentes){
+          // Formato viejo con campo 'atributo' directo
+          return{
+            id:t.id||1,
+            nombre:t.nombre||'Técnica',
+            rango:t.rango||1,
+            tipo:t.tipo||'normal',
+            estiloCombate:t.estiloCombate||(t.addArma?'arma_simple':'desarmado'),
+            tipoDano:t.tipoDano||'contundente',
+            componentes:[{atributo:t.atributo||'FUE',multiplicador:t.multiplicador||1,valorBase:t.valorBase||0}],
+            addGolpeBlanco:t.addArma||false,
+            costeENE:t.costeENE||0,
+            costeESP:t.costeESP||0,
+            tr:t.tr||0,
+            efectos:t.efectos||'',
+            notas:t.notas||''
+          };
+        }
+        // Formato nuevo: asegurar campos que puedan faltar
+        return{
+          costeENE:0,costeESP:0,tr:0,efectos:'',notas:'',rango:1,
+          tipo:'normal',estiloCombate:'desarmado',tipoDano:'contundente',
+          ...t
+        };
+      });
+    }
+    // ── Fin migración ──────────────────────────────────────────────
+
+    if(p.tecnica&&!p.tecnicas){
+      p.tecnicas=[{
+        id:1,nombre:p.tecnica.nombre||'Técnica 1',rango:1,tipo:'normal',
+        estiloCombate:'desarmado',tipoDano:'contundente',
+        componentes:[{atributo:'FUE',multiplicador:p.tecnica.multiplicador||1,valorBase:0}],
+        addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
+      }];
+      delete p.tecnica;
+    }
+    Object.assign(state,p);closeModal();buildLayout();renderAll();
+  }catch(e){alert('JSON invalido.');}
+}
+}
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  try {
+    const url = 'https://cdn.jsdelivr.net/gh/cuentapararol12-beep/nakama@abc983231bf4d2a24c1b84f441f9af1dae104b83/Data.json';
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} (Revisa si el repo es privado o si la URL es correcta)`);
+    }
+    
+    D = await response.json();
+    buildLayout();
+    renderAll();
+    
+  } catch (error) {
+    console.error('Error detallado:', error);
+    document.getElementById('layoutWrapper').innerHTML = `
+      <div style="text-align:center; margin-top:50px; padding: 20px;">
+        <h3 style="color:var(--stat-bad); margin-bottom: 10px;">Error al cargar el Data.json</h3>
+        <p style="color:var(--text-muted); font-family:var(--font-mono);">${error.message}</p>
+        <p style="color:var(--stat-warn); font-size: 0.8rem; margin-top: 15px;">Pulsa F12 y mira la pestaña "Consola" para ver el error exacto (posible error de comas en el JSON).</p>
+      </div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
