@@ -103,34 +103,15 @@ body > * {position:relative;z-index:1;}
   font-family:var(--font-body); font-size:0.72rem; white-space:pre-wrap;
   width:max-content; max-width:280px; z-index:9999; pointer-events:none; text-align:center;
 }
-.card{
-  background:var(--panel-bg); border:1px solid var(--panel-border);
-  border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm);
-  backdrop-filter:blur(10px); transition:var(--transition);
-}
-.card-title{
-  font-family:var(--font-heading); font-size:0.85rem; font-weight:700;
-  color:var(--accent-secondary); letter-spacing:1px; text-transform:uppercase;
-  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--panel-border);
-  display:flex; align-items:center; gap:8px;
-}
-.btn{
-  background:transparent; border:1px solid var(--panel-border-bright);
-  color:var(--text-main); font-family:var(--font-heading); font-size:0.72rem; font-weight:600;
-  padding:8px 14px; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition);
-  display:inline-flex; align-items:center; gap:6px;
-  text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap;
-}
+.card{background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);backdrop-filter:blur(10px);transition:var(--transition);}
+.card-title{font-family:var(--font-heading);font-size:0.85rem;font-weight:700;color:var(--accent-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--panel-border);display:flex;align-items:center;gap:8px;}
+.btn{background:transparent;border:1px solid var(--panel-border-bright);color:var(--text-main);font-family:var(--font-heading);font-size:0.72rem;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
 .btn:hover{background:rgba(255,255,255,0.05);color:var(--text-bright);}
 .btn-primary{border-color:var(--accent-primary);color:var(--accent-primary);background:var(--accent-alpha);}
 .btn-primary:hover{background:var(--accent-primary);color:#fff;box-shadow:0 0 15px var(--accent-glow);}
 .btn-danger{border-color:var(--stat-bad);color:var(--stat-bad);}
 .btn-danger:hover{background:var(--stat-bad);color:#fff;}
-input[type="text"],input[type="number"],select{
-  background:rgba(0,0,0,0.25); border:1px solid var(--panel-border);
-  color:var(--text-bright); font-family:var(--font-mono); font-size:0.85rem;
-  padding:8px 12px; border-radius:var(--radius-sm); outline:none; width:100%; transition:var(--transition);
-}
+input[type="text"],input[type="number"],select{background:rgba(0,0,0,0.25);border:1px solid var(--panel-border);color:var(--text-bright);font-family:var(--font-mono);font-size:0.85rem;padding:8px 12px;border-radius:var(--radius-sm);outline:none;width:100%;transition:var(--transition);}
 input:focus,select:focus{border-color:var(--accent-primary);box-shadow:0 0 10px var(--accent-glow);}
 .toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;margin:6px 0;}
 .toggle-wrap input{display:none;}
@@ -167,13 +148,7 @@ input:focus,select:focus{border-color:var(--accent-primary);box-shadow:0 0 10px 
 .stat-tag.neg{background:rgba(251,113,133,0.1);color:var(--stat-bad);border:1px solid rgba(251,113,133,0.3);}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
-/* HEADER */
-header{
-  background:var(--panel-bg);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--panel-border);
-  padding:0 24px; display:flex; justify-content:space-between; align-items:center;
-  height:64px; position:sticky; top:0; z-index:200; box-shadow:var(--shadow-lg);
-}
+header{background:var(--panel-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--panel-border);padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:64px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow-lg);}
 .logo{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--accent-primary);letter-spacing:2px;text-shadow:0 0 20px var(--accent-glow);}
 .logo em{color:var(--accent-secondary);font-style:normal;}
 .header-center{display:flex;align-items:center;gap:8px;}
@@ -183,53 +158,22 @@ header{
 .layout-pill button.active{background:var(--accent-primary);color:#fff;box-shadow:0 0 12px var(--accent-glow);}
 .theme-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid var(--panel-border-bright);display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--transition);}
 .theme-dot:hover{border-color:var(--accent-primary);transform:scale(1.15);}
-.rpg-layout{
-  display:grid; grid-template-columns:300px 1fr 340px; gap:16px;
-  padding:16px; max-width:1700px; margin:0 auto;
-  align-items: start;
-}
-.col-left,.col-right{
-  position:sticky; top:80px;
-  max-height:calc(100vh - 100px);
-  overflow-y:auto; padding-right:4px;
-}
-.col-center{
-  display:flex; flex-direction:column; gap:14px; padding-right:4px;
-}
+.rpg-layout{display:grid;grid-template-columns:300px 1fr 340px;gap:16px;padding:16px;max-width:1700px;margin:0 auto;align-items:start;}
+.col-left,.col-right{position:sticky;top:80px;max-height:calc(100vh - 100px);overflow-y:auto;padding-right:4px;}
+.col-center{display:flex;flex-direction:column;gap:14px;padding-right:4px;}
 .classic-layout{max-width:1340px;margin:0 auto;padding:16px 20px 80px;}
-.nav-tabs{
-  display:flex; gap:4px; border-bottom:2px solid var(--panel-border);
-  padding-bottom:8px; margin-bottom:14px; overflow-x:auto; scrollbar-width:none;
-  position:sticky; top:0; z-index:10;
-  background:var(--panel-bg); backdrop-filter:blur(8px);
-  border-radius:var(--radius-sm) var(--radius-sm) 0 0;
-  padding:8px 8px 8px 8px; margin-bottom:0;
-}
+.nav-tabs{display:flex;gap:4px;border-bottom:2px solid var(--panel-border);padding-bottom:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:10;background:var(--panel-bg);backdrop-filter:blur(8px);border-radius:var(--radius-sm) var(--radius-sm) 0 0;padding:8px 8px 8px 8px;margin-bottom:0;}
 .nav-tabs::-webkit-scrollbar{display:none;}
-.nav-tab{
-  background:transparent; border:none; color:var(--text-muted);
-  font-family:var(--font-heading); font-size:0.68rem; font-weight:700;
-  letter-spacing:0.5px; text-transform:uppercase;
-  padding:8px 12px; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition);
-  white-space:nowrap; flex-shrink:0;
-}
+.nav-tab{background:transparent;border:none;color:var(--text-muted);font-family:var(--font-heading);font-size:0.68rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:8px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);white-space:nowrap;flex-shrink:0;}
 .nav-tab:hover{background:var(--panel-bg-hover);color:var(--text-bright);}
 .nav-tab.active{background:var(--accent-alpha);color:var(--accent-primary);border:1px solid var(--accent-primary);box-shadow:inset 0 0 10px var(--accent-glow);}
 .tab-content{display:none;animation:fadeIn 0.3s ease;padding-top:14px;}
 .tab-content.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.tabs-wrapper{
-  background:var(--panel-bg); border:1px solid var(--panel-border);
-  border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm);
-}
+.tabs-wrapper{background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);}
 .tabs-body{padding:0 16px 16px;}
 .attr-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
-.attr-card{
-  background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);
-  border-radius:var(--radius-sm);padding:12px 8px;
-  display:flex;flex-direction:column;align-items:center;
-  transition:var(--transition);text-align:center;gap:4px;
-}
+.attr-card{background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);border-radius:var(--radius-sm);padding:12px 8px;display:flex;flex-direction:column;align-items:center;transition:var(--transition);text-align:center;gap:4px;}
 .attr-card:hover{border-color:var(--accent-primary);background:rgba(0,0,0,0.35);transform:translateY(-2px);}
 .attr-icon{font-size:1.5rem;color:var(--accent-secondary);width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
 .attr-name{font-family:var(--font-heading);color:var(--text-bright);font-weight:700;font-size:0.82rem;letter-spacing:1px;}
@@ -239,12 +183,7 @@ header{
 .attr-btn{width:26px;height:26px;border-radius:5px;border:1px solid var(--panel-border-bright);background:var(--panel-bg);color:var(--text-main);font-size:0.85rem;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;}
 .attr-btn:hover{background:var(--accent-primary);color:#fff;border-color:var(--accent-primary);}
 .attr-input{width:38px;text-align:center;padding:3px;font-size:0.85rem;border-color:var(--panel-border-bright);}
-.identity-input{
-  font-family:var(--font-display) !important;font-size:1.4rem !important;text-align:center;
-  border:none !important;border-bottom:2px solid var(--accent-primary) !important;
-  background:transparent !important;color:var(--accent-primary) !important;
-  padding:4px !important;border-radius:0 !important;margin-bottom:10px;font-weight:700;
-}
+.identity-input{font-family:var(--font-display) !important;font-size:1.4rem !important;text-align:center;border:none !important;border-bottom:2px solid var(--accent-primary) !important;background:transparent !important;color:var(--accent-primary) !important;padding:4px !important;border-radius:0 !important;margin-bottom:10px;font-weight:700;}
 .level-wrapper{display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0;}
 .lvl-btn{width:32px;height:32px;border-radius:50%;cursor:pointer;background:var(--panel-bg);border:1px solid var(--accent-primary);color:var(--accent-primary);display:flex;align-items:center;justify-content:center;transition:var(--transition);font-size:1rem;}
 .lvl-btn:hover{background:var(--accent-primary);color:#fff;box-shadow:0 0 10px var(--accent-glow);}
@@ -290,12 +229,7 @@ header{
 .bv-vit{border-color:rgba(251,113,133,0.4);}.bv-vit .big-vital-val,.bv-vit .big-vital-lbl{color:var(--stat-vit);}
 .bv-ene{border-color:rgba(96,165,250,0.4);}.bv-ene .big-vital-val,.bv-ene .big-vital-lbl{color:var(--stat-ene);}
 .bv-esp{border-color:rgba(192,132,252,0.4);}.bv-esp .big-vital-val,.bv-esp .big-vital-lbl{color:var(--stat-esp);}
-.dashboard-hero{
-  background:var(--glass-bg);backdrop-filter:blur(14px);
-  border:1px solid var(--panel-border-bright); border-radius:var(--radius-lg);
-  padding:20px 28px; display:flex; align-items:center; justify-content:space-between;
-  gap:20px; box-shadow:var(--shadow-lg); margin-bottom:20px; flex-wrap:wrap;
-}
+.dashboard-hero{background:var(--glass-bg);backdrop-filter:blur(14px);border:1px solid var(--panel-border-bright);border-radius:var(--radius-lg);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:var(--shadow-lg);margin-bottom:20px;flex-wrap:wrap;}
 .dash-circle{display:flex;flex-direction:column;align-items:center;gap:8px;}
 .dash-circle-wrap{width:68px;height:68px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);border:2px solid var(--accent-primary);border-radius:50%;box-shadow:0 0 18px var(--accent-glow);position:relative;}
 .dash-circle-val{font-family:var(--font-mono);font-size:1.7rem;font-weight:700;color:var(--accent-secondary);}
@@ -324,18 +258,8 @@ header{
 .ref-row:last-child{border-bottom:none;}
 .section-divider{font-family:var(--font-heading);font-size:0.7rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;padding:8px 0 6px 0;border-bottom:1px solid var(--panel-border);margin:12px 0 8px 0;display:flex;align-items:center;gap:6px;}
 @media(max-width:1300px){.rpg-layout{grid-template-columns:270px 1fr 310px;}}
-@media(max-width:1100px){
-  .rpg-layout{grid-template-columns:1fr;height:auto;}
-  .col-left,.col-right{position:static;max-height:none;}
-  .attr-grid{grid-template-columns:repeat(3,1fr);}
-}
-@media(max-width:768px){
-  .attr-grid{grid-template-columns:repeat(2,1fr);}
-  .grid-2,.grid-3{grid-template-columns:1fr;}
-  .rpg-layout{gap:12px;padding:10px;}
-  .header-center{display:none;}
-  .akuma-type-grid{grid-template-columns:repeat(2,1fr);}
-}
+@media(max-width:1100px){.rpg-layout{grid-template-columns:1fr;height:auto;}.col-left,.col-right{position:static;max-height:none;}.attr-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:768px){.attr-grid{grid-template-columns:repeat(2,1fr);}.grid-2,.grid-3{grid-template-columns:1fr;}.rpg-layout{gap:12px;padding:10px;}.header-center{display:none;}.akuma-type-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.attr-grid{grid-template-columns:1fr 1fr;}.logo{font-size:1rem;}}
 </style>
 </head>
@@ -391,7 +315,6 @@ let state = {
   oficios:{},
   combatCalc:{transformation:'humano',style:'desarmado'},
   zoanBonuses:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
-  // ── NUEVO FORMATO DE TÉCNICAS ──────────────────────────────────────
   tecnicas:[{
     id:1,
     nombre:'Técnica 1',
@@ -410,17 +333,23 @@ let state = {
 };
 
 // ============================================================
-// MATH ENGINE
+// MATH ENGINE — Corregido según guía PDF oficial
 // ============================================================
 const rnd = x => Math.round(x);
-function autoBase(a){return(a==='CH'||a==='CA')?0:3+(state.level-1)*D.config.AUTO_PER_LEVEL;}
+
+function autoBase(a){
+  // CH y CA no tienen base automática
+  return (a==='CH'||a==='CA') ? 0 : 3+(state.level-1)*D.config.AUTO_PER_LEVEL;
+}
 function cval(a){return state.customAttrs[a]||0;}
 function getLevelCap(){return state.level*10+50;}
 function getRaceBonus(a){const r=D.races[state.race];return r?(r.bonuses[a]||0):0;}
+
 function getKarmaMod(a){
   let m=0;
   for(const[id,sel]of Object.entries(state.selectedKarmas)){
     if(!sel)continue;
+    // Karmas negativos que afectan stats
     if(id==='tuerto'&&(a==='REF'||a==='PRE'))m-=50;
     if(id==='ciego'&&(a==='PRE'||a==='REF'))m-=100;
     if(id==='mal_oido'&&a==='REF')m-=25;
@@ -430,18 +359,45 @@ function getKarmaMod(a){
   }
   return m;
 }
+
 function getPExtra(a){return(state.passiveExtras&&state.passiveExtras[a])||0;}
+
 function getZoanBonus(a){
   const trans=state.combatCalc?.transformation||'humano';
   if(trans==='humano'||!state.akuma?.type?.startsWith('zoan'))return 0;
   return(state.zoanBonuses&&state.zoanBonuses[a])||0;
 }
+
 function getAttr(a){return autoBase(a)+cval(a)+getRaceBonus(a);}
 function getEff(a){return getAttr(a)+getKarmaMod(a)+getPExtra(a)+getZoanBonus(a);}
-function calcVIT(){const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),A=getEff('AGI'),V=getEff('VOL'),n=state.level;return rnd((F*5+R*6+Ds*2+A+V)*(1+n/33.33));}
-function calcENE(){const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),P=getEff('PRE'),A=getEff('AGI'),Rf=getEff('REF'),I=getEff('INT'),V=getEff('VOL'),Ca=getEff('CA'),n=state.level;return Math.floor(F*4+R*5+Ds+P+A+Rf+I*3+V+Ca+Math.floor(n/10)*500+Math.floor(n/25)*1000);}
-function calcESP(){const V=getEff('VOL'),C=getEff('CH'),n=state.level;return rnd(V*3+C*3+Math.floor(n/15)*250);}
 
+// ──────────────────────────────────────────────────────────────
+// FÓRMULAS OFICIALES DEL PDF (Guía de Atributos, apartado 2)
+// ──────────────────────────────────────────────────────────────
+
+// VIT = (FUE×5 + RES×6 + DES×2 + AGI + VOL) × (1 + NIVEL/33.33)
+function calcVIT(){
+  const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),A=getEff('AGI'),V=getEff('VOL'),n=state.level;
+  return rnd((F*5+R*6+Ds*2+A+V)*(1+n/33.33));
+}
+
+// ENE = FUE×4 + RES×5 + DES + PRE + AGI + REF + INT×3 + VOL + CA
+// NOTA: Sin bonificadores de nivel. Fórmula exacta del PDF.
+function calcENE(){
+  const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),P=getEff('PRE'),
+        A=getEff('AGI'),Rf=getEff('REF'),I=getEff('INT'),V=getEff('VOL'),Ca=getEff('CA');
+  return Math.floor(F*4+R*5+Ds+P+A+Rf+I*3+V+Ca);
+}
+
+// ESP = VOL×3 + CH×3
+// NOTA: Sin bonificadores de nivel. Fórmula exacta del PDF.
+function calcESP(){
+  const V=getEff('VOL'),C=getEff('CH');
+  return rnd(V*3+C*3);
+}
+
+// Resistencia Pasiva Física
+// <50: 0 | 50-99: RES×0.5 | 100-299: 100 fijo | 300-399: 200 | ≥400: 300
 function calcPhysRes(){
   const R=getEff('RES');
   if(R>=400)return 300;
@@ -450,6 +406,9 @@ function calcPhysRes(){
   if(R>=50)return rnd(R*0.5);
   return 0;
 }
+
+// Resistencia Pasiva Elemental
+// <50: 0 | 50-99: RES×0.5 | 100-149: RES×0.5 | 150-299: 100 fijo | 300-399: 200 | ≥400: 300
 function calcElRes(){
   const R=getEff('RES');
   if(R>=400)return 300;
@@ -458,13 +417,29 @@ function calcElRes(){
   if(R>=50)return rnd(R*0.5);
   return 0;
 }
-function calcRes(){return calcPhysRes();}
 
-function calcGB(){const F=getEff('FUE');if(F>=300)return F+150;if(F>=150)return F+50;return F;}
-function calcHits(v){if(v<=150)return 1;if(v<=300)return 2;if(v<=450)return 3;if(v<=600)return 4;return 5;}
+// Golpe Blanco Melé (Tier 1: FUE | Tier 2: FUE+50 a ≥150 | Tier 3: FUE+150 a ≥300)
+// Nota: Guantes/punteras NO reciben este bono.
+function calcGB(){
+  const F=getEff('FUE');
+  if(F>=300)return F+150;
+  if(F>=150)return F+50;
+  return F;
+}
+
+// Número de ataques blancos según tabla del PDF
+function calcHits(v){
+  if(v<=150)return 1;
+  if(v<=300)return 2;
+  if(v<=450)return 3;
+  if(v<=600)return 4;
+  return 5;
+}
+
 function totalUsed(){return D.attrs.reduce((s,a)=>s+(state.customAttrs[a]||0),0);}
 function freePA(){return D.config.PA_START+state.level*D.config.PA_PER_LEVEL-totalUsed();}
 
+// Inventario: (FUE / 15) × 3, modificado por karmas
 function calcInventorySpaces(){
   const F=getEff('FUE');
   let sp=Math.floor(F/15)*3;
@@ -474,23 +449,55 @@ function calcInventorySpaces(){
   return Math.max(0,sp);
 }
 
+// Capacidad de peso según tabla de rangos del PDF
 function calcWeightCapacity(){
   const F=getEff('FUE');
   const tier=D.config.weightTiers.find(t=>F<=t.maxFUE)||D.config.weightTiers[D.config.weightTiers.length-1];
   return rnd(tier.base+(F*F/tier.div));
 }
 
+// Caída sin daño: cada 5 puntos de RES = 1m extra + 1m base
+function calcFallHeight(){return rnd(getEff('RES')/5)+1;}
+
+// Umbrales de dolor
+// El umbral base va de VOL×1 a VOL×5. Por cada 150 VOL el multiplicador sube en 1.
+// (ej: 150-299 VOL → multiplicadores x2 a x6)
 function calcDeathThresholds(){
-  const vol=getEff('VOL'),res=getEff('RES'),vit=calcVIT(),ene=calcENE();
+  const vol=getEff('VOL'),res=getEff('RES'),vit=calcVIT();
   const isBuccaneer=state.race==='Buccaneer';
+  // Muerte VIT: negativo igual o superior a VOL×2 (×4 para Buccaneer)
   const vitDeathMult=isBuccaneer?4:2;
+  // El multiplicador base del primer umbral aumenta en 1 por cada 150 VOL
+  const umbralBase=Math.floor(vol/150)+1;
   return{
-    vitKO:0, vitIrrec:-vol, vitDeath:-vol*vitDeathMult,
-    vitBigKO:rnd(vit*0.9), vitBigDeath:vit,
-    eneKO:0, eneDeath:-res,
-    espKO:0, espDeath:-Math.ceil(vol/2),
-    isBuccaneer
+    vitKO:0,
+    vitIrrec:-vol,
+    vitDeath:-(vol*vitDeathMult),
+    vitBigKO:rnd(vit*0.9),
+    vitBigDeath:vit,
+    eneKO:0,
+    eneDeath:-res,
+    espKO:0,
+    espDeath:-Math.ceil(vol/2),
+    isBuccaneer,
+    umbralBase
   };
+}
+
+// Umbrales de dolor (valor en daño para disparar cada umbral)
+// Primer umbral: daño > VOL × umbralBase
+// Quinto umbral: daño > VOL × (umbralBase+4)
+function calcUmbralesDolorValues(){
+  const vol=getEff('VOL');
+  const base=Math.floor(vol/150)+1;
+  // Buccaneer añade puntos extra a todos los umbrales
+  let buccBonus=0;
+  if(state.race==='Buccaneer'){
+    buccBonus=150;
+    if(state.level>=10)buccBonus+=300;
+    if(state.level>=25)buccBonus+=500;
+  }
+  return [1,2,3,4,5].map(i=>vol*(base+i-1)+buccBonus);
 }
 
 function getAkumaRegen(){
@@ -512,6 +519,11 @@ function getZoanEneRegen(n){
   return{c:n,f:n*2};
 }
 
+// Regeneración ENE base = nivel/turno (×2 fuera de combate)
+// Regeneración ESP base = CH/6 en combate, CH/4 fuera
+function getBaseEneRegen(){return state.level;}
+function getBaseEspRegen(){return (getEff('CH')/6);}
+
 function getAkumaLabel(){
   const t=state.akuma.type;
   if(t==='none')return'Ninguna';
@@ -530,10 +542,15 @@ function getWeaponStats(){
   const base=subD.bases[state.weapon.tier]||0,sc=subD.scales;
   let dmg=base;
   if(subD.special==='gloves')dmg=FUE+base+(sc.FUE||0)*FUE;
-  else{dmg+=rnd((sc.FUE||0)*FUE*fM);if(subD.usePRE)dmg+=rnd((sc.PRE||0)*PRE+(sc.DES||0)*DES*dM);else dmg+=rnd((sc.DES||0)*DES*dM);}
+  else{
+    dmg+=rnd((sc.FUE||0)*FUE*fM);
+    if(subD.usePRE)dmg+=rnd((sc.PRE||0)*PRE+(sc.DES||0)*DES*dM);
+    else dmg+=rnd((sc.DES||0)*DES*dM);
+  }
   const hitsAttr=(subD.special==='gloves')?getEff('AGI'):DES;
-  let nH=calcHits(hitsAttr);if(state.weapon.shield==='yes')nH=calcHits(Math.max(0,hitsAttr-20));
-  if(state.weapon.mode==='dual' && subD.special!=='gloves') dmg=dmg*2;
+  let nH=calcHits(hitsAttr);
+  if(state.weapon.shield==='yes')nH=calcHits(Math.max(0,hitsAttr-20));
+  if(state.weapon.mode==='dual'&&subD.special!=='gloves')dmg=dmg*2;
   return{name:state.weapon.sub,tier:state.weapon.tier+1,dmg,hits:nH,dpt:dmg*nH};
 }
 
@@ -542,6 +559,9 @@ function getKarmaBalance(){
   [...D.karmasPos,...D.karmasNeg].forEach(k=>{if(state.selectedKarmas[k.id])b+=k.val;});
   return b;
 }
+
+// Cálculo de técnicas máximas permitidas: 1 por cada 4 puntos de INT
+function calcMaxTecnicas(){return Math.max(1,Math.floor(getEff('INT')/4));}
 
 // ============================================================
 // MUTATORS
@@ -574,69 +594,48 @@ function onZoanBonus(attr,val){
   renderAll();
 }
 
-// ── NUEVO SISTEMA DE TÉCNICAS ─────────────────────────────────────────────
-
-function onTecnicaChange(id, field, val){
+// ── SISTEMA DE TÉCNICAS ─────────────────────────────────────
+function onTecnicaChange(id,field,val){
   if(!state.tecnicas)state.tecnicas=[];
-  const t=state.tecnicas.find(t=>t.id===id);
-  if(!t)return;
-
-  if(field==='addGolpeBlanco') t[field]=val;
-  else if(field==='rango'||field==='costeENE'||field==='costeESP'||field==='tr')
-    t[field]=parseInt(val)||0;
+  const t=state.tecnicas.find(t=>t.id===id);if(!t)return;
+  if(field==='addGolpeBlanco')t[field]=val;
+  else if(field==='rango'||field==='costeENE'||field==='costeESP'||field==='tr')t[field]=parseInt(val)||0;
   else if(field.startsWith('comp_')){
-    const parts=field.split('_');
-    const idx=parseInt(parts[1]);
-    const sub=parts[2];
+    const parts=field.split('_'),idx=parseInt(parts[1]),sub=parts[2];
     if(!t.componentes[idx])t.componentes[idx]={atributo:'FUE',multiplicador:0,valorBase:0};
-    if(sub==='multiplicador'||sub==='valorBase') t.componentes[idx][sub]=parseFloat(val)||0;
+    if(sub==='multiplicador'||sub==='valorBase')t.componentes[idx][sub]=parseFloat(val)||0;
     else t.componentes[idx][sub]=val;
-  }
-  else t[field]=val;
+  }else t[field]=val;
   renderCombatCalc();
 }
-
 function onAddComponente(tecId){
   const t=state.tecnicas.find(t=>t.id===tecId);
-  if(!t||t.componentes.length>=3)return;
+  if(!t||t.componentes.length>=4)return;
   t.componentes.push({atributo:'FUE',multiplicador:0,valorBase:0});
   renderCombatCalc();
 }
-
 function onRemoveComponente(tecId,idx){
   const t=state.tecnicas.find(t=>t.id===tecId);
   if(!t||t.componentes.length<=1)return;
   t.componentes.splice(idx,1);
   renderCombatCalc();
 }
-
 function onAddTecnica(){
   if(!state.tecnicas)state.tecnicas=[];
   const maxId=state.tecnicas.reduce((m,t)=>Math.max(m,t.id),0);
   state.tecnicas.push({
-    id:maxId+1,
-    nombre:`Técnica ${maxId+1}`,
-    rango:1,
-    tipo:'normal',
-    estiloCombate:'desarmado',
-    tipoDano:'contundente',
+    id:maxId+1,nombre:`Técnica ${maxId+1}`,rango:1,tipo:'normal',
+    estiloCombate:'desarmado',tipoDano:'contundente',
     componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
-    addGolpeBlanco:false,
-    costeENE:0,
-    costeESP:0,
-    tr:0,
-    efectos:'',
-    notas:''
+    addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
   });
   renderCombatCalc();
 }
-
 function onRemoveTecnica(id){
   if(!state.tecnicas||state.tecnicas.length<=1)return;
   state.tecnicas=state.tecnicas.filter(t=>t.id!==id);
   renderCombatCalc();
 }
-
 function onCombatCalcChange(field,val){
   if(!state.combatCalc)state.combatCalc={transformation:'humano',style:'desarmado'};
   state.combatCalc[field]=val;
@@ -645,8 +644,7 @@ function onCombatCalcChange(field,val){
   renderCombatCalc();
 }
 
-/* ---- AUXILIARES DE TÉCNICAS ---- */
-
+/* ── Daño Blanco por estilo de combate ── */
 function calcWhiteDmgByStyle(estilo){
   const F=getEff('FUE'),Ds=getEff('DES'),P=getEff('PRE');
   const ws=getWeaponStats();
@@ -672,7 +670,7 @@ function calcWhiteDmgByStyle(estilo){
       const hasAmbi=state.selectedKarmas['ambidiestro'];
       const desScale=hasAmbi?(sc.DES||0):(sc.DES||0)*0.5;
       const perArma=(sd?.bases[state.weapon.tier]||0)+Math.round(F*0.5)+Math.round(Ds*desScale);
-      return{dmg:perArma*2,nota:`${ws.name} T${ws.tier} ×2${hasAmbi?' (Ambi)':''}`};
+      return{dmg:perArma*2,nota:`${ws.name} T${ws.tier} ×2${hasAmbi?' (Ambidiestro)':''}`};
     }
     case 'disparo':{
       if(!ws)return{dmg:0,nota:'Sin arma equipada'};
@@ -684,407 +682,353 @@ function calcWhiteDmgByStyle(estilo){
     }
     case 'haki':{
       const C=getEff('CH'),R=getEff('RES');
-      return{dmg:Math.round((C+R)/2),nota:'Busoshoku (CH+RES)/2'};
+      return{dmg:Math.round((C+R)/2),nota:'Busoshoku: (CH+RES)/2'};
     }
     case 'akuma':{
       const CA=getEff('CA');
-      return{dmg:CA,nota:'Base CA'};
+      return{dmg:CA,nota:'Base CA (Akuma)'};
     }
     default:return{dmg:0,nota:'—'};
   }
 }
 
+/* ── Cálculo daño de técnica ──
+   Tipos de técnica (según PDF):
+   - normal: sin modificador
+   - extralimite: +25% daño, +50% coste ENE (1×/tema por cada 100 INT)
+   - dual: ×2 daño, ×2 ENE, ×2 TR (requiere doble atributos)
+   - sinergia: +25% daño (si el aliado también lanza su sinergia simultáneamente)
+   - ultimate: mayor multiplicador, mismo coste ENE
+   - finisher: 1×/tema, mayor poder, -30% potencia usada
+*/
 function calcTecnicaDmg(tec){
   let dmgComp=tec.componentes.reduce((sum,c)=>{
     const atVal=getEff(c.atributo||'FUE');
     return sum+Math.round((c.valorBase||0)+(atVal*(c.multiplicador||0)));
   },0);
-
   let dmgBlanco=0;
   if(tec.addGolpeBlanco){
     const wb=calcWhiteDmgByStyle(tec.estiloCombate||'desarmado');
     dmgBlanco=wb.dmg;
   }
-
   let total=dmgComp+dmgBlanco;
-
-  if(tec.tipo==='extralimite') total=Math.round(total*1.25);
-  if(tec.tipo==='dual') total=total*2;
-  if(tec.tipo==='sinergia') total=Math.round(total*1.25);
-
+  if(tec.tipo==='extralimite')total=Math.round(total*1.25);
+  if(tec.tipo==='dual')total=total*2;
+  if(tec.tipo==='sinergia')total=Math.round(total*1.25);
   return{total,dmgComp,dmgBlanco};
 }
 
-/* ---- COMBAT CALCULATOR (legacy helpers kept for whiteDmg display) ---- */
 function calcMeleeWhiteDmg(){
   const F=getEff('FUE');
-  if(F>=300) return F+150;
-  if(F>=150) return F+50;
+  if(F>=300)return F+150;
+  if(F>=150)return F+50;
   return F;
 }
 
 function renderPassiveExtras(){
   document.querySelectorAll('#passiveExtrasPanel').forEach(el=>{
-  if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-  const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
-  const labels={FUE:'Fuerza',RES:'Resistencia',DES:'Destreza',PRE:'Precisión',AGI:'Agilidad',REF:'Reflejos',INT:'Inteligencia',VOL:'Voluntad',CH:'Control Haki',CA:'Control Akuma'};
-  el.innerHTML=D.attrs.map(a=>{
-    const v=state.passiveExtras[a]||0;
-    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-      <span style="width:22px;text-align:center;font-size:0.9rem;">${emojis[a]}</span>
-      <span style="flex:1;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">${labels[a]}</span>
-      <input type="number" value="${v}" min="-9999" max="9999" step="1"
-        style="width:72px;text-align:center;font-size:0.78rem;padding:4px 6px;"
-        onchange="onPassiveExtra('${a}',this.value)" oninput="onPassiveExtra('${a}',this.value)">
-      <span style="width:50px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">
-        ${v>0?'+'+v:v}
-      </span>
-    </div>`;
-  }).join('');
+    if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+    const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
+    const labels={FUE:'Fuerza',RES:'Resistencia',DES:'Destreza',PRE:'Precisión',AGI:'Agilidad',REF:'Reflejos',INT:'Inteligencia',VOL:'Voluntad',CH:'Control Haki',CA:'Control Akuma'};
+    el.innerHTML=D.attrs.map(a=>{
+      const v=state.passiveExtras[a]||0;
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span style="width:22px;text-align:center;font-size:0.9rem;">${emojis[a]}</span>
+        <span style="flex:1;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">${labels[a]}</span>
+        <input type="number" value="${v}" min="-9999" max="9999" step="1"
+          style="width:72px;text-align:center;font-size:0.78rem;padding:4px 6px;"
+          onchange="onPassiveExtra('${a}',this.value)" oninput="onPassiveExtra('${a}',this.value)">
+        <span style="width:50px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">
+          ${v>0?'+'+v:v}
+        </span>
+      </div>`;
+    }).join('');
   });
 }
 
 function renderCombatCalc(){
   document.querySelectorAll('#combatCalcBody').forEach(el=>{
-  const style=state.combatCalc?.style||'desarmado';
-  const trans=state.combatCalc?.transformation||'humano';
-  const isZoan=state.akuma?.type?.startsWith('zoan')||false;
-  const needWeapon=style==='arma_simple'||style==='arma_dual';
-  if(!state.tecnicas||!state.tecnicas.length)
-    state.tecnicas=[{
-      id:1,nombre:'Técnica 1',rango:1,tipo:'normal',
-      estiloCombate:'desarmado',tipoDano:'contundente',
-      componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
-      addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
-    }];
+    const style=state.combatCalc?.style||'desarmado';
+    const trans=state.combatCalc?.transformation||'humano';
+    const isZoan=state.akuma?.type?.startsWith('zoan')||false;
+    if(!state.tecnicas||!state.tecnicas.length)
+      state.tecnicas=[{id:1,nombre:'Técnica 1',rango:1,tipo:'normal',estiloCombate:'desarmado',tipoDano:'contundente',componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''}];
 
-  document.querySelectorAll('#calcTransform').forEach(sel=>{
-    const cur=state.combatCalc?.transformation||'humano';
-    if(!isZoan&&cur!=='humano'){state.combatCalc.transformation='humano';}
-    sel.innerHTML=`<option value="humano"${(state.combatCalc?.transformation||'humano')==='humano'?' selected':''}>Base (Humano)</option>`
-      +(isZoan?`<option value="hibrido"${(state.combatCalc?.transformation)==='hibrido'?' selected':''}>Híbrido</option>`
-               +`<option value="completo"${(state.combatCalc?.transformation)==='completo'?' selected':''}>Completo (animal)</option>`:'');
-  });
+    document.querySelectorAll('#calcTransform').forEach(sel=>{
+      if(!isZoan&&(state.combatCalc?.transformation||'humano')!=='humano'){state.combatCalc.transformation='humano';}
+      sel.innerHTML=`<option value="humano"${(state.combatCalc?.transformation||'humano')==='humano'?' selected':''}>Base (Humano)</option>`
+        +(isZoan?`<option value="hibrido"${(state.combatCalc?.transformation)==='hibrido'?' selected':''}>Híbrido</option>`
+                 +`<option value="completo"${(state.combatCalc?.transformation)==='completo'?' selected':''}>Completo (animal)</option>`:'');
+    });
 
-  let weaponSel='';
-  if(needWeapon&&D&&D.weapons){
-    let catOpts='';
-    for(const[k,v]of Object.entries(D.weapons))catOpts+=`<option value="${k}" ${state.weapon.cat===k?'selected':''}>${v.name}</option>`;
-    let subOpts='';
-    const catD=D.weapons[state.weapon.cat];
-    if(catD)for(const[sn,sd]of Object.entries(catD.subs))for(let t=0;t<5;t++)
-      subOpts+=`<option value="${sn}|${t}" ${state.weapon.sub===sn&&state.weapon.tier===t?'selected':''}>${sn} T${t+1} (nv${sd.tierLevels[t]}+)</option>`;
-    const ws2=getWeaponStats();
-    const equipped=ws2?`<span style="color:var(--stat-good);font-size:0.68rem;">✅ ${ws2.name} T${ws2.tier}</span>`
-                      :`<span style="color:var(--stat-bad);font-size:0.68rem;">Sin arma</span>`;
-    weaponSel=`<div style="background:rgba(0,0,0,0.18);border:1px solid var(--panel-border);border-radius:8px;padding:9px;margin-bottom:10px;">
-      <div style="font-size:0.65rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;"><i class="fas fa-shield-alt"></i> Arma Equipada &nbsp;${equipped}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-        <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Categoría</div>
-          <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponCatChange(this)">${catOpts}</select></div>
-        <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Arma y Tier</div>
-          <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponDetailChange(this)">${subOpts}</select></div>
-      </div>
-    </div>`;
-  }
-
-  let zoanPanel='';
-  if(isZoan&&trans!=='humano'){
-    const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
-    const zb=state.zoanBonuses||{};
-    const rows=D.attrs.map(a=>{
-      const v=zb[a]||0;
-      return `<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
-        <span style="width:18px;text-align:center;font-size:0.82rem;">${emojis[a]}</span>
-        <span style="flex:1;font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);">${a}</span>
-        <input type="number" value="${v}" min="-9999" max="9999" step="1"
-          style="width:64px;text-align:center;font-size:0.72rem;padding:3px 5px;"
-          oninput="onZoanBonus('${a}',this.value)">
-        <span style="width:44px;text-align:right;font-family:var(--font-mono);font-size:0.68rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">${v>0?'+'+v:v}</span>
+    let weaponSel='';
+    const needWeapon=style==='arma_simple'||style==='arma_dual';
+    if(needWeapon&&D&&D.weapons){
+      let catOpts='';
+      for(const[k,v]of Object.entries(D.weapons))catOpts+=`<option value="${k}" ${state.weapon.cat===k?'selected':''}>${v.name}</option>`;
+      let subOpts='';
+      const catD=D.weapons[state.weapon.cat];
+      if(catD)for(const[sn,sd]of Object.entries(catD.subs))for(let t=0;t<5;t++)
+        subOpts+=`<option value="${sn}|${t}" ${state.weapon.sub===sn&&state.weapon.tier===t?'selected':''}>${sn} T${t+1} (nv${sd.tierLevels[t]}+)</option>`;
+      const ws2=getWeaponStats();
+      const equipped=ws2?`<span style="color:var(--stat-good);font-size:0.68rem;">✅ ${ws2.name} T${ws2.tier}</span>`:`<span style="color:var(--stat-bad);font-size:0.68rem;">Sin arma</span>`;
+      weaponSel=`<div style="background:rgba(0,0,0,0.18);border:1px solid var(--panel-border);border-radius:8px;padding:9px;margin-bottom:10px;">
+        <div style="font-size:0.65rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;"><i class="fas fa-shield-alt"></i> Arma Equipada &nbsp;${equipped}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Categoría</div>
+            <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponCatChange(this)">${catOpts}</select></div>
+          <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Arma y Tier</div>
+            <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponDetailChange(this)">${subOpts}</select></div>
+        </div>
       </div>`;
-    }).join('');
-    zoanPanel=`<div style="border:1px solid rgba(168,85,247,0.4);border-radius:8px;padding:10px;margin-bottom:10px;background:rgba(168,85,247,0.05);">
-      <div style="font-size:0.65rem;color:#c084fc;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;"><i class="fas fa-dragon"></i> Bonos Zoan — ${trans==='hibrido'?'Forma Híbrida':'Forma Completa'}</div>
-      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">Introduce los bonos de stat de tu Akuma Zoan. Consulta la Guía de Akumas (tablas de imagen) para los valores exactos.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 14px;">${rows}</div>
-    </div>`;
-  } else if(isZoan&&trans==='humano'){
-    zoanPanel=`<div style="font-size:0.67rem;color:var(--text-muted);padding:4px 0 8px 2px;"><i class="fas fa-info-circle"></i> Selecciona Híbrido o Completo para introducir los bonos Zoan de esa transformación.</div>`;
-  }
+    }
 
-  const ws=getWeaponStats();
-  let whiteDmg=0,whiteDmgNote='',noWeapon=false;
-  if(style==='desarmado'){
-    whiteDmg=calcMeleeWhiteDmg();
-    const F=getEff('FUE');
-    whiteDmgNote=F>=300?'FUE≥300 (+150)':F>=150?'FUE≥150 (+50)':'FUE básico';
-  } else if(style==='arma_simple'){
-    if(ws){
-      const F=getEff('FUE'),Ds=getEff('DES'),P=getEff('PRE');
-      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
-      const sc=sd?.scales||{};
-      let dmg=sd?.bases[state.weapon.tier]||0;
-      if(sd?.usePRE)dmg+=Math.round((sc.DES||0)*Ds+(sc.PRE||0)*P);
-      else dmg+=Math.round((sc.FUE||0)*F+(sc.DES||0)*Ds);
-      whiteDmg=dmg;
-      whiteDmgNote=`T${ws.tier}·Base${sd?.bases[state.weapon.tier]}+FUE×${sc.FUE||0}+DES×${sc.DES||0}${sd?.usePRE?'+PRE×'+(sc.PRE||0):''}`;
-    } else noWeapon=true;
-  } else if(style==='arma_dual'){
-    if(ws){
-      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
-      const sc=sd?.scales||{};
-      const F=getEff('FUE'),Ds=getEff('DES');
-      const hasAmbi=state.selectedKarmas['ambidiestro'];
-      const desScale=hasAmbi?(sc.DES||0):(sc.DES||0)*0.5;
-      const perWeapon=(sd?.bases[state.weapon.tier]||0)+Math.round(F*0.5)+Math.round(Ds*desScale);
-      whiteDmg=perWeapon*2;
-      whiteDmgNote=`T${ws.tier}×2·FUE×0.5/arma${hasAmbi?',DES íntegra':`,DES×${desScale.toFixed(2)}/arma`}`;
-    } else noWeapon=true;
-  }
-  const dmgStr=noWeapon?'—':whiteDmg;
-  const dmgColor=noWeapon?'var(--text-muted)':'var(--stat-good)';
-
-  // ── COLORES Y ETIQUETAS POR TIPO ──────────────────────────────
-  const tipoColors={
-    normal:'var(--text-muted)',
-    extralimite:'var(--stat-warn)',
-    dual:'var(--stat-ene)',
-    sinergia:'var(--stat-good)',
-    ultimate:'var(--stat-magic)',
-    finisher:'var(--stat-bad)'
-  };
-  const tipoLabels={
-    normal:'Normal',
-    extralimite:'Extra-Límite +25%dmg',
-    dual:'Dual ×2 req/dmg/TR',
-    sinergia:'Sinergia +25%dmg',
-    ultimate:'Ultimate',
-    finisher:'Finisher (1×/tema)'
-  };
-  const estiloLabels={
-    desarmado:'✊ Desarmado',
-    arma_simple:'⚔️ Arma Simple',
-    arma_dual:'⚔️⚔️ Arma Dual',
-    disparo:'🎯 Disparo',
-    flexible:'🪢 Flexible/Látigo',
-    haki:'✨ Haki',
-    akuma:'🌊 Akuma',
-    mixto:'⚡ Mixto'
-  };
-  const danoLabels={
-    contundente:'🟤 Contundente',
-    cortante:'⚪ Cortante',
-    perforante:'🔵 Perforante',
-    elemental_fuego:'🔴 Elem. Fuego',
-    elemental_rayo:'🟡 Elem. Rayo',
-    elemental_hielo:'🔷 Elem. Hielo',
-    elemental_veneno:'🟢 Elem. Veneno',
-    elemental_otro:'🟣 Elem. Otro',
-    espiritual:'💜 Espiritual'
-  };
-
-  // ── GENERAR FILAS DE TÉCNICAS ─────────────────────────────────
-  const tecRows=state.tecnicas.map(tec=>{
-    const {total,dmgComp,dmgBlanco}=calcTecnicaDmg(tec);
-    const wb=tec.addGolpeBlanco?calcWhiteDmgByStyle(tec.estiloCombate):{dmg:0,nota:''};
-    const color=tipoColors[tec.tipo]||'var(--text-muted)';
-    const esExtraLimite=tec.tipo==='extralimite';
-    const esDual=tec.tipo==='dual';
-    const esFinisher=tec.tipo==='finisher';
-
-    const desgloseComp=tec.componentes.map(c=>{
-      const v=getEff(c.atributo||'FUE');
-      return `${c.valorBase>0?c.valorBase+'+':''}${c.atributo}[${v}]×${c.multiplicador}`;
-    }).join(' + ');
-
-    const desgloseTotal=`(${desgloseComp})${tec.addGolpeBlanco?` + GB[${wb.dmg}]`:''}${esExtraLimite?' ×1.25':''}${esDual?' ×2':''}`;
-
-    const compRows=tec.componentes.map((c,idx)=>{
-      const atOpts=D.attrs.map(a=>`<option value="${a}"${c.atributo===a?' selected':''}>${a}</option>`).join('');
-      return `<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap;">
-        <input type="number" value="${c.valorBase}" min="0" max="99999" step="1" placeholder="Base"
-          title="Valor base fijo" style="width:52px;font-size:0.68rem;padding:2px 4px;text-align:center;"
-          oninput="onTecnicaChange(${tec.id},'comp_${idx}_valorBase',this.value)">
-        <span style="color:var(--text-muted);font-size:0.7rem;">+</span>
-        <select style="font-size:0.68rem;padding:2px 4px;"
-          onchange="onTecnicaChange(${tec.id},'comp_${idx}_atributo',this.value)">${atOpts}</select>
-        <span style="color:var(--text-muted);font-size:0.7rem;">×</span>
-        <input type="number" value="${c.multiplicador}" min="0" max="99" step="0.1"
-          title="Multiplicador" style="width:46px;font-size:0.68rem;padding:2px 4px;text-align:center;"
-          oninput="onTecnicaChange(${tec.id},'comp_${idx}_multiplicador',this.value)">
-        ${tec.componentes.length>1?`<button onclick="onRemoveComponente(${tec.id},${idx})"
-          style="background:none;border:none;color:var(--stat-bad);cursor:pointer;font-size:0.75rem;padding:0 3px;"
-          title="Quitar componente">✕</button>`:''}
-        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--accent-secondary);">
-          = ${Math.round((c.valorBase||0)+getEff(c.atributo||'FUE')*(c.multiplicador||0))}
-        </span>
+    let zoanPanel='';
+    if(isZoan&&trans!=='humano'){
+      const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
+      const zb=state.zoanBonuses||{};
+      const rows=D.attrs.map(a=>{
+        const v=zb[a]||0;
+        return `<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+          <span style="width:18px;text-align:center;font-size:0.82rem;">${emojis[a]}</span>
+          <span style="flex:1;font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);">${a}</span>
+          <input type="number" value="${v}" min="-9999" max="9999" step="1"
+            style="width:64px;text-align:center;font-size:0.72rem;padding:3px 5px;"
+            oninput="onZoanBonus('${a}',this.value)">
+          <span style="width:44px;text-align:right;font-family:var(--font-mono);font-size:0.68rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">${v>0?'+'+v:v}</span>
+        </div>`;
+      }).join('');
+      zoanPanel=`<div style="border:1px solid rgba(168,85,247,0.4);border-radius:8px;padding:10px;margin-bottom:10px;background:rgba(168,85,247,0.05);">
+        <div style="font-size:0.65rem;color:#c084fc;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;"><i class="fas fa-dragon"></i> Bonos Zoan — ${trans==='hibrido'?'Forma Híbrida':'Forma Completa'}</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">Introduce los bonos de stat de tu Akuma Zoan según las tablas de la Guía de Akumas.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 14px;">${rows}</div>
       </div>`;
-    }).join('');
+    } else if(isZoan&&trans==='humano'){
+      zoanPanel=`<div style="font-size:0.67rem;color:var(--text-muted);padding:4px 0 8px 2px;"><i class="fas fa-info-circle"></i> Selecciona Híbrido o Completo para introducir los bonos Zoan de esa transformación.</div>`;
+    }
 
-    return `<div style="background:rgba(0,0,0,0.22);border:1px solid ${color};border-radius:var(--radius);padding:12px;margin-bottom:10px;">
+    const ws=getWeaponStats();
+    let whiteDmg=0,whiteDmgNote='',noWeapon=false;
+    if(style==='desarmado'){
+      whiteDmg=calcMeleeWhiteDmg();
+      const F=getEff('FUE');
+      whiteDmgNote=F>=300?'FUE≥300 (+150)':F>=150?'FUE≥150 (+50)':'FUE básico';
+    } else if(style==='arma_simple'){
+      if(ws){
+        const F=getEff('FUE'),Ds=getEff('DES'),P=getEff('PRE');
+        const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
+        const sc=sd?.scales||{};
+        let dmg=sd?.bases[state.weapon.tier]||0;
+        if(sd?.usePRE)dmg+=Math.round((sc.DES||0)*Ds+(sc.PRE||0)*P);
+        else dmg+=Math.round((sc.FUE||0)*F+(sc.DES||0)*Ds);
+        whiteDmg=dmg;
+        whiteDmgNote=`T${ws.tier}·Base${sd?.bases[state.weapon.tier]}+FUE×${sc.FUE||0}+DES×${sc.DES||0}${sd?.usePRE?'+PRE×'+(sc.PRE||0):''}`;
+      } else noWeapon=true;
+    } else if(style==='arma_dual'){
+      if(ws){
+        const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
+        const sc=sd?.scales||{};
+        const F=getEff('FUE'),Ds=getEff('DES');
+        const hasAmbi=state.selectedKarmas['ambidiestro'];
+        const desScale=hasAmbi?(sc.DES||0):(sc.DES||0)*0.5;
+        const perWeapon=(sd?.bases[state.weapon.tier]||0)+Math.round(F*0.5)+Math.round(Ds*desScale);
+        whiteDmg=perWeapon*2;
+        whiteDmgNote=`T${ws.tier}×2·FUE×0.5/arma${hasAmbi?',DES íntegra':`,DES×${desScale.toFixed(2)}/arma`}`;
+      } else noWeapon=true;
+    }
+    const dmgStr=noWeapon?'—':whiteDmg;
+    const dmgColor=noWeapon?'var(--text-muted)':'var(--stat-good)';
 
-      <!-- CABECERA: nombre + tipo + rango -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-        <input type="text" value="${tec.nombre}" placeholder="Nombre..."
-          style="flex:1;min-width:130px;font-family:var(--font-heading);font-weight:700;font-size:0.82rem;
-                 padding:4px 8px;background:rgba(0,0,0,0.3);border:1px solid ${color};border-radius:5px;color:${color};"
-          oninput="onTecnicaChange(${tec.id},'nombre',this.value)">
+    const tipoColors={normal:'var(--text-muted)',extralimite:'var(--stat-warn)',dual:'var(--stat-ene)',sinergia:'var(--stat-good)',ultimate:'var(--stat-magic)',finisher:'var(--stat-bad)'};
+    const tipoLabels={normal:'Normal',extralimite:'Extra-Límite +25%dmg +50%ENE',dual:'Dual ×2 req/dmg/TR',sinergia:'Sinergia +25%dmg (con aliado)',ultimate:'Ultimate (mayor mult., mismo ENE)',finisher:'Finisher (1×/tema, −30% potencia usada)'};
+    const estiloLabels={desarmado:'✊ Desarmado',arma_simple:'⚔️ Arma Simple',arma_dual:'⚔️⚔️ Arma Dual',disparo:'🎯 Disparo',flexible:'🪢 Flexible/Látigo',haki:'✨ Haki (Busoshoku)',akuma:'🌊 Akuma',mixto:'⚡ Mixto'};
+    const danoLabels={contundente:'🟤 Contundente',cortante:'⚪ Cortante',perforante:'🔵 Perforante',elemental_fuego:'🔴 Elem. Fuego',elemental_rayo:'🟡 Elem. Rayo',elemental_hielo:'🔷 Elem. Hielo',elemental_veneno:'🟢 Elem. Veneno',elemental_otro:'🟣 Elem. Otro',espiritual:'💜 Espiritual'};
 
-        <div title="Rango de la técnica (1-10)" style="display:flex;align-items:center;gap:3px;">
-          <span style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;">R</span>
-          <select style="font-size:0.7rem;padding:3px 4px;width:42px;"
-            onchange="onTecnicaChange(${tec.id},'rango',this.value)">
-            ${[1,2,3,4,5,6,7,8,9,10].map(r=>`<option value="${r}"${tec.rango===r?' selected':''}>${r}</option>`).join('')}
-          </select>
-        </div>
-
-        <select style="font-size:0.68rem;padding:3px 5px;border-color:${color};color:${color};background:rgba(0,0,0,0.3);"
-          onchange="onTecnicaChange(${tec.id},'tipo',this.value)">
-          ${Object.entries(tipoLabels).map(([k,v])=>`<option value="${k}"${tec.tipo===k?' selected':''}>${v}</option>`).join('')}
-        </select>
-
-        ${state.tecnicas.length>1?`<button onclick="onRemoveTecnica(${tec.id})"
-          style="background:none;border:1px solid var(--stat-bad);color:var(--stat-bad);border-radius:4px;
-                 padding:3px 8px;cursor:pointer;font-size:0.68rem;" title="Eliminar técnica">✕</button>`:''}
-      </div>
-
-      <!-- FILA 1: Estilo de combate + Tipo de daño -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-        <div>
-          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Estilo de combate</div>
-          <select style="font-size:0.7rem;padding:3px 5px;"
-            onchange="onTecnicaChange(${tec.id},'estiloCombate',this.value)">
-            ${Object.entries(estiloLabels).map(([k,v])=>`<option value="${k}"${tec.estiloCombate===k?' selected':''}>${v}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Tipo de daño</div>
-          <select style="font-size:0.7rem;padding:3px 5px;"
-            onchange="onTecnicaChange(${tec.id},'tipoDano',this.value)">
-            ${Object.entries(danoLabels).map(([k,v])=>`<option value="${k}"${tec.tipoDano===k?' selected':''}>${v}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-
-      <!-- FILA 2: Componentes de daño -->
-      <div style="background:rgba(0,0,0,0.2);border-radius:5px;padding:8px;margin-bottom:8px;">
-        <div style="font-size:0.6rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
-          📐 Fórmula de daño
-          ${tec.componentes.length<3?`<button onclick="onAddComponente(${tec.id})"
-            style="background:rgba(255,255,255,0.05);border:1px solid var(--accent-secondary);color:var(--accent-secondary);
-                   border-radius:4px;padding:1px 7px;font-size:0.62rem;cursor:pointer;margin-left:6px;">+ componente</button>`:''}
-        </div>
-        ${compRows}
-        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin-top:4px;">
-          <input type="checkbox" ${tec.addGolpeBlanco?'checked':''}
-            onchange="onTecnicaChange(${tec.id},'addGolpeBlanco',this.checked)" style="margin:0;">
-          <span style="font-size:0.68rem;color:var(--text-muted);">
-            + Daño Blanco del estilo
-            ${tec.addGolpeBlanco?`<span style="color:var(--stat-good);">(+${wb.dmg} — ${wb.nota})</span>`:''}
+    const maxTec=calcMaxTecnicas();
+    const tecRows=state.tecnicas.map(tec=>{
+      const {total,dmgComp,dmgBlanco}=calcTecnicaDmg(tec);
+      const wb=tec.addGolpeBlanco?calcWhiteDmgByStyle(tec.estiloCombate):{dmg:0,nota:''};
+      const color=tipoColors[tec.tipo]||'var(--text-muted)';
+      const esExtraLimite=tec.tipo==='extralimite';
+      const esDual=tec.tipo==='dual';
+      const esFinisher=tec.tipo==='finisher';
+      const desgloseComp=tec.componentes.map(c=>{
+        const v=getEff(c.atributo||'FUE');
+        return `${c.valorBase>0?c.valorBase+'+':''}${c.atributo}[${v}]×${c.multiplicador}`;
+      }).join(' + ');
+      const desgloseTotal=`(${desgloseComp})${tec.addGolpeBlanco?` + GB[${wb.dmg}]`:''}${esExtraLimite?' ×1.25':''}${esDual?' ×2':''}`;
+      const compRows=tec.componentes.map((c,idx)=>{
+        const atOpts=D.attrs.map(a=>`<option value="${a}"${c.atributo===a?' selected':''}>${a}</option>`).join('');
+        return `<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap;">
+          <input type="number" value="${c.valorBase}" min="0" max="99999" step="1" placeholder="Base"
+            title="Valor base fijo" style="width:52px;font-size:0.68rem;padding:2px 4px;text-align:center;"
+            oninput="onTecnicaChange(${tec.id},'comp_${idx}_valorBase',this.value)">
+          <span style="color:var(--text-muted);font-size:0.7rem;">+</span>
+          <select style="font-size:0.68rem;padding:2px 4px;"
+            onchange="onTecnicaChange(${tec.id},'comp_${idx}_atributo',this.value)">${atOpts}</select>
+          <span style="color:var(--text-muted);font-size:0.7rem;">×</span>
+          <input type="number" value="${c.multiplicador}" min="0" max="99" step="0.1"
+            title="Multiplicador" style="width:46px;font-size:0.68rem;padding:2px 4px;text-align:center;"
+            oninput="onTecnicaChange(${tec.id},'comp_${idx}_multiplicador',this.value)">
+          ${tec.componentes.length>1?`<button onclick="onRemoveComponente(${tec.id},${idx})"
+            style="background:none;border:none;color:var(--stat-bad);cursor:pointer;font-size:0.75rem;padding:0 3px;" title="Quitar componente">✕</button>`:''}
+          <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--accent-secondary);">
+            = ${Math.round((c.valorBase||0)+getEff(c.atributo||'FUE')*(c.multiplicador||0))}
           </span>
-        </label>
-      </div>
+        </div>`;
+      }).join('');
 
-      <!-- FILA 3: Coste + TR -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
-        <div>
-          <div style="font-size:0.6rem;color:var(--stat-ene);text-transform:uppercase;margin-bottom:2px;">⚡ Coste ENE</div>
-          <input type="number" value="${tec.costeENE||0}" min="0" step="1"
-            style="font-size:0.75rem;padding:3px 6px;text-align:center;"
-            oninput="onTecnicaChange(${tec.id},'costeENE',this.value)">
+      return `<div style="background:rgba(0,0,0,0.22);border:1px solid ${color};border-radius:var(--radius);padding:12px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          <input type="text" value="${tec.nombre}" placeholder="Nombre..."
+            style="flex:1;min-width:130px;font-family:var(--font-heading);font-weight:700;font-size:0.82rem;
+                   padding:4px 8px;background:rgba(0,0,0,0.3);border:1px solid ${color};border-radius:5px;color:${color};"
+            oninput="onTecnicaChange(${tec.id},'nombre',this.value)">
+          <div title="Rango de la técnica (1-10)" style="display:flex;align-items:center;gap:3px;">
+            <span style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;">R</span>
+            <select style="font-size:0.7rem;padding:3px 4px;width:42px;"
+              onchange="onTecnicaChange(${tec.id},'rango',this.value)">
+              ${[1,2,3,4,5,6,7,8,9,10].map(r=>`<option value="${r}"${tec.rango===r?' selected':''}>${r}</option>`).join('')}
+            </select>
+          </div>
+          <select style="font-size:0.68rem;padding:3px 5px;border-color:${color};color:${color};background:rgba(0,0,0,0.3);"
+            onchange="onTecnicaChange(${tec.id},'tipo',this.value)">
+            ${Object.entries(tipoLabels).map(([k,v])=>`<option value="${k}"${tec.tipo===k?' selected':''}>${v}</option>`).join('')}
+          </select>
+          ${state.tecnicas.length>1?`<button onclick="onRemoveTecnica(${tec.id})"
+            style="background:none;border:1px solid var(--stat-bad);color:var(--stat-bad);border-radius:4px;
+                   padding:3px 8px;cursor:pointer;font-size:0.68rem;" title="Eliminar técnica">✕</button>`:''}
         </div>
-        <div>
-          <div style="font-size:0.6rem;color:var(--stat-esp);text-transform:uppercase;margin-bottom:2px;">💜 Coste ESP</div>
-          <input type="number" value="${tec.costeESP||0}" min="0" step="1"
-            style="font-size:0.75rem;padding:3px 6px;text-align:center;"
-            oninput="onTecnicaChange(${tec.id},'costeESP',this.value)">
-        </div>
-        <div>
-          <div style="font-size:0.6rem;color:var(--stat-warn);text-transform:uppercase;margin-bottom:2px;">🔄 TR (turnos)</div>
-          <input type="number" value="${tec.tr||0}" min="0" max="20" step="1"
-            style="font-size:0.75rem;padding:3px 6px;text-align:center;"
-            oninput="onTecnicaChange(${tec.id},'tr',this.value)">
-        </div>
-      </div>
-
-      <!-- FILA 4: Efectos + Notas -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
-        <div>
-          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">⚠️ Efectos / Estados</div>
-          <input type="text" value="${tec.efectos||''}" placeholder="Ej: Entumecimiento, Derribo..."
-            style="font-size:0.68rem;padding:3px 6px;"
-            oninput="onTecnicaChange(${tec.id},'efectos',this.value)">
-        </div>
-        <div>
-          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">📝 Notas</div>
-          <input type="text" value="${tec.notas||''}" placeholder="Descripción breve..."
-            style="font-size:0.68rem;padding:3px 6px;"
-            oninput="onTecnicaChange(${tec.id},'notas',this.value)">
-        </div>
-      </div>
-
-      <!-- RESULTADO FINAL -->
-      <div style="display:flex;align-items:center;justify-content:space-between;
-                  background:rgba(0,0,0,0.3);border-radius:5px;padding:8px 12px;
-                  border-top:1px solid ${color};">
-        <div style="font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);">
-          ${desgloseTotal}
-          ${tec.costeENE>0?`<span style="color:var(--stat-ene);margin-left:6px;">-${tec.costeENE}ENE</span>`:''}
-          ${tec.costeESP>0?`<span style="color:var(--stat-esp);margin-left:4px;">-${tec.costeESP}ESP</span>`:''}
-          ${tec.tr>0?`<span style="color:var(--stat-warn);margin-left:4px;">TR:${tec.tr}</span>`:''}
-          ${esFinisher?`<span style="color:var(--stat-bad);margin-left:4px;">⚠️ 1×/tema</span>`:''}
-        </div>
-        <div style="font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:${color};">
-          ${total.toLocaleString()}
-          <span style="font-size:0.6rem;color:var(--text-muted);margin-left:4px;">${danoLabels[tec.tipoDano]||''}</span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const tecnicasBlock=`
-    <div style="margin-top:14px;border-top:1px solid var(--panel-border);padding-top:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <div>
-          <span style="font-family:var(--font-heading);font-size:0.7rem;color:#f472b6;
-                       text-transform:uppercase;letter-spacing:1px;">
-            <i class="fas fa-bolt"></i> Técnicas (${state.tecnicas.length})
-          </span>
-          <div style="font-size:0.6rem;color:var(--text-muted);margin-top:2px;">
-            Fórmula: <code style="color:var(--accent-secondary);">∑(Base + Atrib × Mult) [+ Daño Blanco]</code>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div>
+            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Estilo de combate</div>
+            <select style="font-size:0.7rem;padding:3px 5px;"
+              onchange="onTecnicaChange(${tec.id},'estiloCombate',this.value)">
+              ${Object.entries(estiloLabels).map(([k,v])=>`<option value="${k}"${tec.estiloCombate===k?' selected':''}>${v}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Tipo de daño</div>
+            <select style="font-size:0.7rem;padding:3px 5px;"
+              onchange="onTecnicaChange(${tec.id},'tipoDano',this.value)">
+              ${Object.entries(danoLabels).map(([k,v])=>`<option value="${k}"${tec.tipoDano===k?' selected':''}>${v}</option>`).join('')}
+            </select>
           </div>
         </div>
-        <button onclick="onAddTecnica()"
-          style="background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.45);
-                 color:#f472b6;border-radius:6px;padding:5px 14px;font-size:0.7rem;cursor:pointer;
-                 font-family:var(--font-heading);text-transform:uppercase;letter-spacing:0.5px;">
-          + Nueva Técnica
-        </button>
-      </div>
-      ${tecRows}
-    </div>`;
+        <div style="background:rgba(0,0,0,0.2);border-radius:5px;padding:8px;margin-bottom:8px;">
+          <div style="font-size:0.6rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+            📐 Fórmula de daño
+            ${tec.componentes.length<4?`<button onclick="onAddComponente(${tec.id})"
+              style="background:rgba(255,255,255,0.05);border:1px solid var(--accent-secondary);color:var(--accent-secondary);
+                     border-radius:4px;padding:1px 7px;font-size:0.62rem;cursor:pointer;margin-left:6px;">+ componente</button>`:''}
+          </div>
+          ${compRows}
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin-top:4px;">
+            <input type="checkbox" ${tec.addGolpeBlanco?'checked':''}
+              onchange="onTecnicaChange(${tec.id},'addGolpeBlanco',this.checked)" style="margin:0;">
+            <span style="font-size:0.68rem;color:var(--text-muted);">
+              + Daño Blanco del estilo
+              ${tec.addGolpeBlanco?`<span style="color:var(--stat-good);">(+${wb.dmg} — ${wb.nota})</span>`:''}
+            </span>
+          </label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
+          <div>
+            <div style="font-size:0.6rem;color:var(--stat-ene);text-transform:uppercase;margin-bottom:2px;">⚡ Coste ENE${esExtraLimite?' (+50%)':''}</div>
+            <input type="number" value="${tec.costeENE||0}" min="0" step="1"
+              style="font-size:0.75rem;padding:3px 6px;text-align:center;"
+              oninput="onTecnicaChange(${tec.id},'costeENE',this.value)">
+            ${esExtraLimite&&(tec.costeENE||0)>0?`<div style="font-size:0.6rem;color:var(--stat-warn);">Real: ${Math.round((tec.costeENE||0)*1.5)}</div>`:''}
+          </div>
+          <div>
+            <div style="font-size:0.6rem;color:var(--stat-esp);text-transform:uppercase;margin-bottom:2px;">💜 Coste ESP</div>
+            <input type="number" value="${tec.costeESP||0}" min="0" step="1"
+              style="font-size:0.75rem;padding:3px 6px;text-align:center;"
+              oninput="onTecnicaChange(${tec.id},'costeESP',this.value)">
+          </div>
+          <div>
+            <div style="font-size:0.6rem;color:var(--stat-warn);text-transform:uppercase;margin-bottom:2px;">🔄 TR${esDual?' (×2)':''} (turnos)</div>
+            <input type="number" value="${tec.tr||0}" min="0" max="20" step="1"
+              style="font-size:0.75rem;padding:3px 6px;text-align:center;"
+              oninput="onTecnicaChange(${tec.id},'tr',this.value)">
+            ${esDual&&(tec.tr||0)>0?`<div style="font-size:0.6rem;color:var(--stat-ene);">Real: ${(tec.tr||0)*2} turnos</div>`:''}
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+          <div>
+            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">⚠️ Efectos / Estados</div>
+            <input type="text" value="${tec.efectos||''}" placeholder="Ej: Entumecimiento, Derribo..."
+              style="font-size:0.68rem;padding:3px 6px;"
+              oninput="onTecnicaChange(${tec.id},'efectos',this.value)">
+          </div>
+          <div>
+            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">📝 Notas</div>
+            <input type="text" value="${tec.notas||''}" placeholder="Descripción breve..."
+              style="font-size:0.68rem;padding:3px 6px;"
+              oninput="onTecnicaChange(${tec.id},'notas',this.value)">
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;
+                    background:rgba(0,0,0,0.3);border-radius:5px;padding:8px 12px;
+                    border-top:1px solid ${color};">
+          <div style="font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);">
+            ${desgloseTotal}
+            ${tec.costeENE>0?`<span style="color:var(--stat-ene);margin-left:6px;">-${esExtraLimite?Math.round(tec.costeENE*1.5):tec.costeENE}ENE</span>`:''}
+            ${tec.costeESP>0?`<span style="color:var(--stat-esp);margin-left:4px;">-${tec.costeESP}ESP</span>`:''}
+            ${tec.tr>0?`<span style="color:var(--stat-warn);margin-left:4px;">TR:${esDual?tec.tr*2:tec.tr}</span>`:''}
+            ${esFinisher?`<span style="color:var(--stat-bad);margin-left:4px;">⚠️ 1×/tema</span>`:''}
+          </div>
+          <div style="font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:${color};">
+            ${total.toLocaleString()}
+            <span style="font-size:0.6rem;color:var(--text-muted);margin-left:4px;">${danoLabels[tec.tipoDano]||''}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
 
-  el.innerHTML=`
-    ${weaponSel}
-    ${zoanPanel}
-    <table class="rpg-table" style="margin-bottom:0;">
-      <thead><tr>
-        <th style="width:30%">Ataque</th>
-        <th style="width:22%;text-align:center;">Daño Blanco</th>
-        <th>Desglose</th>
-      </tr></thead>
-      <tbody>
-        <tr>
-          <td style="color:var(--text-bright);font-weight:600;">${style==='desarmado'?'✊ Melé':style==='arma_simple'?'⚔️ Simple':'⚔️⚔️ Dual'}</td>
-          <td style="color:${dmgColor};font-weight:700;font-size:1.05rem;text-align:center;">${dmgStr}</td>
-          <td style="color:var(--text-muted);font-size:0.68rem;">${noWeapon?'Selecciona un arma arriba':whiteDmgNote}</td>
-        </tr>
-      </tbody>
-    </table>
-    ${tecnicasBlock}`;
+    const tecnicasBlock=`
+      <div style="margin-top:14px;border-top:1px solid var(--panel-border);padding-top:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div>
+            <span style="font-family:var(--font-heading);font-size:0.7rem;color:#f472b6;text-transform:uppercase;letter-spacing:1px;">
+              <i class="fas fa-bolt"></i> Técnicas (${state.tecnicas.length} / ${maxTec} máx.)
+            </span>
+            <div style="font-size:0.6rem;color:var(--text-muted);margin-top:2px;">
+              Fórmula: <code style="color:var(--accent-secondary);">∑(Base + Atrib × Mult) [+ Daño Blanco]</code>
+              · Máx. técnicas = INT ÷ 4
+            </div>
+          </div>
+          ${state.tecnicas.length<maxTec?`<button onclick="onAddTecnica()"
+            style="background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.45);
+                   color:#f472b6;border-radius:6px;padding:5px 14px;font-size:0.7rem;cursor:pointer;
+                   font-family:var(--font-heading);text-transform:uppercase;letter-spacing:0.5px;">
+            + Nueva Técnica
+          </button>`:
+          `<span style="font-size:0.68rem;color:var(--stat-bad);">Límite alcanzado (INT/${getEff('INT')})</span>`}
+        </div>
+        ${tecRows}
+      </div>`;
+
+    el.innerHTML=`
+      ${weaponSel}
+      ${zoanPanel}
+      <table class="rpg-table" style="margin-bottom:0;">
+        <thead><tr>
+          <th style="width:30%">Ataque Base</th>
+          <th style="width:22%;text-align:center;">Daño Blanco</th>
+          <th>Desglose</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--text-bright);font-weight:600;">${style==='desarmado'?'✊ Melé':style==='arma_simple'?'⚔️ Simple':'⚔️⚔️ Dual'}</td>
+            <td style="color:${dmgColor};font-weight:700;font-size:1.05rem;text-align:center;">${dmgStr}</td>
+            <td style="color:var(--text-muted);font-size:0.68rem;">${noWeapon?'Selecciona un arma arriba':whiteDmgNote}</td>
+          </tr>
+        </tbody>
+      </table>
+      ${tecnicasBlock}`;
   });
 }
-
 
 function autoDistribute(){
   const pts=freePA();if(pts<=0)return;
@@ -1103,30 +1047,16 @@ function onHakiChange(){
   state.haki.haos=document.getElementById('hakiHaos')?.checked||false;
   renderAll();
 }
-function onWeaponCatChange(){
-  const sel=document.getElementById('weapCat');
-  if(!sel)return;
-  state.weapon.cat=sel.value;
+function onWeaponCatChange(selEl){
+  const v=(selEl||document.getElementById('weapCat'))?.value;
+  if(v)state.weapon.cat=v;
   const subs=D.weapons[state.weapon.cat].subs;
   state.weapon.sub=Object.keys(subs)[0];
   state.weapon.tier=0;
-  const subSel=document.getElementById('weapTier');
-  if(subSel){
-    subSel.innerHTML='';
-    for(const[sn,sd]of Object.entries(subs)){
-      for(let t=0;t<5;t++){
-        const opt=document.createElement('option');
-        opt.value=`${sn}|${t}`;
-        opt.textContent=`${sn} T${t+1} (nv${sd.tierLevels[t]}+)`;
-        if(sn===state.weapon.sub&&t===0)opt.selected=true;
-        subSel.appendChild(opt);
-      }
-    }
-  }
   renderAll();
 }
-function onWeaponDetailChange(){
-  const st=document.getElementById('weapTier')?.value.split('|');
+function onWeaponDetailChange(selEl){
+  const st=(selEl&&selEl.value?selEl.value:document.getElementById('weapTier')?.value||'').split('|');
   if(st&&st.length===2){state.weapon.sub=st[0];state.weapon.tier=parseInt(st[1]);}
   state.weapon.mode=document.getElementById('weapMode')?.value||'normal';
   state.weapon.shield=document.getElementById('weapShield')?.value||'no';
@@ -1177,17 +1107,17 @@ function buildRPGLayout(){
         <div class="rpg-bar bar-vit">
           <div class="rpg-bar-header"><span>VIT</span><span class="rpg-bar-val" id="barVIT">0</span></div>
           <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillVIT" style="width:100%"></div></div>
-          <div class="regen-text" id="regenVIT">Regen: 0/turno</div>
+          <div class="regen-text" id="regenVIT">Regen: Solo Zoan/habilidades</div>
         </div>
         <div class="rpg-bar bar-ene">
           <div class="rpg-bar-header"><span>ENE</span><span class="rpg-bar-val" id="barENE">0</span></div>
           <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillENE" style="width:100%"></div></div>
-          <div class="regen-text" id="regenENE">Regen: +1/turno</div>
+          <div class="regen-text" id="regenENE">Regen: +Nv/turno | ×2 fuera combate</div>
         </div>
         <div class="rpg-bar bar-esp">
           <div class="rpg-bar-header"><span>ESP</span><span class="rpg-bar-val" id="barESP">0</span></div>
           <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillESP" style="width:100%"></div></div>
-          <div class="regen-text" id="regenESP">Regen: +0/turno</div>
+          <div class="regen-text" id="regenESP">Regen: CH/6 | CH/4 fuera combate</div>
         </div>
         <div class="pa-display">
           <div class="pa-num" id="hPA">${freePA()}</div>
@@ -1233,6 +1163,7 @@ function buildRPGLayout(){
         <div class="radar-box"><canvas id="statRadar" width="220" height="220"></canvas></div>
         <div class="info-row"><span class="info-key">Control Haki</span><span class="info-val" id="resCH" style="color:var(--stat-magic)">${getEff('CH')}</span></div>
         <div class="info-row"><span class="info-key">Control Akuma</span><span class="info-val" id="resCA" style="color:var(--stat-ene)">${getEff('CA')}</span></div>
+        <div class="info-row"><span class="info-key" style="color:var(--text-muted);font-size:0.65rem;">Técnicas max. (INT÷4)</span><span class="info-val" id="resTecMax" style="color:var(--accent-secondary);font-size:0.8rem;">${calcMaxTecnicas()}</span></div>
       </div>
 
       <div class="card" id="resumenCard">
@@ -1280,17 +1211,17 @@ function buildClassicLayout(){
       <div class="big-vital bv-vit">
         <div class="big-vital-lbl">Vitalidad</div>
         <div class="big-vital-val" id="barVIT">0</div>
-        <div class="big-vital-regen" id="regenVIT">Regen: 0/turno</div>
+        <div class="big-vital-regen" id="regenVIT">Solo Zoan/habilidades</div>
       </div>
       <div class="big-vital bv-ene">
         <div class="big-vital-lbl">Energia</div>
         <div class="big-vital-val" id="barENE">0</div>
-        <div class="big-vital-regen" id="regenENE">Regen: +1/turno</div>
+        <div class="big-vital-regen" id="regenENE">+Nv/turno | ×2 fuera</div>
       </div>
       <div class="big-vital bv-esp">
         <div class="big-vital-lbl">Espiritu</div>
         <div class="big-vital-val" id="barESP">0</div>
-        <div class="big-vital-regen" id="regenESP">Regen: CH/6 turno</div>
+        <div class="big-vital-regen" id="regenESP">CH/6 | CH/4 fuera</div>
       </div>
     </div>
     <div class="tabs-wrapper">
@@ -1323,7 +1254,7 @@ function buildClassicLayout(){
 // ============================================================
 function buildAttrTab(){
   return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-    <span style="font-family:var(--font-mono);font-size:0.7rem;background:var(--panel-bg);border:1px solid var(--stat-warn);color:var(--stat-warn);padding:4px 10px;border-radius:20px;" data-tip="Nivel x 10 + 50">
+    <span style="font-family:var(--font-mono);font-size:0.7rem;background:var(--panel-bg);border:1px solid var(--stat-warn);color:var(--stat-warn);padding:4px 10px;border-radius:20px;" data-tip="Nivel × 10 + 50 = Cap. máximo por atributo">
       Cap Max: <strong id="capAtrib">${getLevelCap()}</strong>
     </span>
     <div style="display:flex;gap:8px;">
@@ -1337,7 +1268,8 @@ function buildAttrTab(){
       <i class="fas fa-plus-circle"></i> Puntos Pasivos Extras
     </div>
     <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:10px;">
-      Bonos fijos <b>no PA</b>: Akuma, historia, eventos. Fórmula: <code style="color:var(--accent-secondary);">Stat = Base(PA) + Raza + Karma + Extras</code>
+      Bonos <b>no PA</b>: Akuma (pasivas), historia, eventos especiales.<br>
+      Fórmula: <code style="color:var(--accent-secondary);">Stat efectivo = (Auto + PA invertidos) + Raza + Karma + Extras</code>
     </div>
     <div id="passiveExtrasPanel"></div>
   </div>`;
@@ -1371,20 +1303,20 @@ function buildCombateTab(){
     <div class="grid-2">
       <div>
         <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;">Categoria</label>
-        <select id="weapCat" onchange="onWeaponCatChange()">${catOpts}</select>
+        <select id="weapCat" onchange="onWeaponCatChange(this)">${catOpts}</select>
         <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;margin-top:8px;">Arma y Tier</label>
-        <select id="weapTier" onchange="onWeaponDetailChange()">${subOpts}</select>
+        <select id="weapTier" onchange="onWeaponDetailChange(this)">${subOpts}</select>
       </div>
       <div>
         <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;">Modo</label>
-        <select id="weapMode" onchange="onWeaponDetailChange()">
-          <option value="normal" ${state.weapon.mode==='normal'?'selected':''}>Normal</option>
-          <option value="dual" ${state.weapon.mode==='dual'?'selected':''}>Arma Dual (x0.5)</option>
+        <select id="weapMode" onchange="onWeaponDetailChange(this)">
+          <option value="normal" ${state.weapon.mode==='normal'?'selected':''}>Normal (1 mano o 2 manos)</option>
+          <option value="dual" ${state.weapon.mode==='dual'?'selected':''}>Dual (FUE×0.5 / DES×0.5 por arma)</option>
         </select>
         <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;margin-top:8px;">Escudo</label>
-        <select id="weapShield" onchange="onWeaponDetailChange()">
+        <select id="weapShield" onchange="onWeaponDetailChange(this)">
           <option value="no" ${state.weapon.shield==='no'?'selected':''}>Sin escudo</option>
-          <option value="yes" ${state.weapon.shield==='yes'?'selected':''}>Con escudo (-20 AGI hits)</option>
+          <option value="yes" ${state.weapon.shield==='yes'?'selected':''}>Con escudo (−20 DES hits)</option>
         </select>
       </div>
     </div>
@@ -1394,7 +1326,7 @@ function buildCombateTab(){
     <div id="combatStatsBody"></div>
   </div>
   <div class="card" style="border-color:rgba(250,204,21,0.35);margin-top:16px;">
-    <div class="card-title" style="color:var(--stat-warn);"><i class="fas fa-fist-raised"></i> Calculadora de Daño Bélico</div>
+    <div class="card-title" style="color:var(--stat-warn);"><i class="fas fa-fist-raised"></i> Calculadora de Técnicas y Daño</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
       <div>
         <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Transformación</div>
@@ -1437,17 +1369,25 @@ function buildHakiTab(){
 function buildMaestriasTab(){
   const bonusRows=D.masteryBonuses.map(b=>`<tr><td style="color:var(--accent-secondary)">G${b.grade}</td><td style="color:var(--stat-good)">+${b.off} daño</td><td style="color:var(--stat-ene)">+${b.def} mit.</td></tr>`).join('');
   return `<div class="card">
-    <div class="card-title" style="justify-content:space-between;"><span><i class="fas fa-medal"></i> Maestrias Belicas</span><button class="btn btn-primary" style="padding:4px 10px;font-size:0.65rem;" onclick="addMaestria()"><i class="fas fa-plus"></i> Anadir</button></div>
+    <div class="card-title" style="justify-content:space-between;"><span><i class="fas fa-medal"></i> Maestrias Belicas</span><button class="btn btn-primary" style="padding:4px 10px;font-size:0.65rem;" onclick="addMaestria()"><i class="fas fa-plus"></i> Añadir</button></div>
+    <div style="font-size:0.67rem;color:var(--text-muted);margin-bottom:10px;">Primera maestría gratis. Las adicionales requieren 50 pts de INT cada una y coste en PM.</div>
     <div id="maestriasPanel"></div>
   </div>
   <div class="card" style="margin-top:14px;">
-    <div class="card-title"><i class="fas fa-info-circle"></i> Tabla de Maestrias</div>
+    <div class="card-title"><i class="fas fa-info-circle"></i> Tabla de Bonos de Maestria</div>
     <table class="rpg-table"><thead><tr><th>Grado</th><th>Bono Ofensivo</th><th>Bono Defensivo</th></tr></thead><tbody>${bonusRows}</tbody></table>
+    <div style="margin-top:8px;font-size:0.65rem;color:var(--text-muted);">
+      <p>La 1ª maestría progresa hasta G3 sin coste. De G4-G5 y maestrías adicionales cuestan PM.</p>
+      <p>Tipos: Cuerpo a Cuerpo · Escudos · Armas de Filo · Armas de Asta · Armas Contundentes · Armas de Fuego · Armas a Distancia · Armas Flexibles</p>
+    </div>
   </div>`;
 }
 
 function buildOficiosTab(){
-  return `<div id="oficiosGrid" class="grid-2"></div>`;
+  return `<div style="font-size:0.67rem;color:var(--text-muted);margin-bottom:10px;">
+    Primer oficio gratis. Oficios adicionales requieren 50 pts de INT cada uno. Superoficios: nv40 + ambas especializaciones al máximo + 150 PM.
+  </div>
+  <div id="oficiosGrid" class="grid-2"></div>`;
 }
 
 function buildKarmaTab(){
@@ -1468,7 +1408,7 @@ function buildResumenTab(){
   return `<div id="resumenFullBlock"></div>
   <div class="bbcode-panel" style="margin-top:16px;">
     <div class="card-title" style="border:none;padding-bottom:8px;margin-bottom:8px;"><i class="fas fa-code"></i> Exportar a BBCode</div>
-    <div class="bbcode-text" id="bbcodeText">Activa esta pestana para generar el BBCode...</div>
+    <div class="bbcode-text" id="bbcodeText">Activa esta pestaña para generar el BBCode...</div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn-bbcode" id="bbcodeBtn" onclick="copyBBCode()"><i class="fas fa-copy"></i> Copiar BBCode</button>
     </div>
@@ -1484,6 +1424,7 @@ function renderAll(){
   document.querySelectorAll('#hNivel').forEach(el=>el.textContent=state.level);
   document.querySelectorAll('#capAtrib').forEach(el=>el.textContent=getLevelCap());
   document.querySelectorAll('#displayRace').forEach(el=>el.textContent=state.race);
+  document.querySelectorAll('#resTecMax').forEach(el=>el.textContent=calcMaxTecnicas());
   renderVitals();
   renderAttrPanel();
   renderRaceGrid();
@@ -1518,7 +1459,7 @@ function renderAkumaGrid(){
     <div class="akuma-type-card logia ${akuma==='logia'?'selected':''}" onclick="onAkumaChange('logia')">
       <div class="akuma-type-icon" style="color:var(--stat-ene)"><i class="fas fa-cloud-bolt"></i></div>
       <div class="akuma-type-name">Logia</div>
-      <div class="akuma-type-desc">Transformacion elemental</div>
+      <div class="akuma-type-desc">Transformación elemental</div>
     </div>
     <div class="akuma-type-card" style="background:rgba(0,0,0,0.1);border-style:dashed;cursor:default;">
       <div class="akuma-type-icon" style="color:var(--stat-warn)"><i class="fas fa-paw"></i></div>
@@ -1529,15 +1470,15 @@ function renderAkumaGrid(){
   <div class="zoan-sub-grid">
     <div class="akuma-type-card zoan ${akuma==='zoan_normal'?'selected':''}" onclick="onAkumaChange('zoan_normal')">
       <div class="akuma-type-name">Zoan Normal</div>
-      <div class="akuma-type-desc">Regen: +Nv combate / +Nvx2 fuera</div>
+      <div class="akuma-type-desc">VIT: +Nv comb / +Nv×2 fuera<br>ENE: ×2 / ×3 fuera</div>
     </div>
     <div class="akuma-type-card zoan ${akuma==='zoan_pre'?'selected':''}" onclick="onAkumaChange('zoan_pre')">
       <div class="akuma-type-name">Zoan Prehistorica</div>
-      <div class="akuma-type-desc">Regen: +Nvx2 combate / +Nvx3 fuera</div>
+      <div class="akuma-type-desc">VIT: +Nv×2 / +Nv×3 fuera<br>ENE: ×3 / ×4 fuera</div>
     </div>
     <div class="akuma-type-card zoan ${akuma==='zoan_mito'?'selected':''}" onclick="onAkumaChange('zoan_mito')">
       <div class="akuma-type-name">Zoan Mitologica</div>
-      <div class="akuma-type-desc">Regen: +Nvx3 combate / +Nvx4 fuera</div>
+      <div class="akuma-type-desc">VIT: +Nv×3 / +Nv×4 fuera<br>ENE: ×4 / ×5 fuera</div>
     </div>
   </div>`;
 }
@@ -1548,34 +1489,41 @@ function renderVitals(){
   document.querySelectorAll('#barVIT').forEach(el=>el.textContent=vit.toLocaleString());
   document.querySelectorAll('#barENE').forEach(el=>el.textContent=ene.toLocaleString());
   document.querySelectorAll('#barESP').forEach(el=>el.textContent=esp.toLocaleString());
-  document.querySelectorAll('#regenVIT').forEach(el=>el.textContent=`Combate: +${zR.c} | Fuera: +${zR.f}`);
+  // VIT regen: solo Zoan tienen regen de VIT base
+  const vitRegenStr=zR.c>0?`Combate: +${zR.c}/turno | Fuera: +${zR.f}/turno`:'Sin regeneración (salvo habilidad especial)';
+  document.querySelectorAll('#regenVIT').forEach(el=>el.textContent=vitRegenStr);
+  // ENE regen: nivel/turno base (×2 fuera de combate). Zoan tienen multiplicador adicional.
+  const eneBase=getBaseEneRegen();
   const eneR=getZoanEneRegen(nv);
-  document.querySelectorAll('#regenENE').forEach(el=>el.textContent=`Combate: +${eneR.c} | Fuera: +${eneR.f}`);
-  document.querySelectorAll('#regenESP').forEach(el=>el.textContent=`Combate: +${(getEff('CH')/6).toFixed(1)} | Fuera: +${(getEff('CH')/4).toFixed(1)}`);
+  const eneRegenStr=state.akuma.type.startsWith('zoan')?`Combate: +${eneR.c}/t | Fuera: +${eneR.f}/t`:`Combate: +${eneBase}/turno | Fuera: +${eneBase*2}/turno`;
+  document.querySelectorAll('#regenENE').forEach(el=>el.textContent=eneRegenStr);
+  // ESP regen: CH/6 en combate, CH/4 fuera
+  const espR=getBaseEspRegen();
+  document.querySelectorAll('#regenESP').forEach(el=>el.textContent=`Combate: +${espR.toFixed(1)} | Fuera: +${(getEff('CH')/4).toFixed(1)}`);
 
+  // Umbrales de dolor
   const um=document.getElementById('umbralesPanel');
   if(um){
-    const V=getEff('VOL'),b=Math.floor(V/150)+1;
+    const umVals=calcUmbralesDolorValues();
     const effects=[
-      'Interrumpe acciones de concentración',
+      'Interrumpe acciones que requieran concentración',
       'Interrumpe concentración y cargas',
-      'Interrumpe TODAS las acciones',
-      'Corta Haki + Desorientación 3 seg.',
-      'Corta transformaciones Akuma'
+      'Interrumpe TODAS las acciones y técnicas con mantenimiento',
+      'Corta Haki + Desorientación/Confusión 3 seg.',
+      'Corta transformaciones Akuma no Mi'
     ];
+    const vol=getEff('VOL');
+    const umbralBase=Math.floor(vol/150)+1;
+    const isBucc=state.race==='Buccaneer';
     let buccBonus=0;
-    if(state.race==='Buccaneer'){
-      buccBonus=150;
-      if(state.level>=10)buccBonus+=300;
-      if(state.level>=25)buccBonus+=500;
-    }
-    um.innerHTML=[1,2,3,4,5].map((u,i)=>`
+    if(isBucc){buccBonus=150;if(state.level>=10)buccBonus+=300;if(state.level>=25)buccBonus+=500;}
+    um.innerHTML=[0,1,2,3,4].map((i)=>`
       <div class="umbral-row">
         <div>
-          <span style="color:var(--text-muted)">Umbral ${u}</span>
+          <span style="color:var(--text-muted)">Umbral ${i+1} <span style="font-size:0.58rem;">(daño > VOL×${umbralBase+i})</span></span>
           <div style="font-size:0.6rem;color:var(--text-muted);opacity:0.8;margin-top:1px;">${effects[i]}</div>
         </div>
-        <span style="color:var(--stat-warn);font-weight:bold;">> ${V*(b+i)+buccBonus}${buccBonus>0?` <span style="font-size:0.6rem;color:var(--stat-magic);">(+${buccBonus}🛡️)</span>`:''}</span>
+        <span style="color:var(--stat-warn);font-weight:bold;">> ${umVals[i].toLocaleString()}${isBucc&&buccBonus>0?` <span style="font-size:0.58rem;color:var(--stat-magic);">(+${buccBonus} Bucc.)</span>`:''}</span>
       </div>`).join('');
   }
 
@@ -1586,19 +1534,19 @@ function renderDeathThresholds(){
   const el=document.getElementById('criticalThresholdsPanel');if(!el)return;
   const t=calcDeathThresholds();
   el.innerHTML=`
-    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--stat-vit);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid rgba(251,113,133,0.2);">Vitalidad</div>
-    <div class="umbral-row"><span class="info-key">Inconsciente</span><span style="color:var(--stat-warn);">≤ 0</span></div>
-    <div class="umbral-row"><span class="info-key">Irrecuperable</span><span style="color:var(--stat-bad);">≤ ${t.vitIrrec}</span></div>
-    <div class="umbral-row"><span class="info-key">Muerte${t.isBuccaneer?' <span style="color:var(--stat-magic);font-size:0.6rem;">(Buccaneer)</span>':''}</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.vitDeath}</span></div>
-    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--stat-ene);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(96,165,250,0.2);">Energia</div>
-    <div class="umbral-row"><span class="info-key">Inconsciente</span><span style="color:var(--stat-warn);">≤ 0</span></div>
-    <div class="umbral-row"><span class="info-key">Muerte</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.eneDeath}</span></div>
-    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--stat-esp);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(192,132,252,0.2);">Espiritu</div>
-    <div class="umbral-row"><span class="info-key">Inconsciente</span><span style="color:var(--stat-warn);">< 0</span></div>
-    <div class="umbral-row"><span class="info-key">Muerte</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.espDeath}</span></div>
-    <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(255,255,255,0.06);">Golpe Único</div>
-    <div class="umbral-row"><span class="info-key">→ KO (90% VIT)</span><span style="color:var(--stat-warn);">≥ ${t.vitBigKO.toLocaleString()}</span></div>
-    <div class="umbral-row"><span class="info-key">→ Muerte (100%)</span><span style="color:var(--stat-bad);font-weight:bold;">≥ ${t.vitBigDeath.toLocaleString()}</span></div>`;
+    <div style="font-size:0.6rem;color:var(--stat-vit);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid rgba(251,113,133,0.2);">Vitalidad (PV)</div>
+    <div class="umbral-row"><span class="info-key">Inconsciente (10 turnos mín.)</span><span style="color:var(--stat-warn);">≤ 0</span></div>
+    <div class="umbral-row"><span class="info-key">Irrecuperable (−VOL)</span><span style="color:var(--stat-bad);">≤ ${t.vitIrrec}</span></div>
+    <div class="umbral-row"><span class="info-key">Muerte${t.isBuccaneer?' <span style="color:var(--stat-magic);font-size:0.58rem;">(×4 VOL Buccaneer)</span>':' (−VOL×2)'}</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.vitDeath}</span></div>
+    <div style="font-size:0.6rem;color:var(--stat-ene);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(96,165,250,0.2);">Energia (ENE)</div>
+    <div class="umbral-row"><span class="info-key">Inconsciente (5 turnos mín.)</span><span style="color:var(--stat-warn);">≤ 0</span></div>
+    <div class="umbral-row"><span class="info-key">Muerte (−RES)</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.eneDeath}</span></div>
+    <div style="font-size:0.6rem;color:var(--stat-esp);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(192,132,252,0.2);">Espiritu (ESP)</div>
+    <div class="umbral-row"><span class="info-key">Inconsciente (3 turnos mín.)</span><span style="color:var(--stat-warn);">< 0</span></div>
+    <div class="umbral-row"><span class="info-key">Muerte (−VOL/2)</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.espDeath}</span></div>
+    <div style="font-size:0.6rem;color:var(--text-muted);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(255,255,255,0.06);">Golpe Único Instantáneo</div>
+    <div class="umbral-row"><span class="info-key">→ KO inmediato (90% VIT)</span><span style="color:var(--stat-warn);">≥ ${t.vitBigKO.toLocaleString()}</span></div>
+    <div class="umbral-row"><span class="info-key">→ Muerte inmediata (100%)</span><span style="color:var(--stat-bad);font-weight:bold;">≥ ${t.vitBigDeath.toLocaleString()}</span></div>`;
 }
 
 function renderAttrPanel(){
@@ -1611,13 +1559,14 @@ function renderAttrPanel(){
     const total=(auto+cv)+rb+km+pe;
     const div=document.createElement('div');
     div.className='attr-card';
-    let extText=(rb+km)!==0||pe!==0?` Ext:${(rb+km+pe)>0?'+':''}${rb+km+pe}`:'';
-    if(pe!==0)extText+=` (✨${pe>0?'+':''}${pe})`;
+    let extText='';
+    if(rb!==0||km!==0)extText+=` Raza/Karma:${(rb+km)>0?'+':''}${rb+km}`;
+    if(pe!==0)extText+=` Extra:${pe>0?'+':''}${pe}`;
     div.innerHTML=`<div class="attr-icon">${meta.emoji}</div>
-      <div class="attr-name" data-tip="${meta.desc}\n\nFórmula: Base(PA) + Raza + Karma + Extras\n= ${auto+cv} + ${rb} + ${km} + ${pe} = ${total}">${attr}</div>
+      <div class="attr-name" data-tip="${meta.desc}\n\nFórmula: Auto + PA + Raza + Karma + Extras\n= ${auto}+${cv}+${rb}+${km}+${pe} = ${total}\n\nAuto aumenta ${D.config.AUTO_PER_LEVEL}/nivel">${attr}</div>
       <div class="attr-breakdown">
-        <div>Auto: ${auto} | Inv: ${cv}</div>
-        <div>Cap: ${auto+cv}/${cap}${extText}</div>
+        <div>Auto: ${auto} | PA: ${cv}</div>
+        <div>Cap PA: ${auto+cv}/${cap}${extText}</div>
       </div>
       <div class="attr-total">${total}</div>
       <div class="attr-controls">
@@ -1649,18 +1598,23 @@ function renderCombatStats(){
   const physR=calcPhysRes(),elR=calcElRes();
   const inv=calcInventorySpaces(),wt=calcWeightCapacity();
   const REF=getEff('REF'),AGI=getEff('AGI'),DES=getEff('DES'),PRE=getEff('PRE');
-  const CH=getEff('CH'),CA=getEff('CA'),VOL=getEff('VOL'),FUE=getEff('FUE');
-  const move=rnd(AGI/10),jump=rnd((FUE+AGI)/20);
+  const CH=getEff('CH'),CA=getEff('CA'),VOL=getEff('VOL'),FUE=getEff('FUE'),RES=getEff('RES');
+  // Movimiento: 1m por cada 10 AGI
+  const move=rnd(AGI/10);
+  // Salto: 1m por cada 20 pts de (FUE+AGI)
+  const jump=rnd((FUE+AGI)/20);
+  // Caída sin daño: RES/5 + 1m
+  const fall=calcFallHeight();
 
   const speedRows=[
-    {label:'Reacción',attr:'REF',val:REF,color:'var(--stat-warn)',desc:'Velocidad de percepción y respuesta general'},
-    {label:'CaC',attr:'AGI',val:AGI,color:'var(--accent-secondary)',desc:'Ataques cuerpo a cuerpo'},
-    {label:'Arma / Recarga',attr:'DES',val:DES,color:'var(--accent-secondary)',desc:'Ataques con arma y recarga de munición'},
-    {label:'Disparo',attr:'PRE',val:PRE,color:'var(--accent-secondary)',desc:'Ataques a distancia'},
+    {label:'Reacción / Percepción',attr:'REF',val:REF,color:'var(--stat-warn)',desc:'Velocidad de percepción de ataques y reacción general'},
+    {label:'CaC / Desplazamiento',attr:'AGI',val:AGI,color:'var(--accent-secondary)',desc:'Ataques cuerpo a cuerpo y velocidad de movimiento'},
+    {label:'Arma / Desenfunde / Recarga',attr:'DES',val:DES,color:'var(--accent-secondary)',desc:'Ataques con arma, desenfunde y recarga'},
+    {label:'Disparo / Distancia',attr:'PRE',val:PRE,color:'var(--accent-secondary)',desc:'Ataques a distancia y proyectiles'},
     ...(state.haki.busho||state.haki.ken||state.haki.haos?[{label:'Manifestar Haki',attr:'CH',val:CH,color:'var(--stat-magic)',desc:'Activar cualquier tipo de Haki'}]:[]),
-    ...(state.akuma.type!=='none'?[{label:'Crear / Transformar Akuma',attr:'CA',val:CA,color:'var(--stat-ene)',desc:'Transformaciones y manifestaciones del Akuma no Mi'}]:[]),
+    ...(state.akuma.type!=='none'?[{label:'Crear / Transformar (Akuma)',attr:'CA',val:CA,color:'var(--stat-ene)',desc:'Transformaciones y manifestaciones del Akuma no Mi'}]:[]),
     ...(state.akuma.type==='logia'?[{label:'Desplazamiento Logia',attr:'(CA+AGI)/2',val:rnd((CA+AGI)/2),color:'var(--stat-ene)',desc:'Velocidad de movimiento en forma elemental'}]:[]),
-    ...(state.haki.haos?[{label:'Onda Haoshoku',attr:'VOL',val:VOL,color:'var(--stat-magic)',desc:'Velocidad de propagación de la onda Haoshoku'}]:[]),
+    ...(state.haki.haos?[{label:'Onda Haoshoku',attr:'VOL',val:VOL,color:'var(--stat-magic)',desc:'Velocidad de propagación del Haoshoku'}]:[]),
   ];
 
   el.innerHTML=`
@@ -1670,15 +1624,16 @@ function renderCombatStats(){
     <div>
       <div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
       <div class="info-row"><span class="info-key">Daño por golpe</span><span class="info-val">${w.dmg}</span></div>
-      <div class="info-row"><span class="info-key">Golpes / turno</span><span class="info-val">${w.hits}</span></div>
-      <div class="info-row" style="background:var(--bad-bg);padding:5px 6px;border-radius:5px;margin-top:3px;"><span class="info-key" style="color:var(--stat-bad);font-weight:bold;">DPT Máximo</span><span class="info-val bad" style="font-size:1.1rem;">${w.dpt.toLocaleString()}</span></div>
+      <div class="info-row"><span class="info-key">Golpes / turno (DES)</span><span class="info-val">${w.hits}</span></div>
+      <div class="info-row" style="background:var(--bad-bg);padding:5px 6px;border-radius:5px;margin-top:3px;">
+        <span class="info-key" style="color:var(--stat-bad);font-weight:bold;">DPT Máximo</span>
+        <span class="info-val bad" style="font-size:1.1rem;">${w.dpt.toLocaleString()}</span>
+      </div>
     </div>
     <div>
-      <div class="info-row"><span class="info-key">Golpe Blanco</span><span class="info-val">${calcGB()}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-99: RES×0.5 | 100-299: 100 fijo | 300-399: 200 | 400+: 300">Mit. Física</span><span class="info-val good">${physR}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-149: RES×0.5 | 150-299: 100 | 300-399: 200 | 400+: 300">Mit. Elemental</span><span class="info-val" style="color:var(--stat-ene)">${elR}</span></div>
-      <div class="info-row"><span class="info-key">Movimiento</span><span class="info-val">${move} m/turno</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Con inercia (2 turnos corriendo): distancia y salto +50%">Salto (inercia)</span><span class="info-val">${jump} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="FUE < 150: FUE | FUE ≥ 150: FUE+50 | FUE ≥ 300: FUE+150\nNota: Guantes/punteras NO reciben este bono.">Golpe Blanco Melé</span><span class="info-val">${calcGB()}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-99: RES×0.5 | 100-299: 100 fijo | 300-399: 200 | ≥400: 300">Mit. Física (pasiva)</span><span class="info-val good">${physR}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-149: RES×0.5 | 150-299: 100 | 300-399: 200 | ≥400: 300">Mit. Elemental (pasiva)</span><span class="info-val" style="color:var(--stat-ene)">${elR}</span></div>
     </div>
   </div>
   `:''}
@@ -1691,64 +1646,68 @@ function renderCombatStats(){
         <span style="color:${s.color};font-weight:700;font-family:var(--font-mono);">${s.val}</span>
       </div>`).join('')}
     <div style="margin-top:8px;padding:8px;background:rgba(0,0,0,0.2);border-radius:var(--radius-sm);border-left:3px solid var(--stat-warn);">
-      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);line-height:1.6;">
-        <span style="color:var(--stat-warn);font-weight:600;">Tu REF: ${REF}</span> — Reaccionas a velocidades ≤ ${REF}<br>
-        <span style="color:var(--stat-warn);">Ciega parcial:</span> ${REF+1}–${REF+10} (solo ves si miras al origen del ataque)<br>
-        <span style="color:var(--stat-bad);">Ciega grave:</span> ${REF+11}–${REF+20} (solo si cubre >20m y estás a >10m del origen)<br>
-        <span style="color:var(--stat-bad);font-weight:700;">Invisible:</span> ≥ ${REF+21} (recibes irremediablemente)
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);line-height:1.7;">
+        <span style="color:var(--stat-warn);font-weight:600;">Tu REF: ${REF}</span> — Puedes reaccionar a ataques de velocidad ≤ ${REF}<br>
+        <span style="color:var(--stat-warn);">−1 a −10:</span> Solo percibes mirando directamente la zona de origen<br>
+        <span style="color:var(--stat-bad);">−11 a −20:</span> Solo si cubre >20m y estás a >10m del origen<br>
+        <span style="color:var(--stat-bad);font-weight:700;">≤ −21:</span> Recibes el ataque irremediablemente
       </div>
     </div>
   </div>
 
-  <div class="section-divider"><i class="fas fa-eye"></i> Tabla de Reflejos</div>
+  <div class="section-divider"><i class="fas fa-eye"></i> Tabla de Reflejos (REF - Vel. ataque)</div>
   <div style="margin-bottom:12px;">
     ${D.config.refReactions.map(r=>`
       <div class="ref-row">
         <span style="font-family:var(--font-mono);font-size:0.68rem;color:${r.color};font-weight:700;white-space:nowrap;flex-shrink:0;">${r.range}</span>
         <span style="font-size:0.65rem;color:var(--text-muted);text-align:right;">${r.result}</span>
       </div>`).join('')}
-    <div style="margin-top:6px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);padding:5px 8px;">
-      La diferencia es: REF propio − Velocidad del ataque recibido
-    </div>
   </div>
 
-  <div class="section-divider"><i class="fas fa-backpack"></i> Físico e Inventario</div>
-  <div class="grid-2">
+  <div class="section-divider"><i class="fas fa-running"></i> Movimiento y Físico</div>
+  <div class="grid-2" style="margin-bottom:12px;">
     <div>
-      <div class="info-row"><span class="info-key" data-tip="(FUE / 15) × 3, modificado por karmas">Espacios inv.</span><span class="info-val">${inv}</span></div>
-      <div class="info-row"><span class="info-key">Cap. peso (2 manos)</span><span class="info-val">${wt.toLocaleString()} kg</span></div>
-      <div class="info-row"><span class="info-key">Cap. peso (1 mano)</span><span class="info-val">${rnd(wt/2).toLocaleString()} kg</span></div>
+      <div class="info-row"><span class="info-key" data-tip="1m por cada 10 pts de AGI">Vel. carrera</span><span class="info-val">${move} m/turno</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Con inercia activa (2 turnos corriendo): +50% distancia">Vel. inercia</span><span class="info-val">${rnd(move*1.5)} m/turno</span></div>
+      <div class="info-row"><span class="info-key" data-tip="1m por cada 20 pts de (FUE+AGI)">Salto máximo</span><span class="info-val">${jump} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Con inercia activa: +50% al salto también">Salto con inercia</span><span class="info-val">${rnd(jump*1.5)} m</span></div>
     </div>
     <div>
-      <div class="info-row"><span class="info-key">Caída sin daño</span><span class="info-val">${rnd(getEff('RES')/5)+1} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="AGI / 10 = metros por turno">Vel. carrera</span><span class="info-val">${move} m/t</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Con inercia activa: +50%">Vel. inercia</span><span class="info-val">${rnd(move*1.5)} m/t</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Cada 5 pts RES = 1m extra + 1m base">Caída sin daño</span><span class="info-val">${fall} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="(FUE / 15) × 3, modificado por karmas Organizado/Desorganizado">Espacios inv.</span><span class="info-val">${inv}</span></div>
+      <div class="info-row"><span class="info-key">Cap. peso (2 manos)</span><span class="info-val">${wt.toLocaleString()} kg</span></div>
+      <div class="info-row"><span class="info-key">Cap. peso (1 mano)</span><span class="info-val">${rnd(wt/2).toLocaleString()} kg</span></div>
     </div>
   </div>`;
 }
 
 function renderHakiStats(){
   const C=getEff('CH'),I=getEff('INT'),R=getEff('RES'),V=getEff('VOL');
+  // Fórmulas del PDF: Experiencia = (CH×3) + (Atributo×2)
   const bExp=C*3+R*2,kExp=C*3+I*2,hExp=C*3+V*2;
   const {base:hBase,medio:hMedio}=D.config.hakiThresholds;
-  const tier=e=>e>=hMedio?`<span style="color:var(--stat-magic)">Medio (≥${hMedio})</span>`:e>=hBase?`<span style="color:var(--stat-good)">Base (≥${hBase})</span>`:`<span style="color:var(--text-muted)">Sin desbloquear</span>`;
+  const tier=e=>e>=hMedio?`<span style="color:var(--stat-magic)">Medio (≥${hMedio})</span>`:e>=hBase?`<span style="color:var(--stat-good)">Base (≥${hBase})</span>`:`<span style="color:var(--text-muted)">Sin desbloquear (<${hBase})</span>`;
+  // Atributo de Haki = CH + Atributo específico (para cálculos de efecto)
+  const bAtr=C+R,kAtr=C+I,hAtr=C+V;
   const cards=[
     ['cardBusho',state.haki.busho,'var(--stat-ene)','bushoStats',`
-      <div class="info-row"><span class="info-key">Experiencia</span><span class="info-val">${bExp}</span></div>
+      <div class="info-row"><span class="info-key">Experiencia (CH×3+RES×2)</span><span class="info-val">${bExp}</span></div>
       <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(bExp)}</span></div>
-      <div class="info-row"><span class="info-key">Defensa fija</span><span class="info-val good">+${C+R}</span></div>
-      <div class="info-row"><span class="info-key">Daño fijo</span><span class="info-val good">+${rnd((C+R)/2)}</span></div>`],
+      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + RES. Defensa = Atributo completo. Daño = Atributo/2.">Atributo Busoshoku</span><span class="info-val" style="color:var(--stat-ene)">${bAtr}</span></div>
+      <div class="info-row"><span class="info-key">Defensa (endurecimiento)</span><span class="info-val good">+${bAtr}</span></div>
+      <div class="info-row"><span class="info-key">Daño (imbuimiento)</span><span class="info-val good">+${rnd(bAtr/2)}</span></div>`],
     ['cardKen',state.haki.ken,'var(--stat-good)','kenStats',`
-      <div class="info-row"><span class="info-key">Experiencia</span><span class="info-val">${kExp}</span></div>
+      <div class="info-row"><span class="info-key">Experiencia (CH×3+INT×2)</span><span class="info-val">${kExp}</span></div>
       <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(kExp)}</span></div>
-      <div class="info-row"><span class="info-key">Radio base</span><span class="info-val good">${C+I} m</span></div>
-      <div class="info-row"><span class="info-key">Radio medio</span><span class="info-val good">${rnd((C+I)/10)} m</span></div>`],
+      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + INT. Radio Base: 1m diámetro por punto de Atributo. Medio: 1m radio por 10 pts Atributo.">Atributo Kenbunshoku</span><span class="info-val" style="color:var(--stat-good)">${kAtr}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m de diámetro por punto de Atributo Ken (coste 1 ESP/metro)">Radio Base (diámetro)</span><span class="info-val good">${kAtr} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m radio por cada 10 pts Atributo Ken (coste 15 ESP/metro)">Radio Medio (radio)</span><span class="info-val good">${rnd(kAtr/10)} m</span></div>`],
     ['cardHaos',state.haki.haos,'var(--stat-magic)','haosStats',`
-      <div class="info-row"><span class="info-key">Experiencia</span><span class="info-val">${hExp}</span></div>
+      <div class="info-row"><span class="info-key">Experiencia (CH×3+VOL×2)</span><span class="info-val">${hExp}</span></div>
       <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(hExp)}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Haoshoku Base: 1m por cada 10 pts de atributo">Radio Base</span><span class="info-val good">${rnd((C+V)/10)} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Haoshoku Medio: 1m por cada 20 pts de atributo">Radio Medio</span><span class="info-val good">${rnd((C+V)/20)} m</span></div>
-      <div class="info-row"><span class="info-key">Muerte inst.</span><span class="info-val bad">A ×3 VOL rival</span></div>`]
+      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + VOL. Radio Base: 1m/10pts Atributo. Radio Medio: 1m/20pts Atributo.">Atributo Haoshoku</span><span class="info-val" style="color:var(--stat-magic)">${hAtr}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m por cada 10 pts de Atributo Haoshoku (coste 30 ESP/metro)">Radio Base</span><span class="info-val good">${rnd(hAtr/10)} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m por cada 20 pts de Atributo Haoshoku (coste 50 ESP/metro + 15/turno extra)">Radio Medio</span><span class="info-val good">${rnd(hAtr/20)} m</span></div>`]
   ];
   cards.forEach(([cId,active,color,sId,content])=>{
     const card=document.getElementById(cId);
@@ -1788,9 +1747,12 @@ function renderOficios(){
     </div>
     ${s.level>0?`<div>
       <div class="info-row" style="margin-bottom:8px;"><span>Nivel (1-3)</span><input type="number" class="attr-input" style="width:50px;" value="${s.level}" min="1" max="3" onchange="onOficioLevel('${key}',this.value)"></div>
-      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">${d.specs[0]}</span><input type="range" min="0" max="3" value="${s.spec1}" onchange="onOficioSpec('${key}',1,this.value)" style="width:80px;"></div>
-      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">${d.specs[1]}</span><input type="range" min="0" max="3" value="${s.spec2}" onchange="onOficioSpec('${key}',2,this.value)" style="width:80px;"></div>
-      <label class="toggle-wrap" style="margin-top:8px;"><input type="checkbox" ${s.super?'checked':''} onchange="onOficioSuper('${key}',this.checked)"><div class="toggle"></div><span class="toggle-label" style="color:var(--stat-magic)">${d.super}</span></label>
+      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px;">Nivel 1: ${d.levels[0]}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px;">Nivel 2: ${d.levels[1]}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">Nivel 3: ${d.levels[2]}</div>
+      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">Esp. 1: ${d.specs[0]}</span><input type="range" min="0" max="3" value="${s.spec1}" onchange="onOficioSpec('${key}',1,this.value)" style="width:80px;"></div>
+      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">Esp. 2: ${d.specs[1]}</span><input type="range" min="0" max="3" value="${s.spec2}" onchange="onOficioSpec('${key}',2,this.value)" style="width:80px;"></div>
+      <label class="toggle-wrap" style="margin-top:8px;"><input type="checkbox" ${s.super?'checked':''} onchange="onOficioSuper('${key}',this.checked)"><div class="toggle"></div><span class="toggle-label" style="color:var(--stat-magic)">⭐ Superoficio: ${d.super}</span></label>
     </div>`:''}`;
     grid.appendChild(card);
   }
@@ -1836,6 +1798,7 @@ function renderResumen(){
   const t=calcDeathThresholds();
   const physR=calcPhysRes(),elR=calcElRes();
   const inv=calcInventorySpaces(),wt=calcWeightCapacity();
+  const maxTec=calcMaxTecnicas();
 
   const resRPG=`<div style="display:flex;flex-direction:column;gap:0;">
     <div class="info-row" style="padding:10px 0;"><span class="info-key" style="font-size:0.9rem;">Nombre</span><span class="info-val" style="font-size:1.1rem;color:var(--accent-secondary)">${state.name||'Sin Nombre'}</span></div>
@@ -1843,16 +1806,16 @@ function renderResumen(){
     <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${state.level}</span></div>
     <div class="info-row"><span class="info-key">Akuma no Mi</span><span class="info-val">${getAkumaLabel()}</span></div>
     <div class="info-row"><span class="info-key">Karma Balance</span><span class="info-val ${bal>0?'good':bal<0?'bad':'warn'}">${bal>0?'+':''}${bal}</span></div>
+    <div class="info-row"><span class="info-key">Técnicas max.</span><span class="info-val">${maxTec} (INT÷4)</span></div>
     <div style="height:1px;background:var(--panel-border);margin:6px 0;"></div>
-    <div class="info-row"><span class="info-key" style="color:var(--stat-vit)">VIT Max</span><span class="info-val" style="color:var(--stat-vit);">${calcVIT().toLocaleString()}</span></div>
-    <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">ENE Max</span><span class="info-val" style="color:var(--stat-ene);">${calcENE().toLocaleString()}</span></div>
-    <div class="info-row"><span class="info-key" style="color:var(--stat-esp)">ESP Max</span><span class="info-val" style="color:var(--stat-esp);">${calcESP().toLocaleString()}</span></div>
+    <div class="info-row"><span class="info-key" style="color:var(--stat-vit)">VIT</span><span class="info-val" style="color:var(--stat-vit);">${calcVIT().toLocaleString()}</span></div>
+    <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">ENE</span><span class="info-val" style="color:var(--stat-ene);">${calcENE().toLocaleString()}</span></div>
+    <div class="info-row"><span class="info-key" style="color:var(--stat-esp)">ESP</span><span class="info-val" style="color:var(--stat-esp);">${calcESP().toLocaleString()}</span></div>
     <div style="height:1px;background:var(--panel-border);margin:6px 0;"></div>
     ${w?`<div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
     <div class="info-row"><span class="info-key">DPT Max</span><span class="info-val bad">${w.dpt.toLocaleString()}</span></div>`:''}
-    <div class="info-row"><span class="info-key">Mit. Física / Elem.</span><span class="info-val">${physR} / ${elR}</span></div>
-    <div class="info-row"><span class="info-key">Inventario</span><span class="info-val">${inv} espacios</span></div>
-    <div class="info-row"><span class="info-key">Peso max.</span><span class="info-val">${wt.toLocaleString()} kg</span></div>
+    <div class="info-row"><span class="info-key">Mit. Fís. / Elem.</span><span class="info-val">${physR} / ${elR}</span></div>
+    <div class="info-row"><span class="info-key">Inventario</span><span class="info-val">${inv} esp. | ${wt.toLocaleString()} kg</span></div>
     ${hakiBadges?`<div style="margin-top:6px;">${hakiBadges}</div>`:''}
     ${mastBadges?`<div style="margin-top:4px;">${mastBadges}</div>`:''}
     ${ofBadges?`<div style="margin-top:4px;">${ofBadges}</div>`:''}
