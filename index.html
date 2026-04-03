@@ -557,7 +557,6 @@ function renderRoadBuildTable(){
     const bgSticky=isCurr?'rgba(80,15,35,0.98)':isMile?'rgba(40,30,5,0.96)':'rgba(22,8,14,0.97)';
     const cap=lv*10+50;
 
-    // Calcular vitales para este nivel
     const vit=rbVIT(lv), ene=rbENE(lv), esp=rbESP(lv);
 
     planRows+=`<tr class="${rowCls}">
@@ -570,7 +569,7 @@ function renderRoadBuildTable(){
         const inputVal = rbGetPAAtLevel(a,lv);
         const auto = rbAutoBase(a,lv);
         const cumPA = rbGetCumulativePA(a,lv);
-        const extra = rbGetRaceKarmaExtra(a); // ¡Aquí se coge el bono de raza!
+        const extra = rbGetRaceKarmaExtra(a); 
         const totalEff = auto + cumPA + extra;
         const overCap = (auto + cumPA) > cap;
         
@@ -593,56 +592,6 @@ function renderRoadBuildTable(){
     </tr>`;
   }
   planEl.innerHTML=planRows;
-}
-
-  if(!statsEl)return;
-  let statsRows='';
-  for(let lv=1;lv<=maxLv;lv++){
-    const isCurr=lv===state.level;
-    const isMile=lv%10===0;
-    const rowCls=isCurr?'rb-current':isMile?'rb-milestone':'';
-    const bgSticky=isCurr?'rgba(80,15,35,0.98)':isMile?'rgba(40,30,5,0.96)':'rgba(22,8,14,0.97)';
-    const cap=lv*10+50;
-    const vit=rbVIT(lv),ene=rbENE(lv),esp=rbESP(lv);
-    const gb=rbGB(lv),mf=rbMitF(lv),me=rbMitE(lv);
-    const mov=rnd(rbEff('AGI',lv)/10);
-    const salto=rnd((rbEff('FUE',lv)+rbEff('AGI',lv))/20);
-    const caida=rnd(rbEff('RES',lv)/5)+1;
-    const d=rbDeath(lv);
-    const paAvail=rbPAAvail(lv);
-    const paUsed=rbTotalInvUpTo(lv);
-    const paFree=paAvail-paUsed;
-    const freeColor=paFree<0?'#fb7185':paFree===0?'#facc15':'#4ade80';
-
-    statsRows+=`<tr class="${rowCls}">
-      <td class="rb-sticky-col" style="background:${bgSticky};padding:4px 8px;text-align:center;font-weight:700;color:${isCurr?'#F25C8D':isMile?'#facc15':'#8A7F73'};min-width:52px;">
-        ${isCurr?'★':isMile?'◆':''}${lv}
-      </td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:${freeColor};">${paFree}</td>
-      ${D.attrs.map(a=>{
-        const v=rbEff(a,lv);
-        const auto=rbAutoBase(a,lv);
-        const pa=rbGetCumulativePA(a,lv);
-        const bonus=rbGetRaceKarmaExtra(a);
-        const overCap=(auto+pa)>cap;
-        return `<td style="padding:3px 4px;text-align:center;color:${overCap?'#fb7185':pa>0?'#ffffff':'#8A7F73'};"
-          title="${a} Nv${lv}: Auto ${auto} + PA ${pa} + Bonos ${bonus} = ${v} (cap ${cap})">${v}</td>`;
-      }).join('')}
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#fb7185;">${vit.toLocaleString()}</td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#60a5fa;">${ene.toLocaleString()}</td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#c084fc;">${esp}</td>
-      <td style="padding:3px 5px;text-align:center;color:#facc15;">${gb}</td>
-      <td style="padding:3px 5px;text-align:center;color:#4ade80;">${mf}</td>
-      <td style="padding:3px 5px;text-align:center;color:#60a5fa;">${me}</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${mov}m</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${salto}m</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--text-muted);">${caida}m</td>
-      <td style="padding:3px 5px;text-align:center;color:#fb7185;font-size:0.62rem;">${d.vitDeath}</td>
-      <td style="padding:3px 5px;text-align:center;color:#60a5fa;font-size:0.62rem;">${d.eneDeath}</td>
-      <td style="padding:3px 5px;text-align:center;color:#c084fc;font-size:0.62rem;">${d.espDeath}</td>
-    </tr>`;
-  }
-  statsEl.innerHTML=statsRows;
 }
 
 // ============================================================
@@ -1057,7 +1006,7 @@ function buildRoadBuildTab(){
         <i class="fas fa-trash"></i> Limpiar Plan
       </button>
       <div style="margin-left:auto;font-size:0.65rem;color:var(--accent-secondary);text-align:right;">
-        Raza activa: <b>${state.race}</b> <br>
+        Raza activa: <b>\${state.race}</b> <br>
         <span style="color:var(--text-muted);font-size:0.6rem;">Los totales ya incluyen bonos de raza, karma y auto-stats.</span>
       </div>
     </div>
@@ -1068,7 +1017,7 @@ function buildRoadBuildTab(){
           <tr>
             <th class="rb-sticky-head" style="min-width:40px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
             <th style="min-width:50px;color:#4ade80;" title="PA Libres para gastar">PA Libres</th>
-            ${D.attrs.map(a=>`<th style="min-width:75px;color:var(--accent-secondary);text-align:center;">${a}</th>`).join('')}
+            \${D.attrs.map(a=>\`<th style="min-width:75px;color:var(--accent-secondary);text-align:center;">\${a}</th>\`).join('')}
             <th style="min-width:60px;color:#fb7185;">VIT</th>
             <th style="min-width:60px;color:#60a5fa;">ENE</th>
             <th style="min-width:50px;color:#c084fc;">ESP</th>
