@@ -76,33 +76,15 @@
   --scrollbar: #1e2a3e;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-body {
-  font-family: var(--font-body);
-  font-size: 14px; line-height: 1.5;
-  color: var(--text-main);
-  min-height: 100vh; overflow-x: hidden;
-  background-image: url('https://i.imgur.com/0ZZoQTF.png');
-  background-repeat: repeat; background-size: auto;
-  background-attachment: fixed; position: relative;
-}
-body::before {
-  content:''; position:fixed; inset:0;
-  background:var(--bg-overlay); z-index:0; transition:background 0.5s ease;
-}
-body > * {position:relative;z-index:1;}
+body{font-family:var(--font-body);font-size:14px;line-height:1.5;color:var(--text-main);min-height:100vh;overflow-x:hidden;background-image:url('https://i.imgur.com/0ZZoQTF.png');background-repeat:repeat;background-size:auto;background-attachment:fixed;position:relative;}
+body::before{content:'';position:fixed;inset:0;background:var(--bg-overlay);z-index:0;transition:background 0.5s ease;}
+body>*{position:relative;z-index:1;}
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent-primary);}
 [data-tip]{position:relative;cursor:help;border-bottom:1px dotted var(--accent-primary);display:inline-block;}
-[data-tip]:hover::after{
-  content:attr(data-tip); position:absolute; bottom:120%; left:50%; transform:translateX(-50%);
-  background:var(--panel-bg); color:var(--text-bright);
-  border:1px solid var(--accent-primary); box-shadow:var(--shadow-lg);
-  padding:8px 12px; border-radius:var(--radius-sm);
-  font-family:var(--font-body); font-size:0.72rem; white-space:pre-wrap;
-  width:max-content; max-width:280px; z-index:9999; pointer-events:none; text-align:center;
-}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--panel-bg);color:var(--text-bright);border:1px solid var(--accent-primary);box-shadow:var(--shadow-lg);padding:8px 12px;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:0.72rem;white-space:pre-wrap;width:max-content;max-width:280px;z-index:9999;pointer-events:none;text-align:center;}
 .card{background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);backdrop-filter:blur(10px);transition:var(--transition);}
 .card-title{font-family:var(--font-heading);font-size:0.85rem;font-weight:700;color:var(--accent-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--panel-border);display:flex;align-items:center;gap:8px;}
 .btn{background:transparent;border:1px solid var(--panel-border-bright);color:var(--text-main);font-family:var(--font-heading);font-size:0.72rem;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
@@ -167,6 +149,8 @@ header{background:var(--panel-bg);backdrop-filter:blur(14px);border-bottom:1px s
 .nav-tab{background:transparent;border:none;color:var(--text-muted);font-family:var(--font-heading);font-size:0.68rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:8px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);white-space:nowrap;flex-shrink:0;}
 .nav-tab:hover{background:var(--panel-bg-hover);color:var(--text-bright);}
 .nav-tab.active{background:var(--accent-alpha);color:var(--accent-primary);border:1px solid var(--accent-primary);box-shadow:inset 0 0 10px var(--accent-glow);}
+.nav-tab.rb-tab{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:var(--stat-good);}
+.nav-tab.rb-tab.active{background:rgba(74,222,128,0.18);border-color:var(--stat-good);box-shadow:inset 0 0 10px rgba(74,222,128,0.2);}
 .tab-content{display:none;animation:fadeIn 0.3s ease;padding-top:14px;}
 .tab-content.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
@@ -257,6 +241,22 @@ header{background:var(--panel-bg);backdrop-filter:blur(14px);border-bottom:1px s
 .ref-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:5px 8px;border-bottom:1px dashed rgba(255,255,255,0.04);font-size:0.68rem;}
 .ref-row:last-child{border-bottom:none;}
 .section-divider{font-family:var(--font-heading);font-size:0.7rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;padding:8px 0 6px 0;border-bottom:1px solid var(--panel-border);margin:12px 0 8px 0;display:flex;align-items:center;gap:6px;}
+
+/* ── Road Build styles ── */
+.rb-table{min-width:900px;width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.68rem;}
+.rb-table th{padding:6px 5px;text-align:center;font-weight:600;background:rgba(0,0,0,0.5);position:sticky;top:0;z-index:6;border-bottom:2px solid var(--panel-border-bright);}
+.rb-table td{padding:3px 3px;border-bottom:1px solid rgba(255,255,255,0.025);}
+.rb-sticky-col{position:sticky;left:0;z-index:4;border-right:1px solid var(--panel-border);}
+.rb-sticky-head{position:sticky;left:0;z-index:7;border-right:1px solid var(--panel-border);}
+.rb-milestone{background:rgba(250,204,21,0.06) !important;}
+.rb-current{background:rgba(242,92,141,0.1) !important;}
+.rb-input{width:44px;text-align:center;font-size:0.64rem;padding:2px 3px;border-radius:4px;}
+.rb-scroll{overflow-x:auto;border:1px solid var(--panel-border);border-radius:var(--radius);}
+.rb-section-header{font-family:var(--font-heading);font-size:0.72rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;padding:10px 0 6px 0;border-bottom:1px solid var(--panel-border);margin:18px 0 10px 0;display:flex;align-items:center;gap:8px;}
+.rb-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-family:var(--font-mono);font-size:0.6rem;}
+.rb-legend span{display:flex;align-items:center;gap:4px;}
+.rb-legend .dot{width:8px;height:8px;border-radius:50%;}
+
 @media(max-width:1300px){.rpg-layout{grid-template-columns:270px 1fr 310px;}}
 @media(max-width:1100px){.rpg-layout{grid-template-columns:1fr;height:auto;}.col-left,.col-right{position:static;max-height:none;}.attr-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:768px){.attr-grid{grid-template-columns:repeat(2,1fr);}.grid-2,.grid-3{grid-template-columns:1fr;}.rpg-layout{gap:12px;padding:10px;}.header-center{display:none;}.akuma-type-grid{grid-template-columns:repeat(2,1fr);}}
@@ -315,30 +315,15 @@ let state = {
   oficios:{},
   combatCalc:{transformation:'humano',style:'desarmado'},
   zoanBonuses:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
-  tecnicas:[{
-    id:1,
-    nombre:'Técnica 1',
-    rango:1,
-    tipo:'normal',
-    estiloCombate:'desarmado',
-    tipoDano:'contundente',
-    componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
-    addGolpeBlanco:false,
-    costeENE:0,
-    costeESP:0,
-    tr:0,
-    efectos:'',
-    notas:''
-  }]
+  roadBuild:{targetLevel:1,plans:{}}
 };
 
 // ============================================================
-// MATH ENGINE — Corregido según guía PDF oficial
+// MATH ENGINE
 // ============================================================
 const rnd = x => Math.round(x);
 
 function autoBase(a){
-  // CH y CA no tienen base automática
   return (a==='CH'||a==='CA') ? 0 : 3+(state.level-1)*D.config.AUTO_PER_LEVEL;
 }
 function cval(a){return state.customAttrs[a]||0;}
@@ -349,7 +334,6 @@ function getKarmaMod(a){
   let m=0;
   for(const[id,sel]of Object.entries(state.selectedKarmas)){
     if(!sel)continue;
-    // Karmas negativos que afectan stats
     if(id==='tuerto'&&(a==='REF'||a==='PRE'))m-=50;
     if(id==='ciego'&&(a==='PRE'||a==='REF'))m-=100;
     if(id==='mal_oido'&&a==='REF')m-=25;
@@ -371,75 +355,36 @@ function getZoanBonus(a){
 function getAttr(a){return autoBase(a)+cval(a)+getRaceBonus(a);}
 function getEff(a){return getAttr(a)+getKarmaMod(a)+getPExtra(a)+getZoanBonus(a);}
 
-// ──────────────────────────────────────────────────────────────
-// FÓRMULAS OFICIALES DEL PDF (Guía de Atributos, apartado 2)
-// ──────────────────────────────────────────────────────────────
-
-// VIT = (FUE×5 + RES×6 + DES×2 + AGI + VOL) × (1 + NIVEL/33.33)
 function calcVIT(){
   const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),A=getEff('AGI'),V=getEff('VOL'),n=state.level;
   return rnd((F*5+R*6+Ds*2+A+V)*(1+n/33.33));
 }
-
-// ENE = FUE×4 + RES×5 + DES + PRE + AGI + REF + INT×3 + VOL + CA
-// NOTA: Sin bonificadores de nivel. Fórmula exacta del PDF.
 function calcENE(){
   const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),P=getEff('PRE'),
         A=getEff('AGI'),Rf=getEff('REF'),I=getEff('INT'),V=getEff('VOL'),Ca=getEff('CA');
   return Math.floor(F*4+R*5+Ds+P+A+Rf+I*3+V+Ca);
 }
-
-// ESP = VOL×3 + CH×3
-// NOTA: Sin bonificadores de nivel. Fórmula exacta del PDF.
 function calcESP(){
   const V=getEff('VOL'),C=getEff('CH');
   return rnd(V*3+C*3);
 }
-
-// Resistencia Pasiva Física
-// <50: 0 | 50-99: RES×0.5 | 100-299: 100 fijo | 300-399: 200 | ≥400: 300
 function calcPhysRes(){
   const R=getEff('RES');
-  if(R>=400)return 300;
-  if(R>=300)return 200;
-  if(R>=100)return 100;
-  if(R>=50)return rnd(R*0.5);
-  return 0;
+  if(R>=400)return 300;if(R>=300)return 200;if(R>=100)return 100;if(R>=50)return rnd(R*0.5);return 0;
 }
-
-// Resistencia Pasiva Elemental
-// <50: 0 | 50-99: RES×0.5 | 100-149: RES×0.5 | 150-299: 100 fijo | 300-399: 200 | ≥400: 300
 function calcElRes(){
   const R=getEff('RES');
-  if(R>=400)return 300;
-  if(R>=300)return 200;
-  if(R>=150)return 100;
-  if(R>=50)return rnd(R*0.5);
-  return 0;
+  if(R>=400)return 300;if(R>=300)return 200;if(R>=150)return 100;if(R>=50)return rnd(R*0.5);return 0;
 }
-
-// Golpe Blanco Melé (Tier 1: FUE | Tier 2: FUE+50 a ≥150 | Tier 3: FUE+150 a ≥300)
-// Nota: Guantes/punteras NO reciben este bono.
 function calcGB(){
   const F=getEff('FUE');
-  if(F>=300)return F+150;
-  if(F>=150)return F+50;
-  return F;
+  if(F>=300)return F+150;if(F>=150)return F+50;return F;
 }
-
-// Número de ataques blancos según tabla del PDF
 function calcHits(v){
-  if(v<=150)return 1;
-  if(v<=300)return 2;
-  if(v<=450)return 3;
-  if(v<=600)return 4;
-  return 5;
+  if(v<=150)return 1;if(v<=300)return 2;if(v<=450)return 3;if(v<=600)return 4;return 5;
 }
-
 function totalUsed(){return D.attrs.reduce((s,a)=>s+(state.customAttrs[a]||0),0);}
 function freePA(){return D.config.PA_START+state.level*D.config.PA_PER_LEVEL-totalUsed();}
-
-// Inventario: (FUE / 15) × 3, modificado por karmas
 function calcInventorySpaces(){
   const F=getEff('FUE');
   let sp=Math.floor(F/15)*3;
@@ -448,92 +393,44 @@ function calcInventorySpaces(){
   if(state.selectedKarmas['desorganizado'])sp-=5;
   return Math.max(0,sp);
 }
-
-// Capacidad de peso según tabla de rangos del PDF
 function calcWeightCapacity(){
   const F=getEff('FUE');
   const tier=D.config.weightTiers.find(t=>F<=t.maxFUE)||D.config.weightTiers[D.config.weightTiers.length-1];
   return rnd(tier.base+(F*F/tier.div));
 }
-
-// Caída sin daño: cada 5 puntos de RES = 1m extra + 1m base
 function calcFallHeight(){return rnd(getEff('RES')/5)+1;}
-
-// Umbrales de dolor
-// El umbral base va de VOL×1 a VOL×5. Por cada 150 VOL el multiplicador sube en 1.
-// (ej: 150-299 VOL → multiplicadores x2 a x6)
 function calcDeathThresholds(){
   const vol=getEff('VOL'),res=getEff('RES'),vit=calcVIT();
   const isBuccaneer=state.race==='Buccaneer';
-  // Muerte VIT: negativo igual o superior a VOL×2 (×4 para Buccaneer)
   const vitDeathMult=isBuccaneer?4:2;
-  // El multiplicador base del primer umbral aumenta en 1 por cada 150 VOL
   const umbralBase=Math.floor(vol/150)+1;
-  return{
-    vitKO:0,
-    vitIrrec:-vol,
-    vitDeath:-(vol*vitDeathMult),
-    vitBigKO:rnd(vit*0.9),
-    vitBigDeath:vit,
-    eneKO:0,
-    eneDeath:-res,
-    espKO:0,
-    espDeath:-Math.ceil(vol/2),
-    isBuccaneer,
-    umbralBase
-  };
+  return{vitKO:0,vitIrrec:-vol,vitDeath:-(vol*vitDeathMult),vitBigKO:rnd(vit*0.9),vitBigDeath:vit,eneKO:0,eneDeath:-res,espKO:0,espDeath:-Math.ceil(vol/2),isBuccaneer,umbralBase};
 }
-
-// Umbrales de dolor (valor en daño para disparar cada umbral)
-// Primer umbral: daño > VOL × umbralBase
-// Quinto umbral: daño > VOL × (umbralBase+4)
 function calcUmbralesDolorValues(){
   const vol=getEff('VOL');
   const base=Math.floor(vol/150)+1;
-  // Buccaneer añade puntos extra a todos los umbrales
   let buccBonus=0;
-  if(state.race==='Buccaneer'){
-    buccBonus=150;
-    if(state.level>=10)buccBonus+=300;
-    if(state.level>=25)buccBonus+=500;
-  }
+  if(state.race==='Buccaneer'){buccBonus=150;if(state.level>=10)buccBonus+=300;if(state.level>=25)buccBonus+=500;}
   return [1,2,3,4,5].map(i=>vol*(base+i-1)+buccBonus);
 }
-
 function getAkumaRegen(){
   const t=state.akuma.type,n=state.level;
-  if(t==='none')return{c:0,f:0};
-  if(t==='logia')return{c:0,f:0};
-  if(t==='paramecia')return{c:0,f:0};
-  if(t==='zoan_normal')return{c:n,f:n*2};
-  if(t==='zoan_pre')return{c:n*2,f:n*3};
-  if(t==='zoan_mito')return{c:n*3,f:n*4};
-  return{c:0,f:0};
+  if(t==='none')return{c:0,f:0};if(t==='logia')return{c:0,f:0};if(t==='paramecia')return{c:0,f:0};
+  if(t==='zoan_normal')return{c:n,f:n*2};if(t==='zoan_pre')return{c:n*2,f:n*3};
+  if(t==='zoan_mito')return{c:n*3,f:n*4};return{c:0,f:0};
 }
-
 function getZoanEneRegen(n){
   const t=state.akuma.type;
-  if(t==='zoan_normal')return{c:n*2,f:n*3};
-  if(t==='zoan_pre')return{c:n*3,f:n*4};
-  if(t==='zoan_mito')return{c:n*4,f:n*5};
-  return{c:n,f:n*2};
+  if(t==='zoan_normal')return{c:n*2,f:n*3};if(t==='zoan_pre')return{c:n*3,f:n*4};
+  if(t==='zoan_mito')return{c:n*4,f:n*5};return{c:n,f:n*2};
 }
-
-// Regeneración ENE base = nivel/turno (×2 fuera de combate)
-// Regeneración ESP base = CH/6 en combate, CH/4 fuera
 function getBaseEneRegen(){return state.level;}
-function getBaseEspRegen(){return (getEff('CH')/6);}
-
+function getBaseEspRegen(){return(getEff('CH')/6);}
 function getAkumaLabel(){
   const t=state.akuma.type;
-  if(t==='none')return'Ninguna';
-  if(t==='logia')return'Logia';
-  if(t==='paramecia')return'Paramecia';
-  if(t==='zoan_normal')return'Zoan Normal';
-  if(t==='zoan_pre')return'Zoan Prehistorica';
-  return'Zoan Mitologica';
+  if(t==='none')return'Ninguna';if(t==='logia')return'Logia';if(t==='paramecia')return'Paramecia';
+  if(t==='zoan_normal')return'Zoan Normal';if(t==='zoan_pre')return'Zoan Prehistorica';return'Zoan Mitologica';
 }
-
 function getWeaponStats(){
   const catD=D.weapons[state.weapon.cat];if(!catD)return null;
   const subD=catD.subs[state.weapon.sub];if(!subD)return null;
@@ -542,26 +439,198 @@ function getWeaponStats(){
   const base=subD.bases[state.weapon.tier]||0,sc=subD.scales;
   let dmg=base;
   if(subD.special==='gloves')dmg=FUE+base+(sc.FUE||0)*FUE;
-  else{
-    dmg+=rnd((sc.FUE||0)*FUE*fM);
-    if(subD.usePRE)dmg+=rnd((sc.PRE||0)*PRE+(sc.DES||0)*DES*dM);
-    else dmg+=rnd((sc.DES||0)*DES*dM);
-  }
+  else{dmg+=rnd((sc.FUE||0)*FUE*fM);if(subD.usePRE)dmg+=rnd((sc.PRE||0)*PRE+(sc.DES||0)*DES*dM);else dmg+=rnd((sc.DES||0)*DES*dM);}
   const hitsAttr=(subD.special==='gloves')?getEff('AGI'):DES;
   let nH=calcHits(hitsAttr);
   if(state.weapon.shield==='yes')nH=calcHits(Math.max(0,hitsAttr-20));
   if(state.weapon.mode==='dual'&&subD.special!=='gloves')dmg=dmg*2;
   return{name:state.weapon.sub,tier:state.weapon.tier+1,dmg,hits:nH,dpt:dmg*nH};
 }
-
 function getKarmaBalance(){
   let b=0;
   [...D.karmasPos,...D.karmasNeg].forEach(k=>{if(state.selectedKarmas[k.id])b+=k.val;});
   return b;
 }
 
-// Cálculo de técnicas máximas permitidas: 1 por cada 4 puntos de INT
-function calcMaxTecnicas(){return Math.max(1,Math.floor(getEff('INT')/4));}
+// ============================================================
+// ROAD BUILD ENGINE
+// ============================================================
+function rbAutoBase(attr, lv){
+  return (attr==='CH'||attr==='CA') ? 0 : 3+(lv-1)*D.config.AUTO_PER_LEVEL;
+}
+function rbGetRaceKarmaExtra(attr){
+  return getRaceBonus(attr)+getKarmaMod(attr)+getPExtra(attr);
+}
+function rbGetPAAtLevel(attr, lv){
+  return (state.roadBuild?.plans[lv]?.[attr]) || 0;
+}
+function rbGetCumulativePA(attr, upToLv){
+  let total=0;
+  for(let l=1;l<=upToLv;l++) total+=rbGetPAAtLevel(attr,l);
+  return total;
+}
+function rbTotalInvAtLevel(lv){
+  return D.attrs.reduce((s,a)=>s+rbGetPAAtLevel(a,lv),0);
+}
+function rbTotalInvUpTo(lv){
+  return D.attrs.reduce((s,a)=>s+rbGetCumulativePA(a,lv),0);
+}
+function rbPAAvail(lv){return D.config.PA_START+lv*D.config.PA_PER_LEVEL;}
+function rbPAFree(lv){return rbPAAvail(lv)-rbTotalInvUpTo(lv);}
+function rbEff(attr, lv){
+  return rbAutoBase(attr,lv)+rbGetCumulativePA(attr,lv)+rbGetRaceKarmaExtra(attr);
+}
+function rbVIT(lv){
+  const F=rbEff('FUE',lv),R=rbEff('RES',lv),Ds=rbEff('DES',lv),A=rbEff('AGI',lv),V=rbEff('VOL',lv);
+  return rnd((F*5+R*6+Ds*2+A+V)*(1+lv/33.33));
+}
+function rbENE(lv){
+  const F=rbEff('FUE',lv),R=rbEff('RES',lv),Ds=rbEff('DES',lv),P=rbEff('PRE',lv),
+        A=rbEff('AGI',lv),Rf=rbEff('REF',lv),I=rbEff('INT',lv),V=rbEff('VOL',lv),Ca=rbEff('CA',lv);
+  return Math.floor(F*4+R*5+Ds+P+A+Rf+I*3+V+Ca);
+}
+function rbESP(lv){return rnd(rbEff('VOL',lv)*3+rbEff('CH',lv)*3);}
+function rbGB(lv){
+  const F=rbEff('FUE',lv);
+  if(F>=300)return F+150;if(F>=150)return F+50;return F;
+}
+function rbMitF(lv){
+  const R=rbEff('RES',lv);
+  if(R>=400)return 300;if(R>=300)return 200;if(R>=100)return 100;if(R>=50)return rnd(R*0.5);return 0;
+}
+function rbMitE(lv){
+  const R=rbEff('RES',lv);
+  if(R>=400)return 300;if(R>=300)return 200;if(R>=150)return 100;if(R>=50)return rnd(R*0.5);return 0;
+}
+function rbDeath(lv){
+  const vol=rbEff('VOL',lv),res=rbEff('RES',lv);
+  const isBucc=state.race==='Buccaneer';
+  return{vitDeath:-(vol*(isBucc?4:2)),eneDeath:-res,espDeath:-Math.ceil(vol/2)};
+}
+
+function changeRBTarget(delta){
+  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
+  state.roadBuild.targetLevel=Math.max(1,Math.min(D.config.MAX_LEVEL,(state.roadBuild.targetLevel||1)+delta));
+  renderRoadBuildTable();
+}
+function resetRoadBuild(){
+  if(!confirm('¿Resetear todo el Road Build? Se perderá el plan completo.'))return;
+  state.roadBuild={targetLevel:state.roadBuild?.targetLevel||state.level,plans:{}};
+  renderRoadBuildTable();
+}
+function syncRBFromMain(){
+  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
+  state.roadBuild.targetLevel=state.level;
+  state.roadBuild.plans={};
+  const plan={};
+  for(const a of D.attrs) plan[a]=state.customAttrs[a]||0;
+  state.roadBuild.plans[1]=plan;
+  renderRoadBuildTable();
+}
+function onRBPlanChange(lv,attr,val){
+  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
+  if(!state.roadBuild.plans[lv])state.roadBuild.plans[lv]={};
+  state.roadBuild.plans[lv][attr]=Math.max(0,parseInt(val)||0);
+  renderRoadBuildTable();
+}
+
+function renderRoadBuildTable(){
+  const planEl=document.getElementById('rbPlannerBody');
+  const statsEl=document.getElementById('rbStatsBody');
+  const lvEls=document.querySelectorAll('.rb-target-lv');
+  if(!planEl)return;
+
+  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
+  const rb=state.roadBuild;
+  const maxLv=Math.min(Math.max(rb.targetLevel||1,1),D.config.MAX_LEVEL);
+  lvEls.forEach(el=>el.textContent=maxLv);
+
+  let planRows='';
+  for(let lv=1;lv<=maxLv;lv++){
+    const paPlus=lv===1?D.config.PA_START+D.config.PA_PER_LEVEL:D.config.PA_PER_LEVEL;
+    const paAvail=rbPAAvail(lv);
+    const invAtLv=rbTotalInvAtLevel(lv);
+    const paFree=rbPAFree(lv);
+    const isCurr=lv===state.level;
+    const isMile=lv%10===0;
+    const freeColor=paFree<0?'#fb7185':paFree===0?'#facc15':'#4ade80';
+    const rowCls=isCurr?'rb-current':isMile?'rb-milestone':'';
+    const bgSticky=isCurr?'rgba(80,15,35,0.98)':isMile?'rgba(40,30,5,0.96)':'rgba(22,8,14,0.97)';
+
+    planRows+=`<tr class="${rowCls}">
+      <td class="rb-sticky-col" style="background:${bgSticky};padding:4px 8px;text-align:center;font-weight:700;color:${isCurr?'#F25C8D':isMile?'#facc15':'#8A7F73'};min-width:52px;">
+        ${isCurr?'★':isMile?'◆':''}${lv}
+      </td>
+      <td style="padding:3px 5px;text-align:center;color:#4ade80;font-weight:600;">+${paPlus}</td>
+      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${paAvail}</td>
+      <td style="padding:3px 5px;text-align:center;color:#facc15;">${invAtLv}</td>
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:${freeColor};font-size:0.72rem;">${paFree}</td>
+      ${D.attrs.map(a=>{
+        const v=rbGetPAAtLevel(a,lv);
+        const cumAuto=rbAutoBase(a,lv);
+        const cumPA=rbGetCumulativePA(a,lv);
+        const cap=lv*10+50;
+        const overCap=(cumAuto+cumPA)>cap;
+        return `<td style="padding:2px 2px;text-align:center;">
+          <input class="rb-input" type="number" value="${v}" min="0" step="1"
+            style="border-color:${overCap?'#fb7185':v>0?'var(--accent-primary)':'var(--panel-border)'};"
+            title="${a} en Nv${lv}: Auto=${cumAuto}, PA acumulado=${cumPA}, Cap=${cap}"
+            onchange="onRBPlanChange(${lv},'${a}',this.value)">
+        </td>`;
+      }).join('')}
+    </tr>`;
+  }
+  planEl.innerHTML=planRows;
+
+  if(!statsEl)return;
+  let statsRows='';
+  for(let lv=1;lv<=maxLv;lv++){
+    const isCurr=lv===state.level;
+    const isMile=lv%10===0;
+    const rowCls=isCurr?'rb-current':isMile?'rb-milestone':'';
+    const bgSticky=isCurr?'rgba(80,15,35,0.98)':isMile?'rgba(40,30,5,0.96)':'rgba(22,8,14,0.97)';
+    const cap=lv*10+50;
+    const vit=rbVIT(lv),ene=rbENE(lv),esp=rbESP(lv);
+    const gb=rbGB(lv),mf=rbMitF(lv),me=rbMitE(lv);
+    const mov=rnd(rbEff('AGI',lv)/10);
+    const salto=rnd((rbEff('FUE',lv)+rbEff('AGI',lv))/20);
+    const caida=rnd(rbEff('RES',lv)/5)+1;
+    const d=rbDeath(lv);
+    const paAvail=rbPAAvail(lv);
+    const paUsed=rbTotalInvUpTo(lv);
+    const paFree=paAvail-paUsed;
+    const freeColor=paFree<0?'#fb7185':paFree===0?'#facc15':'#4ade80';
+
+    statsRows+=`<tr class="${rowCls}">
+      <td class="rb-sticky-col" style="background:${bgSticky};padding:4px 8px;text-align:center;font-weight:700;color:${isCurr?'#F25C8D':isMile?'#facc15':'#8A7F73'};min-width:52px;">
+        ${isCurr?'★':isMile?'◆':''}${lv}
+      </td>
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:${freeColor};">${paFree}</td>
+      ${D.attrs.map(a=>{
+        const v=rbEff(a,lv);
+        const auto=rbAutoBase(a,lv);
+        const pa=rbGetCumulativePA(a,lv);
+        const bonus=rbGetRaceKarmaExtra(a);
+        const overCap=(auto+pa)>cap;
+        return `<td style="padding:3px 4px;text-align:center;color:${overCap?'#fb7185':pa>0?'#ffffff':'#8A7F73'};"
+          title="${a} Nv${lv}: Auto ${auto} + PA ${pa} + Bonos ${bonus} = ${v} (cap ${cap})">${v}</td>`;
+      }).join('')}
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#fb7185;">${vit.toLocaleString()}</td>
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#60a5fa;">${ene.toLocaleString()}</td>
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#c084fc;">${esp}</td>
+      <td style="padding:3px 5px;text-align:center;color:#facc15;">${gb}</td>
+      <td style="padding:3px 5px;text-align:center;color:#4ade80;">${mf}</td>
+      <td style="padding:3px 5px;text-align:center;color:#60a5fa;">${me}</td>
+      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${mov}m</td>
+      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${salto}m</td>
+      <td style="padding:3px 5px;text-align:center;color:var(--text-muted);">${caida}m</td>
+      <td style="padding:3px 5px;text-align:center;color:#fb7185;font-size:0.62rem;">${d.vitDeath}</td>
+      <td style="padding:3px 5px;text-align:center;color:#60a5fa;font-size:0.62rem;">${d.eneDeath}</td>
+      <td style="padding:3px 5px;text-align:center;color:#c084fc;font-size:0.62rem;">${d.espDeath}</td>
+    </tr>`;
+  }
+  statsEl.innerHTML=statsRows;
+}
 
 // ============================================================
 // MUTATORS
@@ -593,443 +662,6 @@ function onZoanBonus(attr,val){
   state.zoanBonuses[attr]=parseInt(val)||0;
   renderAll();
 }
-
-// ── SISTEMA DE TÉCNICAS ─────────────────────────────────────
-function onTecnicaChange(id,field,val){
-  if(!state.tecnicas)state.tecnicas=[];
-  const t=state.tecnicas.find(t=>t.id===id);if(!t)return;
-  if(field==='addGolpeBlanco')t[field]=val;
-  else if(field==='rango'||field==='costeENE'||field==='costeESP'||field==='tr')t[field]=parseInt(val)||0;
-  else if(field.startsWith('comp_')){
-    const parts=field.split('_'),idx=parseInt(parts[1]),sub=parts[2];
-    if(!t.componentes[idx])t.componentes[idx]={atributo:'FUE',multiplicador:0,valorBase:0};
-    if(sub==='multiplicador'||sub==='valorBase')t.componentes[idx][sub]=parseFloat(val)||0;
-    else t.componentes[idx][sub]=val;
-  }else t[field]=val;
-  renderCombatCalc();
-}
-function onAddComponente(tecId){
-  const t=state.tecnicas.find(t=>t.id===tecId);
-  if(!t||t.componentes.length>=4)return;
-  t.componentes.push({atributo:'FUE',multiplicador:0,valorBase:0});
-  renderCombatCalc();
-}
-function onRemoveComponente(tecId,idx){
-  const t=state.tecnicas.find(t=>t.id===tecId);
-  if(!t||t.componentes.length<=1)return;
-  t.componentes.splice(idx,1);
-  renderCombatCalc();
-}
-function onAddTecnica(){
-  if(!state.tecnicas)state.tecnicas=[];
-  const maxId=state.tecnicas.reduce((m,t)=>Math.max(m,t.id),0);
-  state.tecnicas.push({
-    id:maxId+1,nombre:`Técnica ${maxId+1}`,rango:1,tipo:'normal',
-    estiloCombate:'desarmado',tipoDano:'contundente',
-    componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
-    addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
-  });
-  renderCombatCalc();
-}
-function onRemoveTecnica(id){
-  if(!state.tecnicas||state.tecnicas.length<=1)return;
-  state.tecnicas=state.tecnicas.filter(t=>t.id!==id);
-  renderCombatCalc();
-}
-function onCombatCalcChange(field,val){
-  if(!state.combatCalc)state.combatCalc={transformation:'humano',style:'desarmado'};
-  state.combatCalc[field]=val;
-  document.querySelectorAll('#calcTransform').forEach(el=>el.value=state.combatCalc.transformation||'humano');
-  document.querySelectorAll('#calcStyle').forEach(el=>el.value=state.combatCalc.style||'desarmado');
-  renderCombatCalc();
-}
-
-/* ── Daño Blanco por estilo de combate ── */
-function calcWhiteDmgByStyle(estilo){
-  const F=getEff('FUE'),Ds=getEff('DES'),P=getEff('PRE');
-  const ws=getWeaponStats();
-  switch(estilo){
-    case 'desarmado':{
-      if(F>=300)return{dmg:F+150,nota:'FUE+150 (≥300)'};
-      if(F>=150)return{dmg:F+50,nota:'FUE+50 (≥150)'};
-      return{dmg:F,nota:'FUE base'};
-    }
-    case 'arma_simple':{
-      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
-      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
-      const sc=sd?.scales||{};
-      let dmg=sd?.bases[state.weapon.tier]||0;
-      if(sd?.usePRE)dmg+=Math.round((sc.DES||0)*Ds+(sc.PRE||0)*P);
-      else dmg+=Math.round((sc.FUE||0)*F+(sc.DES||0)*Ds);
-      return{dmg,nota:`${ws.name} T${ws.tier}`};
-    }
-    case 'arma_dual':{
-      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
-      const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
-      const sc=sd?.scales||{};
-      const hasAmbi=state.selectedKarmas['ambidiestro'];
-      const desScale=hasAmbi?(sc.DES||0):(sc.DES||0)*0.5;
-      const perArma=(sd?.bases[state.weapon.tier]||0)+Math.round(F*0.5)+Math.round(Ds*desScale);
-      return{dmg:perArma*2,nota:`${ws.name} T${ws.tier} ×2${hasAmbi?' (Ambidiestro)':''}`};
-    }
-    case 'disparo':{
-      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
-      return{dmg:ws.dmg,nota:`${ws.name} T${ws.tier} (PRE)`};
-    }
-    case 'flexible':{
-      if(!ws)return{dmg:0,nota:'Sin arma equipada'};
-      return{dmg:ws.dmg,nota:`${ws.name} T${ws.tier}`};
-    }
-    case 'haki':{
-      const C=getEff('CH'),R=getEff('RES');
-      return{dmg:Math.round((C+R)/2),nota:'Busoshoku: (CH+RES)/2'};
-    }
-    case 'akuma':{
-      const CA=getEff('CA');
-      return{dmg:CA,nota:'Base CA (Akuma)'};
-    }
-    default:return{dmg:0,nota:'—'};
-  }
-}
-
-/* ── Cálculo daño de técnica ──
-   Tipos de técnica (según PDF):
-   - normal: sin modificador
-   - extralimite: +25% daño, +50% coste ENE (1×/tema por cada 100 INT)
-   - dual: ×2 daño, ×2 ENE, ×2 TR (requiere doble atributos)
-   - sinergia: +25% daño (si el aliado también lanza su sinergia simultáneamente)
-   - ultimate: mayor multiplicador, mismo coste ENE
-   - finisher: 1×/tema, mayor poder, -30% potencia usada
-*/
-function calcTecnicaDmg(tec){
-  let dmgComp=tec.componentes.reduce((sum,c)=>{
-    const atVal=getEff(c.atributo||'FUE');
-    return sum+Math.round((c.valorBase||0)+(atVal*(c.multiplicador||0)));
-  },0);
-  let dmgBlanco=0;
-  if(tec.addGolpeBlanco){
-    const wb=calcWhiteDmgByStyle(tec.estiloCombate||'desarmado');
-    dmgBlanco=wb.dmg;
-  }
-  let total=dmgComp+dmgBlanco;
-  if(tec.tipo==='extralimite')total=Math.round(total*1.25);
-  if(tec.tipo==='dual')total=total*2;
-  if(tec.tipo==='sinergia')total=Math.round(total*1.25);
-  return{total,dmgComp,dmgBlanco};
-}
-
-function calcMeleeWhiteDmg(){
-  const F=getEff('FUE');
-  if(F>=300)return F+150;
-  if(F>=150)return F+50;
-  return F;
-}
-
-function renderPassiveExtras(){
-  document.querySelectorAll('#passiveExtrasPanel').forEach(el=>{
-    if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-    const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
-    const labels={FUE:'Fuerza',RES:'Resistencia',DES:'Destreza',PRE:'Precisión',AGI:'Agilidad',REF:'Reflejos',INT:'Inteligencia',VOL:'Voluntad',CH:'Control Haki',CA:'Control Akuma'};
-    el.innerHTML=D.attrs.map(a=>{
-      const v=state.passiveExtras[a]||0;
-      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="width:22px;text-align:center;font-size:0.9rem;">${emojis[a]}</span>
-        <span style="flex:1;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">${labels[a]}</span>
-        <input type="number" value="${v}" min="-9999" max="9999" step="1"
-          style="width:72px;text-align:center;font-size:0.78rem;padding:4px 6px;"
-          onchange="onPassiveExtra('${a}',this.value)" oninput="onPassiveExtra('${a}',this.value)">
-        <span style="width:50px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">
-          ${v>0?'+'+v:v}
-        </span>
-      </div>`;
-    }).join('');
-  });
-}
-
-function renderCombatCalc(){
-  document.querySelectorAll('#combatCalcBody').forEach(el=>{
-    const style=state.combatCalc?.style||'desarmado';
-    const trans=state.combatCalc?.transformation||'humano';
-    const isZoan=state.akuma?.type?.startsWith('zoan')||false;
-    if(!state.tecnicas||!state.tecnicas.length)
-      state.tecnicas=[{id:1,nombre:'Técnica 1',rango:1,tipo:'normal',estiloCombate:'desarmado',tipoDano:'contundente',componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''}];
-
-    document.querySelectorAll('#calcTransform').forEach(sel=>{
-      if(!isZoan&&(state.combatCalc?.transformation||'humano')!=='humano'){state.combatCalc.transformation='humano';}
-      sel.innerHTML=`<option value="humano"${(state.combatCalc?.transformation||'humano')==='humano'?' selected':''}>Base (Humano)</option>`
-        +(isZoan?`<option value="hibrido"${(state.combatCalc?.transformation)==='hibrido'?' selected':''}>Híbrido</option>`
-                 +`<option value="completo"${(state.combatCalc?.transformation)==='completo'?' selected':''}>Completo (animal)</option>`:'');
-    });
-
-    let weaponSel='';
-    const needWeapon=style==='arma_simple'||style==='arma_dual';
-    if(needWeapon&&D&&D.weapons){
-      let catOpts='';
-      for(const[k,v]of Object.entries(D.weapons))catOpts+=`<option value="${k}" ${state.weapon.cat===k?'selected':''}>${v.name}</option>`;
-      let subOpts='';
-      const catD=D.weapons[state.weapon.cat];
-      if(catD)for(const[sn,sd]of Object.entries(catD.subs))for(let t=0;t<5;t++)
-        subOpts+=`<option value="${sn}|${t}" ${state.weapon.sub===sn&&state.weapon.tier===t?'selected':''}>${sn} T${t+1} (nv${sd.tierLevels[t]}+)</option>`;
-      const ws2=getWeaponStats();
-      const equipped=ws2?`<span style="color:var(--stat-good);font-size:0.68rem;">✅ ${ws2.name} T${ws2.tier}</span>`:`<span style="color:var(--stat-bad);font-size:0.68rem;">Sin arma</span>`;
-      weaponSel=`<div style="background:rgba(0,0,0,0.18);border:1px solid var(--panel-border);border-radius:8px;padding:9px;margin-bottom:10px;">
-        <div style="font-size:0.65rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;"><i class="fas fa-shield-alt"></i> Arma Equipada &nbsp;${equipped}</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Categoría</div>
-            <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponCatChange(this)">${catOpts}</select></div>
-          <div><div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:3px;">Arma y Tier</div>
-            <select style="font-size:0.7rem;padding:4px 6px;" onchange="onWeaponDetailChange(this)">${subOpts}</select></div>
-        </div>
-      </div>`;
-    }
-
-    let zoanPanel='';
-    if(isZoan&&trans!=='humano'){
-      const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
-      const zb=state.zoanBonuses||{};
-      const rows=D.attrs.map(a=>{
-        const v=zb[a]||0;
-        return `<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
-          <span style="width:18px;text-align:center;font-size:0.82rem;">${emojis[a]}</span>
-          <span style="flex:1;font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);">${a}</span>
-          <input type="number" value="${v}" min="-9999" max="9999" step="1"
-            style="width:64px;text-align:center;font-size:0.72rem;padding:3px 5px;"
-            oninput="onZoanBonus('${a}',this.value)">
-          <span style="width:44px;text-align:right;font-family:var(--font-mono);font-size:0.68rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">${v>0?'+'+v:v}</span>
-        </div>`;
-      }).join('');
-      zoanPanel=`<div style="border:1px solid rgba(168,85,247,0.4);border-radius:8px;padding:10px;margin-bottom:10px;background:rgba(168,85,247,0.05);">
-        <div style="font-size:0.65rem;color:#c084fc;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;"><i class="fas fa-dragon"></i> Bonos Zoan — ${trans==='hibrido'?'Forma Híbrida':'Forma Completa'}</div>
-        <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">Introduce los bonos de stat de tu Akuma Zoan según las tablas de la Guía de Akumas.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 14px;">${rows}</div>
-      </div>`;
-    } else if(isZoan&&trans==='humano'){
-      zoanPanel=`<div style="font-size:0.67rem;color:var(--text-muted);padding:4px 0 8px 2px;"><i class="fas fa-info-circle"></i> Selecciona Híbrido o Completo para introducir los bonos Zoan de esa transformación.</div>`;
-    }
-
-    const ws=getWeaponStats();
-    let whiteDmg=0,whiteDmgNote='',noWeapon=false;
-    if(style==='desarmado'){
-      whiteDmg=calcMeleeWhiteDmg();
-      const F=getEff('FUE');
-      whiteDmgNote=F>=300?'FUE≥300 (+150)':F>=150?'FUE≥150 (+50)':'FUE básico';
-    } else if(style==='arma_simple'){
-      if(ws){
-        const F=getEff('FUE'),Ds=getEff('DES'),P=getEff('PRE');
-        const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
-        const sc=sd?.scales||{};
-        let dmg=sd?.bases[state.weapon.tier]||0;
-        if(sd?.usePRE)dmg+=Math.round((sc.DES||0)*Ds+(sc.PRE||0)*P);
-        else dmg+=Math.round((sc.FUE||0)*F+(sc.DES||0)*Ds);
-        whiteDmg=dmg;
-        whiteDmgNote=`T${ws.tier}·Base${sd?.bases[state.weapon.tier]}+FUE×${sc.FUE||0}+DES×${sc.DES||0}${sd?.usePRE?'+PRE×'+(sc.PRE||0):''}`;
-      } else noWeapon=true;
-    } else if(style==='arma_dual'){
-      if(ws){
-        const sd=D.weapons[state.weapon.cat]?.subs[state.weapon.sub];
-        const sc=sd?.scales||{};
-        const F=getEff('FUE'),Ds=getEff('DES');
-        const hasAmbi=state.selectedKarmas['ambidiestro'];
-        const desScale=hasAmbi?(sc.DES||0):(sc.DES||0)*0.5;
-        const perWeapon=(sd?.bases[state.weapon.tier]||0)+Math.round(F*0.5)+Math.round(Ds*desScale);
-        whiteDmg=perWeapon*2;
-        whiteDmgNote=`T${ws.tier}×2·FUE×0.5/arma${hasAmbi?',DES íntegra':`,DES×${desScale.toFixed(2)}/arma`}`;
-      } else noWeapon=true;
-    }
-    const dmgStr=noWeapon?'—':whiteDmg;
-    const dmgColor=noWeapon?'var(--text-muted)':'var(--stat-good)';
-
-    const tipoColors={normal:'var(--text-muted)',extralimite:'var(--stat-warn)',dual:'var(--stat-ene)',sinergia:'var(--stat-good)',ultimate:'var(--stat-magic)',finisher:'var(--stat-bad)'};
-    const tipoLabels={normal:'Normal',extralimite:'Extra-Límite +25%dmg +50%ENE',dual:'Dual ×2 req/dmg/TR',sinergia:'Sinergia +25%dmg (con aliado)',ultimate:'Ultimate (mayor mult., mismo ENE)',finisher:'Finisher (1×/tema, −30% potencia usada)'};
-    const estiloLabels={desarmado:'✊ Desarmado',arma_simple:'⚔️ Arma Simple',arma_dual:'⚔️⚔️ Arma Dual',disparo:'🎯 Disparo',flexible:'🪢 Flexible/Látigo',haki:'✨ Haki (Busoshoku)',akuma:'🌊 Akuma',mixto:'⚡ Mixto'};
-    const danoLabels={contundente:'🟤 Contundente',cortante:'⚪ Cortante',perforante:'🔵 Perforante',elemental_fuego:'🔴 Elem. Fuego',elemental_rayo:'🟡 Elem. Rayo',elemental_hielo:'🔷 Elem. Hielo',elemental_veneno:'🟢 Elem. Veneno',elemental_otro:'🟣 Elem. Otro',espiritual:'💜 Espiritual'};
-
-    const maxTec=calcMaxTecnicas();
-    const tecRows=state.tecnicas.map(tec=>{
-      const {total,dmgComp,dmgBlanco}=calcTecnicaDmg(tec);
-      const wb=tec.addGolpeBlanco?calcWhiteDmgByStyle(tec.estiloCombate):{dmg:0,nota:''};
-      const color=tipoColors[tec.tipo]||'var(--text-muted)';
-      const esExtraLimite=tec.tipo==='extralimite';
-      const esDual=tec.tipo==='dual';
-      const esFinisher=tec.tipo==='finisher';
-      const desgloseComp=tec.componentes.map(c=>{
-        const v=getEff(c.atributo||'FUE');
-        return `${c.valorBase>0?c.valorBase+'+':''}${c.atributo}[${v}]×${c.multiplicador}`;
-      }).join(' + ');
-      const desgloseTotal=`(${desgloseComp})${tec.addGolpeBlanco?` + GB[${wb.dmg}]`:''}${esExtraLimite?' ×1.25':''}${esDual?' ×2':''}`;
-      const compRows=tec.componentes.map((c,idx)=>{
-        const atOpts=D.attrs.map(a=>`<option value="${a}"${c.atributo===a?' selected':''}>${a}</option>`).join('');
-        return `<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap;">
-          <input type="number" value="${c.valorBase}" min="0" max="99999" step="1" placeholder="Base"
-            title="Valor base fijo" style="width:52px;font-size:0.68rem;padding:2px 4px;text-align:center;"
-            oninput="onTecnicaChange(${tec.id},'comp_${idx}_valorBase',this.value)">
-          <span style="color:var(--text-muted);font-size:0.7rem;">+</span>
-          <select style="font-size:0.68rem;padding:2px 4px;"
-            onchange="onTecnicaChange(${tec.id},'comp_${idx}_atributo',this.value)">${atOpts}</select>
-          <span style="color:var(--text-muted);font-size:0.7rem;">×</span>
-          <input type="number" value="${c.multiplicador}" min="0" max="99" step="0.1"
-            title="Multiplicador" style="width:46px;font-size:0.68rem;padding:2px 4px;text-align:center;"
-            oninput="onTecnicaChange(${tec.id},'comp_${idx}_multiplicador',this.value)">
-          ${tec.componentes.length>1?`<button onclick="onRemoveComponente(${tec.id},${idx})"
-            style="background:none;border:none;color:var(--stat-bad);cursor:pointer;font-size:0.75rem;padding:0 3px;" title="Quitar componente">✕</button>`:''}
-          <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--accent-secondary);">
-            = ${Math.round((c.valorBase||0)+getEff(c.atributo||'FUE')*(c.multiplicador||0))}
-          </span>
-        </div>`;
-      }).join('');
-
-      return `<div style="background:rgba(0,0,0,0.22);border:1px solid ${color};border-radius:var(--radius);padding:12px;margin-bottom:10px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-          <input type="text" value="${tec.nombre}" placeholder="Nombre..."
-            style="flex:1;min-width:130px;font-family:var(--font-heading);font-weight:700;font-size:0.82rem;
-                   padding:4px 8px;background:rgba(0,0,0,0.3);border:1px solid ${color};border-radius:5px;color:${color};"
-            oninput="onTecnicaChange(${tec.id},'nombre',this.value)">
-          <div title="Rango de la técnica (1-10)" style="display:flex;align-items:center;gap:3px;">
-            <span style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;">R</span>
-            <select style="font-size:0.7rem;padding:3px 4px;width:42px;"
-              onchange="onTecnicaChange(${tec.id},'rango',this.value)">
-              ${[1,2,3,4,5,6,7,8,9,10].map(r=>`<option value="${r}"${tec.rango===r?' selected':''}>${r}</option>`).join('')}
-            </select>
-          </div>
-          <select style="font-size:0.68rem;padding:3px 5px;border-color:${color};color:${color};background:rgba(0,0,0,0.3);"
-            onchange="onTecnicaChange(${tec.id},'tipo',this.value)">
-            ${Object.entries(tipoLabels).map(([k,v])=>`<option value="${k}"${tec.tipo===k?' selected':''}>${v}</option>`).join('')}
-          </select>
-          ${state.tecnicas.length>1?`<button onclick="onRemoveTecnica(${tec.id})"
-            style="background:none;border:1px solid var(--stat-bad);color:var(--stat-bad);border-radius:4px;
-                   padding:3px 8px;cursor:pointer;font-size:0.68rem;" title="Eliminar técnica">✕</button>`:''}
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-          <div>
-            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Estilo de combate</div>
-            <select style="font-size:0.7rem;padding:3px 5px;"
-              onchange="onTecnicaChange(${tec.id},'estiloCombate',this.value)">
-              ${Object.entries(estiloLabels).map(([k,v])=>`<option value="${k}"${tec.estiloCombate===k?' selected':''}>${v}</option>`).join('')}
-            </select>
-          </div>
-          <div>
-            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Tipo de daño</div>
-            <select style="font-size:0.7rem;padding:3px 5px;"
-              onchange="onTecnicaChange(${tec.id},'tipoDano',this.value)">
-              ${Object.entries(danoLabels).map(([k,v])=>`<option value="${k}"${tec.tipoDano===k?' selected':''}>${v}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-        <div style="background:rgba(0,0,0,0.2);border-radius:5px;padding:8px;margin-bottom:8px;">
-          <div style="font-size:0.6rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
-            📐 Fórmula de daño
-            ${tec.componentes.length<4?`<button onclick="onAddComponente(${tec.id})"
-              style="background:rgba(255,255,255,0.05);border:1px solid var(--accent-secondary);color:var(--accent-secondary);
-                     border-radius:4px;padding:1px 7px;font-size:0.62rem;cursor:pointer;margin-left:6px;">+ componente</button>`:''}
-          </div>
-          ${compRows}
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin-top:4px;">
-            <input type="checkbox" ${tec.addGolpeBlanco?'checked':''}
-              onchange="onTecnicaChange(${tec.id},'addGolpeBlanco',this.checked)" style="margin:0;">
-            <span style="font-size:0.68rem;color:var(--text-muted);">
-              + Daño Blanco del estilo
-              ${tec.addGolpeBlanco?`<span style="color:var(--stat-good);">(+${wb.dmg} — ${wb.nota})</span>`:''}
-            </span>
-          </label>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
-          <div>
-            <div style="font-size:0.6rem;color:var(--stat-ene);text-transform:uppercase;margin-bottom:2px;">⚡ Coste ENE${esExtraLimite?' (+50%)':''}</div>
-            <input type="number" value="${tec.costeENE||0}" min="0" step="1"
-              style="font-size:0.75rem;padding:3px 6px;text-align:center;"
-              oninput="onTecnicaChange(${tec.id},'costeENE',this.value)">
-            ${esExtraLimite&&(tec.costeENE||0)>0?`<div style="font-size:0.6rem;color:var(--stat-warn);">Real: ${Math.round((tec.costeENE||0)*1.5)}</div>`:''}
-          </div>
-          <div>
-            <div style="font-size:0.6rem;color:var(--stat-esp);text-transform:uppercase;margin-bottom:2px;">💜 Coste ESP</div>
-            <input type="number" value="${tec.costeESP||0}" min="0" step="1"
-              style="font-size:0.75rem;padding:3px 6px;text-align:center;"
-              oninput="onTecnicaChange(${tec.id},'costeESP',this.value)">
-          </div>
-          <div>
-            <div style="font-size:0.6rem;color:var(--stat-warn);text-transform:uppercase;margin-bottom:2px;">🔄 TR${esDual?' (×2)':''} (turnos)</div>
-            <input type="number" value="${tec.tr||0}" min="0" max="20" step="1"
-              style="font-size:0.75rem;padding:3px 6px;text-align:center;"
-              oninput="onTecnicaChange(${tec.id},'tr',this.value)">
-            ${esDual&&(tec.tr||0)>0?`<div style="font-size:0.6rem;color:var(--stat-ene);">Real: ${(tec.tr||0)*2} turnos</div>`:''}
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
-          <div>
-            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">⚠️ Efectos / Estados</div>
-            <input type="text" value="${tec.efectos||''}" placeholder="Ej: Entumecimiento, Derribo..."
-              style="font-size:0.68rem;padding:3px 6px;"
-              oninput="onTecnicaChange(${tec.id},'efectos',this.value)">
-          </div>
-          <div>
-            <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">📝 Notas</div>
-            <input type="text" value="${tec.notas||''}" placeholder="Descripción breve..."
-              style="font-size:0.68rem;padding:3px 6px;"
-              oninput="onTecnicaChange(${tec.id},'notas',this.value)">
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;
-                    background:rgba(0,0,0,0.3);border-radius:5px;padding:8px 12px;
-                    border-top:1px solid ${color};">
-          <div style="font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);">
-            ${desgloseTotal}
-            ${tec.costeENE>0?`<span style="color:var(--stat-ene);margin-left:6px;">-${esExtraLimite?Math.round(tec.costeENE*1.5):tec.costeENE}ENE</span>`:''}
-            ${tec.costeESP>0?`<span style="color:var(--stat-esp);margin-left:4px;">-${tec.costeESP}ESP</span>`:''}
-            ${tec.tr>0?`<span style="color:var(--stat-warn);margin-left:4px;">TR:${esDual?tec.tr*2:tec.tr}</span>`:''}
-            ${esFinisher?`<span style="color:var(--stat-bad);margin-left:4px;">⚠️ 1×/tema</span>`:''}
-          </div>
-          <div style="font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:${color};">
-            ${total.toLocaleString()}
-            <span style="font-size:0.6rem;color:var(--text-muted);margin-left:4px;">${danoLabels[tec.tipoDano]||''}</span>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-
-    const tecnicasBlock=`
-      <div style="margin-top:14px;border-top:1px solid var(--panel-border);padding-top:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <div>
-            <span style="font-family:var(--font-heading);font-size:0.7rem;color:#f472b6;text-transform:uppercase;letter-spacing:1px;">
-              <i class="fas fa-bolt"></i> Técnicas (${state.tecnicas.length} / ${maxTec} máx.)
-            </span>
-            <div style="font-size:0.6rem;color:var(--text-muted);margin-top:2px;">
-              Fórmula: <code style="color:var(--accent-secondary);">∑(Base + Atrib × Mult) [+ Daño Blanco]</code>
-              · Máx. técnicas = INT ÷ 4
-            </div>
-          </div>
-          ${state.tecnicas.length<maxTec?`<button onclick="onAddTecnica()"
-            style="background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.45);
-                   color:#f472b6;border-radius:6px;padding:5px 14px;font-size:0.7rem;cursor:pointer;
-                   font-family:var(--font-heading);text-transform:uppercase;letter-spacing:0.5px;">
-            + Nueva Técnica
-          </button>`:
-          `<span style="font-size:0.68rem;color:var(--stat-bad);">Límite alcanzado (INT/${getEff('INT')})</span>`}
-        </div>
-        ${tecRows}
-      </div>`;
-
-    el.innerHTML=`
-      ${weaponSel}
-      ${zoanPanel}
-      <table class="rpg-table" style="margin-bottom:0;">
-        <thead><tr>
-          <th style="width:30%">Ataque Base</th>
-          <th style="width:22%;text-align:center;">Daño Blanco</th>
-          <th>Desglose</th>
-        </tr></thead>
-        <tbody>
-          <tr>
-            <td style="color:var(--text-bright);font-weight:600;">${style==='desarmado'?'✊ Melé':style==='arma_simple'?'⚔️ Simple':'⚔️⚔️ Dual'}</td>
-            <td style="color:${dmgColor};font-weight:700;font-size:1.05rem;text-align:center;">${dmgStr}</td>
-            <td style="color:var(--text-muted);font-size:0.68rem;">${noWeapon?'Selecciona un arma arriba':whiteDmgNote}</td>
-          </tr>
-        </tbody>
-      </table>
-      ${tecnicasBlock}`;
-  });
-}
-
 function autoDistribute(){
   const pts=freePA();if(pts<=0)return;
   const each=Math.floor(pts/D.attrs.length),rem=pts%D.attrs.length,cap=getLevelCap();
@@ -1084,7 +716,6 @@ function setLayout(layout){
   wrap.style.opacity='0';
   setTimeout(()=>{buildLayout();wrap.style.opacity='1';wrap.style.transition='opacity 0.35s ease';renderAll();},200);
 }
-
 function buildLayout(){
   const wrapper=document.getElementById('layoutWrapper');
   if(currentLayout==='rpg')wrapper.innerHTML=buildRPGLayout();
@@ -1144,6 +775,7 @@ function buildRPGLayout(){
           <button class="nav-tab" onclick="switchTab('maestrias',this)">Maestrias</button>
           <button class="nav-tab" onclick="switchTab('oficios',this)">Oficios</button>
           <button class="nav-tab" onclick="switchTab('karma',this)">Karmas</button>
+          <button class="nav-tab rb-tab" onclick="switchTab('roadbuild',this)">🗺 Road Build</button>
         </nav>
         <div class="tabs-body">
           <div id="tab-atributos" class="tab-content active">${buildAttrTab()}</div>
@@ -1153,6 +785,7 @@ function buildRPGLayout(){
           <div id="tab-maestrias" class="tab-content">${buildMaestriasTab()}</div>
           <div id="tab-oficios" class="tab-content">${buildOficiosTab()}</div>
           <div id="tab-karma" class="tab-content">${buildKarmaTab()}</div>
+          <div id="tab-roadbuild" class="tab-content">${buildRoadBuildTab()}</div>
         </div>
       </div>
     </div>
@@ -1163,9 +796,7 @@ function buildRPGLayout(){
         <div class="radar-box"><canvas id="statRadar" width="220" height="220"></canvas></div>
         <div class="info-row"><span class="info-key">Control Haki</span><span class="info-val" id="resCH" style="color:var(--stat-magic)">${getEff('CH')}</span></div>
         <div class="info-row"><span class="info-key">Control Akuma</span><span class="info-val" id="resCA" style="color:var(--stat-ene)">${getEff('CA')}</span></div>
-        <div class="info-row"><span class="info-key" style="color:var(--text-muted);font-size:0.65rem;">Técnicas max. (INT÷4)</span><span class="info-val" id="resTecMax" style="color:var(--accent-secondary);font-size:0.8rem;">${calcMaxTecnicas()}</span></div>
       </div>
-
       <div class="card" id="resumenCard">
         <div class="card-title"><i class="fas fa-id-card"></i> Hoja de Personaje</div>
         <div id="resumenBody"></div>
@@ -1234,6 +865,7 @@ function buildClassicLayout(){
         <button class="nav-tab" onclick="switchTab('oficios',this)">Oficios</button>
         <button class="nav-tab" onclick="switchTab('karma',this)">Karmas</button>
         <button class="nav-tab" onclick="switchTab('resumen',this)">Resumen</button>
+        <button class="nav-tab rb-tab" onclick="switchTab('roadbuild',this)">🗺 Road Build</button>
       </nav>
       <div class="tabs-body">
         <div id="tab-atributos" class="tab-content active">${buildAttrTab()}</div>
@@ -1244,6 +876,7 @@ function buildClassicLayout(){
         <div id="tab-oficios" class="tab-content">${buildOficiosTab()}</div>
         <div id="tab-karma" class="tab-content">${buildKarmaTab()}</div>
         <div id="tab-resumen" class="tab-content">${buildResumenTab()}</div>
+        <div id="tab-roadbuild" class="tab-content">${buildRoadBuildTab()}</div>
       </div>
     </div>
   </div>`;
@@ -1324,28 +957,6 @@ function buildCombateTab(){
   <div class="card" id="weaponStats">
     <div class="card-title"><i class="fas fa-chart-bar"></i> Estadisticas de Combate</div>
     <div id="combatStatsBody"></div>
-  </div>
-  <div class="card" style="border-color:rgba(250,204,21,0.35);margin-top:16px;">
-    <div class="card-title" style="color:var(--stat-warn);"><i class="fas fa-fist-raised"></i> Calculadora de Técnicas y Daño</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-      <div>
-        <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Transformación</div>
-        <select id="calcTransform" onchange="onCombatCalcChange('transformation',this.value)">
-          <option value="humano">Base (Humano)</option>
-          <option value="hibrido">Híbrido</option>
-          <option value="completo">Completo (animal)</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Estilo de Combate</div>
-        <select id="calcStyle" onchange="onCombatCalcChange('style',this.value)">
-          <option value="desarmado">✊ Desarmado (melé)</option>
-          <option value="arma_simple">⚔️ Arma Simple</option>
-          <option value="arma_dual">⚔️⚔️ Armas Duales</option>
-        </select>
-      </div>
-    </div>
-    <div id="combatCalcBody"></div>
   </div>`;
 }
 
@@ -1415,6 +1026,98 @@ function buildResumenTab(){
   </div>`;
 }
 
+function buildRoadBuildTab(){
+  const maxLv=state.roadBuild?.targetLevel||state.level;
+  return `<div>
+    <!-- Controls bar -->
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;background:rgba(74,222,128,0.05);border:1px solid rgba(74,222,128,0.2);border-radius:var(--radius);margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-family:var(--font-heading);font-size:0.65rem;color:var(--stat-good);text-transform:uppercase;letter-spacing:1px;">Nivel objetivo:</span>
+        <button class="lvl-btn" style="width:26px;height:26px;border-color:var(--stat-good);color:var(--stat-good);" onclick="changeRBTarget(-1)"><i class="fas fa-minus"></i></button>
+        <span class="rb-target-lv" style="font-family:var(--font-mono);font-size:1.6rem;font-weight:900;color:var(--stat-good);min-width:32px;text-align:center;">${maxLv}</span>
+        <button class="lvl-btn" style="width:26px;height:26px;border-color:var(--stat-good);color:var(--stat-good);" onclick="changeRBTarget(1)"><i class="fas fa-plus"></i></button>
+      </div>
+      <div style="width:1px;height:30px;background:var(--panel-border);flex-shrink:0;"></div>
+      <button class="btn btn-primary" onclick="syncRBFromMain()" title="Copia los PA del personaje actual al nivel 1 del plan">
+        <i class="fas fa-sync"></i> Sincronizar desde personaje
+      </button>
+      <button class="btn btn-danger" onclick="resetRoadBuild()">
+        <i class="fas fa-trash"></i> Resetear Plan
+      </button>
+      <div style="margin-left:auto;font-size:0.6rem;color:var(--text-muted);text-align:right;line-height:1.6;">
+        Usa raza <b style="color:var(--accent-secondary);">${state.race}</b> + karmas + extras del personaje<br>
+        ★ nivel actual · ◆ hito cada 10 niveles · hover en celda = desglose
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="rb-legend">
+      <span><span class="dot" style="background:#4ade80;"></span><span style="color:#4ade80;">PA+: ganados este nivel</span></span>
+      <span><span class="dot" style="background:var(--accent-secondary);"></span><span style="color:var(--accent-secondary);">PA∑: acumulado disponible</span></span>
+      <span><span class="dot" style="background:#facc15;"></span><span style="color:#facc15;">Inv.Nv: invertido este nivel</span></span>
+      <span><span class="dot" style="background:#4ade80;"></span><span style="color:var(--text-muted);">Libre: PA∑ - todo invertido hasta aquí</span></span>
+      <span style="color:#fb7185;">⚠ Rojo = overcap o PA negativos</span>
+      <span style="color:var(--text-muted);">Blanco = tiene PA invertidos | Gris = solo auto</span>
+    </div>
+
+    <!-- PA Planner Table -->
+    <div class="rb-section-header"><i class="fas fa-sitemap"></i> Distribución de PA Nivel a Nivel (editable)</div>
+    <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">
+      Escribe cuántos PA inviertes en cada atributo en cada nivel. Los valores de la tabla de stats se recalculan automáticamente.
+    </div>
+    <div class="rb-scroll" style="margin-bottom:4px;">
+      <table class="rb-table">
+        <thead>
+          <tr>
+            <th class="rb-sticky-head" style="min-width:54px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
+            <th style="min-width:48px;color:#4ade80;" title="PA ganados en este nivel">PA+</th>
+            <th style="min-width:52px;color:var(--accent-secondary);" title="PA totales disponibles acumulados">PA∑</th>
+            <th style="min-width:50px;color:#facc15;" title="PA invertidos en este nivel (suma de todos los attrs)">Inv.Nv</th>
+            <th style="min-width:58px;" title="PA libres: disponibles menos invertido total hasta este nivel">⚡Libre</th>
+            ${D.attrs.map(a=>`<th style="min-width:50px;color:var(--accent-secondary);">${a}</th>`).join('')}
+          </tr>
+          <tr style="background:rgba(0,0,0,0.3);">
+            <td class="rb-sticky-head" style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);background:rgba(10,4,7,0.99);">—</td>
+            <td colspan="4" style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);">PA acum. = ${D.config.PA_START} + Nv × ${D.config.PA_PER_LEVEL}</td>
+            ${D.attrs.map(a=>`<td style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);text-align:center;" title="Auto base crece ${D.config.AUTO_PER_LEVEL}/nv">${a==='CH'||a==='CA'?'Auto=0':'Auto+PA'}</td>`).join('')}
+          </tr>
+        </thead>
+        <tbody id="rbPlannerBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Stats Result Table -->
+    <div class="rb-section-header" style="margin-top:24px;"><i class="fas fa-chart-line"></i> Progresión Completa de Stats por Nivel (calculado)</div>
+    <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">
+      Todos los valores efectivos (Auto + PA acumulado + Raza/Karma/Extras). Hover sobre cualquier celda para ver el desglose exacto.
+    </div>
+    <div class="rb-scroll">
+      <table class="rb-table">
+        <thead>
+          <tr>
+            <th class="rb-sticky-head" style="min-width:54px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
+            <th style="min-width:54px;color:#4ade80;" title="PA libres acumulados en ese nivel">⚡Libre</th>
+            ${D.attrs.map(a=>`<th style="min-width:46px;color:var(--accent-secondary);">${a}</th>`).join('')}
+            <th style="min-width:68px;color:#fb7185;">VIT</th>
+            <th style="min-width:62px;color:#60a5fa;">ENE</th>
+            <th style="min-width:54px;color:#c084fc;">ESP</th>
+            <th style="min-width:56px;color:#facc15;" title="Golpe Blanco Melé">G.Blanco</th>
+            <th style="min-width:48px;color:#4ade80;" title="Mitigación Física">Mit.F</th>
+            <th style="min-width:48px;color:#60a5fa;" title="Mitigación Elemental">Mit.E</th>
+            <th style="min-width:48px;color:var(--accent-secondary);" title="Movimiento m/turno (AGI/10)">Mov</th>
+            <th style="min-width:48px;color:var(--accent-secondary);" title="Salto m ((FUE+AGI)/20)">>Salto</th>
+            <th style="min-width:50px;color:var(--text-muted);" title="Caída sin daño (RES/5+1m)">Caída</th>
+            <th style="min-width:58px;color:#fb7185;" title="VIT para muerte (−VOL×2 o ×4 Bucc)">VIT✝</th>
+            <th style="min-width:56px;color:#60a5fa;" title="ENE para muerte (−RES)">ENE✝</th>
+            <th style="min-width:54px;color:#c084fc;" title="ESP para muerte (−VOL/2)">ESP✝</th>
+          </tr>
+        </thead>
+        <tbody id="rbStatsBody"></tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
 // ============================================================
 // RENDER ENGINE
 // ============================================================
@@ -1424,7 +1127,6 @@ function renderAll(){
   document.querySelectorAll('#hNivel').forEach(el=>el.textContent=state.level);
   document.querySelectorAll('#capAtrib').forEach(el=>el.textContent=getLevelCap());
   document.querySelectorAll('#displayRace').forEach(el=>el.textContent=state.race);
-  document.querySelectorAll('#resTecMax').forEach(el=>el.textContent=calcMaxTecnicas());
   renderVitals();
   renderAttrPanel();
   renderRaceGrid();
@@ -1436,10 +1138,31 @@ function renderAll(){
   renderKarmas();
   renderResumen();
   renderPassiveExtras();
-  renderCombatCalc();
-  document.querySelectorAll('#calcTransform').forEach(el=>el.value=state.combatCalc?.transformation||'humano');
-  document.querySelectorAll('#calcStyle').forEach(el=>el.value=state.combatCalc?.style||'desarmado');
+  renderRoadBuildTable();
+  document.querySelectorAll('#resCH').forEach(el=>el.textContent=getEff('CH'));
+  document.querySelectorAll('#resCA').forEach(el=>el.textContent=getEff('CA'));
   setTimeout(drawRadar,20);
+}
+
+function renderPassiveExtras(){
+  document.querySelectorAll('#passiveExtrasPanel').forEach(el=>{
+    if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+    const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
+    const labels={FUE:'Fuerza',RES:'Resistencia',DES:'Destreza',PRE:'Precisión',AGI:'Agilidad',REF:'Reflejos',INT:'Inteligencia',VOL:'Voluntad',CH:'Control Haki',CA:'Control Akuma'};
+    el.innerHTML=D.attrs.map(a=>{
+      const v=state.passiveExtras[a]||0;
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span style="width:22px;text-align:center;font-size:0.9rem;">${emojis[a]}</span>
+        <span style="flex:1;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">${labels[a]}</span>
+        <input type="number" value="${v}" min="-9999" max="9999" step="1"
+          style="width:72px;text-align:center;font-size:0.78rem;padding:4px 6px;"
+          onchange="onPassiveExtra('${a}',this.value)" oninput="onPassiveExtra('${a}',this.value)">
+        <span style="width:50px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">
+          ${v>0?'+'+v:v}
+        </span>
+      </div>`;
+    }).join('');
+  });
 }
 
 function renderAkumaGrid(){
@@ -1489,29 +1212,19 @@ function renderVitals(){
   document.querySelectorAll('#barVIT').forEach(el=>el.textContent=vit.toLocaleString());
   document.querySelectorAll('#barENE').forEach(el=>el.textContent=ene.toLocaleString());
   document.querySelectorAll('#barESP').forEach(el=>el.textContent=esp.toLocaleString());
-  // VIT regen: solo Zoan tienen regen de VIT base
   const vitRegenStr=zR.c>0?`Combate: +${zR.c}/turno | Fuera: +${zR.f}/turno`:'Sin regeneración (salvo habilidad especial)';
   document.querySelectorAll('#regenVIT').forEach(el=>el.textContent=vitRegenStr);
-  // ENE regen: nivel/turno base (×2 fuera de combate). Zoan tienen multiplicador adicional.
   const eneBase=getBaseEneRegen();
   const eneR=getZoanEneRegen(nv);
   const eneRegenStr=state.akuma.type.startsWith('zoan')?`Combate: +${eneR.c}/t | Fuera: +${eneR.f}/t`:`Combate: +${eneBase}/turno | Fuera: +${eneBase*2}/turno`;
   document.querySelectorAll('#regenENE').forEach(el=>el.textContent=eneRegenStr);
-  // ESP regen: CH/6 en combate, CH/4 fuera
   const espR=getBaseEspRegen();
   document.querySelectorAll('#regenESP').forEach(el=>el.textContent=`Combate: +${espR.toFixed(1)} | Fuera: +${(getEff('CH')/4).toFixed(1)}`);
 
-  // Umbrales de dolor
   const um=document.getElementById('umbralesPanel');
   if(um){
     const umVals=calcUmbralesDolorValues();
-    const effects=[
-      'Interrumpe acciones que requieran concentración',
-      'Interrumpe concentración y cargas',
-      'Interrumpe TODAS las acciones y técnicas con mantenimiento',
-      'Corta Haki + Desorientación/Confusión 3 seg.',
-      'Corta transformaciones Akuma no Mi'
-    ];
+    const effects=['Interrumpe acciones que requieran concentración','Interrumpe concentración y cargas','Interrumpe TODAS las acciones y técnicas con mantenimiento','Corta Haki + Desorientación/Confusión 3 seg.','Corta transformaciones Akuma no Mi'];
     const vol=getEff('VOL');
     const umbralBase=Math.floor(vol/150)+1;
     const isBucc=state.race==='Buccaneer';
@@ -1526,7 +1239,6 @@ function renderVitals(){
         <span style="color:var(--stat-warn);font-weight:bold;">> ${umVals[i].toLocaleString()}${isBucc&&buccBonus>0?` <span style="font-size:0.58rem;color:var(--stat-magic);">(+${buccBonus} Bucc.)</span>`:''}</span>
       </div>`).join('');
   }
-
   renderDeathThresholds();
 }
 
@@ -1599,11 +1311,8 @@ function renderCombatStats(){
   const inv=calcInventorySpaces(),wt=calcWeightCapacity();
   const REF=getEff('REF'),AGI=getEff('AGI'),DES=getEff('DES'),PRE=getEff('PRE');
   const CH=getEff('CH'),CA=getEff('CA'),VOL=getEff('VOL'),FUE=getEff('FUE'),RES=getEff('RES');
-  // Movimiento: 1m por cada 10 AGI
   const move=rnd(AGI/10);
-  // Salto: 1m por cada 20 pts de (FUE+AGI)
   const jump=rnd((FUE+AGI)/20);
-  // Caída sin daño: RES/5 + 1m
   const fall=calcFallHeight();
 
   const speedRows=[
@@ -1631,7 +1340,7 @@ function renderCombatStats(){
       </div>
     </div>
     <div>
-      <div class="info-row"><span class="info-key" data-tip="FUE < 150: FUE | FUE ≥ 150: FUE+50 | FUE ≥ 300: FUE+150\nNota: Guantes/punteras NO reciben este bono.">Golpe Blanco Melé</span><span class="info-val">${calcGB()}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="FUE < 150: FUE | FUE ≥ 150: FUE+50 | FUE ≥ 300: FUE+150">Golpe Blanco Melé</span><span class="info-val">${calcGB()}</span></div>
       <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-99: RES×0.5 | 100-299: 100 fijo | 300-399: 200 | ≥400: 300">Mit. Física (pasiva)</span><span class="info-val good">${physR}</span></div>
       <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-149: RES×0.5 | 150-299: 100 | 300-399: 200 | ≥400: 300">Mit. Elemental (pasiva)</span><span class="info-val" style="color:var(--stat-ene)">${elR}</span></div>
     </div>
@@ -1674,7 +1383,7 @@ function renderCombatStats(){
     </div>
     <div>
       <div class="info-row"><span class="info-key" data-tip="Cada 5 pts RES = 1m extra + 1m base">Caída sin daño</span><span class="info-val">${fall} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="(FUE / 15) × 3, modificado por karmas Organizado/Desorganizado">Espacios inv.</span><span class="info-val">${inv}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="(FUE / 15) × 3, modificado por karmas">Espacios inv.</span><span class="info-val">${inv}</span></div>
       <div class="info-row"><span class="info-key">Cap. peso (2 manos)</span><span class="info-val">${wt.toLocaleString()} kg</span></div>
       <div class="info-row"><span class="info-key">Cap. peso (1 mano)</span><span class="info-val">${rnd(wt/2).toLocaleString()} kg</span></div>
     </div>
@@ -1683,11 +1392,9 @@ function renderCombatStats(){
 
 function renderHakiStats(){
   const C=getEff('CH'),I=getEff('INT'),R=getEff('RES'),V=getEff('VOL');
-  // Fórmulas del PDF: Experiencia = (CH×3) + (Atributo×2)
   const bExp=C*3+R*2,kExp=C*3+I*2,hExp=C*3+V*2;
   const {base:hBase,medio:hMedio}=D.config.hakiThresholds;
   const tier=e=>e>=hMedio?`<span style="color:var(--stat-magic)">Medio (≥${hMedio})</span>`:e>=hBase?`<span style="color:var(--stat-good)">Base (≥${hBase})</span>`:`<span style="color:var(--text-muted)">Sin desbloquear (<${hBase})</span>`;
-  // Atributo de Haki = CH + Atributo específico (para cálculos de efecto)
   const bAtr=C+R,kAtr=C+I,hAtr=C+V;
   const cards=[
     ['cardBusho',state.haki.busho,'var(--stat-ene)','bushoStats',`
@@ -1699,15 +1406,15 @@ function renderHakiStats(){
     ['cardKen',state.haki.ken,'var(--stat-good)','kenStats',`
       <div class="info-row"><span class="info-key">Experiencia (CH×3+INT×2)</span><span class="info-val">${kExp}</span></div>
       <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(kExp)}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + INT. Radio Base: 1m diámetro por punto de Atributo. Medio: 1m radio por 10 pts Atributo.">Atributo Kenbunshoku</span><span class="info-val" style="color:var(--stat-good)">${kAtr}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m de diámetro por punto de Atributo Ken (coste 1 ESP/metro)">Radio Base (diámetro)</span><span class="info-val good">${kAtr} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m radio por cada 10 pts Atributo Ken (coste 15 ESP/metro)">Radio Medio (radio)</span><span class="info-val good">${rnd(kAtr/10)} m</span></div>`],
+      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + INT.">Atributo Kenbunshoku</span><span class="info-val" style="color:var(--stat-good)">${kAtr}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m diámetro por punto de Atributo Ken">Radio Base (diámetro)</span><span class="info-val good">${kAtr} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m radio por cada 10 pts Atributo Ken">Radio Medio (radio)</span><span class="info-val good">${rnd(kAtr/10)} m</span></div>`],
     ['cardHaos',state.haki.haos,'var(--stat-magic)','haosStats',`
       <div class="info-row"><span class="info-key">Experiencia (CH×3+VOL×2)</span><span class="info-val">${hExp}</span></div>
       <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(hExp)}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + VOL. Radio Base: 1m/10pts Atributo. Radio Medio: 1m/20pts Atributo.">Atributo Haoshoku</span><span class="info-val" style="color:var(--stat-magic)">${hAtr}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m por cada 10 pts de Atributo Haoshoku (coste 30 ESP/metro)">Radio Base</span><span class="info-val good">${rnd(hAtr/10)} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m por cada 20 pts de Atributo Haoshoku (coste 50 ESP/metro + 15/turno extra)">Radio Medio</span><span class="info-val good">${rnd(hAtr/20)} m</span></div>`]
+      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + VOL.">Atributo Haoshoku</span><span class="info-val" style="color:var(--stat-magic)">${hAtr}</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m por cada 10 pts">Radio Base</span><span class="info-val good">${rnd(hAtr/10)} m</span></div>
+      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m por cada 20 pts">Radio Medio</span><span class="info-val good">${rnd(hAtr/20)} m</span></div>`]
   ];
   cards.forEach(([cId,active,color,sId,content])=>{
     const card=document.getElementById(cId);
@@ -1798,15 +1505,12 @@ function renderResumen(){
   const t=calcDeathThresholds();
   const physR=calcPhysRes(),elR=calcElRes();
   const inv=calcInventorySpaces(),wt=calcWeightCapacity();
-  const maxTec=calcMaxTecnicas();
-
   const resRPG=`<div style="display:flex;flex-direction:column;gap:0;">
     <div class="info-row" style="padding:10px 0;"><span class="info-key" style="font-size:0.9rem;">Nombre</span><span class="info-val" style="font-size:1.1rem;color:var(--accent-secondary)">${state.name||'Sin Nombre'}</span></div>
     <div class="info-row"><span class="info-key">Raza</span><span class="info-val">${state.race}</span></div>
     <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${state.level}</span></div>
     <div class="info-row"><span class="info-key">Akuma no Mi</span><span class="info-val">${getAkumaLabel()}</span></div>
     <div class="info-row"><span class="info-key">Karma Balance</span><span class="info-val ${bal>0?'good':bal<0?'bad':'warn'}">${bal>0?'+':''}${bal}</span></div>
-    <div class="info-row"><span class="info-key">Técnicas max.</span><span class="info-val">${maxTec} (INT÷4)</span></div>
     <div style="height:1px;background:var(--panel-border);margin:6px 0;"></div>
     <div class="info-row"><span class="info-key" style="color:var(--stat-vit)">VIT</span><span class="info-val" style="color:var(--stat-vit);">${calcVIT().toLocaleString()}</span></div>
     <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">ENE</span><span class="info-val" style="color:var(--stat-ene);">${calcENE().toLocaleString()}</span></div>
@@ -1904,17 +1608,6 @@ function generateBBCode(){
   const physR=calcPhysRes(),elR=calcElRes(),inv=calcInventorySpaces(),wt=calcWeightCapacity();
   const t=calcDeathThresholds();
 
-  // ── NUEVO: BBCode de técnicas con formato completo ──
-  const tecLines=(state.tecnicas||[]).map(tec=>{
-    const{total}=calcTecnicaDmg(tec);
-    const compStr=tec.componentes.map(c=>`${c.valorBase?c.valorBase+'+':''}${c.atributo}×${c.multiplicador}`).join('+');
-    return `  · ${tec.nombre} [R${tec.rango}|${tec.tipo}] — ${tec.estiloCombate} — `
-          +`Daño: ${total.toLocaleString()} (${compStr}${tec.addGolpeBlanco?'+GB':''})`
-          +`${tec.costeENE>0?' ENE:-'+tec.costeENE:''}${tec.costeESP>0?' ESP:-'+tec.costeESP:''}`
-          +`${tec.tr>0?' TR:'+tec.tr:''}${tec.tipoDano?' ['+tec.tipoDano+']':''}`
-          +`${tec.efectos?' Efectos:'+tec.efectos:''}`;
-  }).join('\n');
-
   const bb=`[center][b][size=18]${state.name||'Sin Nombre'}[/size][/b]
 [color=gray]${state.race} -- Nivel ${state.level} -- Akuma: ${getAkumaLabel()}[/color][/center]
 
@@ -1948,9 +1641,6 @@ ${w?`[b]Arma:[/b] ${w.name} T${w.tier}
 [b]--- HAKI ---[/b]
 [b]Haki activo:[/b] ${hakiList}
 
-[b]--- TÉCNICAS ---[/b]
-${tecLines}
-
 [b]--- ESPECIALIDADES ---[/b]
 [b]Maestrias:[/b] ${mastList}
 [b]Oficios:[/b] ${ofList}
@@ -1959,6 +1649,7 @@ ${tecLines}
 [b]Balance:[/b] ${bal>0?'+':''}${bal}
 [color=green][b]Positivos:[/b][/color] ${karmaPosL}
 [color=red][b]Negativos:[/b][/color] ${karmaNegL}`;
+
   document.querySelectorAll('#bbcodeText').forEach(el=>el.textContent=bb);
 }
 
@@ -1967,8 +1658,9 @@ function copyBBCode(){
   navigator.clipboard.writeText(text).then(()=>{
     document.querySelectorAll('#bbcodeBtn').forEach(btn=>{btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i> Copiado!';});
     setTimeout(()=>{document.querySelectorAll('#bbcodeBtn').forEach(btn=>{btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i> Copiar BBCode';});},2000);
-});
+  });
 }
+
 // ============================================================
 // RADAR
 // ============================================================
@@ -1985,7 +1677,6 @@ function drawRadar(){
   const cAccent=rs.getPropertyValue('--accent-primary').trim();
   const cAlpha=rs.getPropertyValue('--accent-alpha').trim();
   const N=D.radarAttrs.length;
-  
   ctx.strokeStyle=cBorder;ctx.lineWidth=1;
   for(let lv=1;lv<=4;lv++){
     ctx.beginPath();
@@ -1996,7 +1687,6 @@ function drawRadar(){
     }
     ctx.closePath();ctx.stroke();
   }
-  
   ctx.fillStyle=cText;ctx.font='bold 9px "JetBrains Mono"';ctx.textAlign='center';ctx.textBaseline='middle';
   for(let i=0;i<N;i++){
     const a=(Math.PI*2/N)*i-Math.PI/2;
@@ -2004,7 +1694,6 @@ function drawRadar(){
     ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*radius,cy+Math.sin(a)*radius);ctx.stroke();
     ctx.fillText(D.radarAttrs[i],cx+Math.cos(a)*(radius+14),cy+Math.sin(a)*(radius+14));
   }
-  
   ctx.beginPath();ctx.strokeStyle=cAccent;ctx.lineWidth=2;ctx.fillStyle=cAlpha;
   for(let i=0;i<N;i++){
     const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*Math.min(vals[i]/maxVal,1);
@@ -2012,136 +1701,93 @@ function drawRadar(){
     else ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
   }
   ctx.closePath();ctx.fill();ctx.stroke();
-  
   ctx.fillStyle=cAccent;
   for(let i=0;i<N;i++){
     const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*Math.min(vals[i]/maxVal,1);
     ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,3,0,Math.PI*2);ctx.fill();
   }
 }
+
 // ============================================================
 // TABS / THEME / IO
 // ============================================================
 function switchTab(id,btn){
-document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-const el=document.getElementById('tab-'+id);
-if(el)el.classList.add('active');
-if(btn)btn.classList.add('active');
-if(id==='resumen')renderResumen();
-setTimeout(drawRadar,50);
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById('tab-'+id);
+  if(el)el.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='resumen')renderResumen();
+  if(id==='roadbuild')renderRoadBuildTable();
+  setTimeout(drawRadar,50);
 }
+
 function toggleTheme(){
-const html=document.documentElement;
-const next=html.getAttribute('data-theme')==='rosa'?'azul':'rosa';
-html.setAttribute('data-theme',next);
-setTimeout(drawRadar,100);
+  const html=document.documentElement;
+  const next=html.getAttribute('data-theme')==='rosa'?'azul':'rosa';
+  html.setAttribute('data-theme',next);
+  setTimeout(drawRadar,100);
 }
+
 let ioMode='export';
 function openModal(mode){
-ioMode=mode;
-document.getElementById('ioModal').classList.add('open');
-const ta=document.getElementById('ioDataText');
-const title=document.getElementById('ioModalTitle');
-if(mode==='export'){
-title.innerHTML='<i class="fas fa-file-export"></i> Exportar Personaje';
-const s={...state,name:document.getElementById('charName')?.value||state.name};
-ta.value=JSON.stringify(s,null,2);ta.readOnly=true;
-document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-copy"></i> Copiar';
-}else{
-title.innerHTML='<i class="fas fa-file-import"></i> Importar Personaje';
-ta.value='';ta.readOnly=false;ta.placeholder='Pega el JSON exportado...';
-document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-check"></i> Cargar';
+  ioMode=mode;
+  document.getElementById('ioModal').classList.add('open');
+  const ta=document.getElementById('ioDataText');
+  const title=document.getElementById('ioModalTitle');
+  if(mode==='export'){
+    title.innerHTML='<i class="fas fa-file-export"></i> Exportar Personaje';
+    const s={...state,name:document.getElementById('charName')?.value||state.name};
+    ta.value=JSON.stringify(s,null,2);ta.readOnly=true;
+    document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-copy"></i> Copiar';
+  }else{
+    title.innerHTML='<i class="fas fa-file-import"></i> Importar Personaje';
+    ta.value='';ta.readOnly=false;ta.placeholder='Pega el JSON exportado...';
+    document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-check"></i> Cargar';
+  }
 }
-}
+
 function closeModal(){document.getElementById('ioModal').classList.remove('open');}
 
 function executeIO(){
-if(ioMode==='export'){
-  navigator.clipboard.writeText(document.getElementById('ioDataText').value);
-  alert('JSON copiado al portapapeles!');
-}else{
-  try{
-    const p=JSON.parse(document.getElementById('ioDataText').value);
-    if(!p.passiveExtras)p.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-    if(!p.combatCalc)p.combatCalc={transformation:'humano',style:'desarmado'};
-    if(!p.zoanBonuses)p.zoanBonuses={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-
-    // ── Migración de técnicas al nuevo formato ─────────────────────
-    if(!p.tecnicas||!Array.isArray(p.tecnicas)||!p.tecnicas.length){
-      p.tecnicas=[{
-        id:1,nombre:'Técnica 1',rango:1,tipo:'normal',
-        estiloCombate:'desarmado',tipoDano:'contundente',
-        componentes:[{atributo:'FUE',multiplicador:1,valorBase:0}],
-        addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
-      }];
-    }else{
-      // Normalizar técnicas antiguas que solo tenían el formato simple
-      p.tecnicas=p.tecnicas.map(t=>{
-        if(!t.componentes){
-          // Formato viejo con campo 'atributo' directo
-          return{
-            id:t.id||1,
-            nombre:t.nombre||'Técnica',
-            rango:t.rango||1,
-            tipo:t.tipo||'normal',
-            estiloCombate:t.estiloCombate||(t.addArma?'arma_simple':'desarmado'),
-            tipoDano:t.tipoDano||'contundente',
-            componentes:[{atributo:t.atributo||'FUE',multiplicador:t.multiplicador||1,valorBase:t.valorBase||0}],
-            addGolpeBlanco:t.addArma||false,
-            costeENE:t.costeENE||0,
-            costeESP:t.costeESP||0,
-            tr:t.tr||0,
-            efectos:t.efectos||'',
-            notas:t.notas||''
-          };
-        }
-        // Formato nuevo: asegurar campos que puedan faltar
-        return{
-          costeENE:0,costeESP:0,tr:0,efectos:'',notas:'',rango:1,
-          tipo:'normal',estiloCombate:'desarmado',tipoDano:'contundente',
-          ...t
-        };
-      });
-    }
-    // ── Fin migración ──────────────────────────────────────────────
-
-    if(p.tecnica&&!p.tecnicas){
-      p.tecnicas=[{
-        id:1,nombre:p.tecnica.nombre||'Técnica 1',rango:1,tipo:'normal',
-        estiloCombate:'desarmado',tipoDano:'contundente',
-        componentes:[{atributo:'FUE',multiplicador:p.tecnica.multiplicador||1,valorBase:0}],
-        addGolpeBlanco:false,costeENE:0,costeESP:0,tr:0,efectos:'',notas:''
-      }];
-      delete p.tecnica;
-    }
-    Object.assign(state,p);closeModal();buildLayout();renderAll();
-  }catch(e){alert('JSON invalido.');}
+  if(ioMode==='export'){
+    navigator.clipboard.writeText(document.getElementById('ioDataText').value);
+    alert('JSON copiado al portapapeles!');
+  }else{
+    try{
+      const p=JSON.parse(document.getElementById('ioDataText').value);
+      if(!p.passiveExtras)p.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+      if(!p.combatCalc)p.combatCalc={transformation:'humano',style:'desarmado'};
+      if(!p.zoanBonuses)p.zoanBonuses={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
+      if(!p.roadBuild)p.roadBuild={targetLevel:p.level||1,plans:{}};
+      // Eliminar técnicas si vienen de un JSON antiguo
+      delete p.tecnicas;
+      Object.assign(state,p);
+      closeModal();
+      buildLayout();
+      renderAll();
+    }catch(e){alert('JSON inválido.');}
+  }
 }
-}
+
 // ============================================================
 // INIT
 // ============================================================
-async function init() {
-  try {
-    const url = 'https://cdn.jsdelivr.net/gh/cuentapararol12-beep/nakama@abc983231bf4d2a24c1b84f441f9af1dae104b83/Data.json';
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status} (Revisa si el repo es privado o si la URL es correcta)`);
-    }
-    
-    D = await response.json();
+async function init(){
+  try{
+    const url='https://cdn.jsdelivr.net/gh/cuentapararol12-beep/nakama@abc983231bf4d2a24c1b84f441f9af1dae104b83/Data.json';
+    const response=await fetch(url);
+    if(!response.ok)throw new Error(`Error HTTP: ${response.status}`);
+    D=await response.json();
     buildLayout();
     renderAll();
-    
-  } catch (error) {
-    console.error('Error detallado:', error);
-    document.getElementById('layoutWrapper').innerHTML = `
-      <div style="text-align:center; margin-top:50px; padding: 20px;">
-        <h3 style="color:var(--stat-bad); margin-bottom: 10px;">Error al cargar el Data.json</h3>
-        <p style="color:var(--text-muted); font-family:var(--font-mono);">${error.message}</p>
-        <p style="color:var(--stat-warn); font-size: 0.8rem; margin-top: 15px;">Pulsa F12 y mira la pestaña "Consola" para ver el error exacto (posible error de comas en el JSON).</p>
+  }catch(error){
+    console.error('Error detallado:',error);
+    document.getElementById('layoutWrapper').innerHTML=`
+      <div style="text-align:center;margin-top:50px;padding:20px;">
+        <h3 style="color:var(--stat-bad);margin-bottom:10px;">Error al cargar el Data.json</h3>
+        <p style="color:var(--text-muted);font-family:var(--font-mono);">${error.message}</p>
+        <p style="color:var(--stat-warn);font-size:0.8rem;margin-top:15px;">Pulsa F12 → Consola para ver el error exacto.</p>
       </div>`;
   }
 }
