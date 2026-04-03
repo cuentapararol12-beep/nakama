@@ -536,7 +536,6 @@ function onRBPlanChange(lv,attr,val){
 
 function renderRoadBuildTable(){
   const planEl=document.getElementById('rbPlannerBody');
-  const statsEl=document.getElementById('rbStatsBody');
   const lvEls=document.querySelectorAll('.rb-target-lv');
   if(!planEl)return;
 
@@ -547,40 +546,54 @@ function renderRoadBuildTable(){
 
   let planRows='';
   for(let lv=1;lv<=maxLv;lv++){
-    const paPlus=lv===1?D.config.PA_START+D.config.PA_PER_LEVEL:D.config.PA_PER_LEVEL;
     const paAvail=rbPAAvail(lv);
-    const invAtLv=rbTotalInvAtLevel(lv);
-    const paFree=rbPAFree(lv);
+    const paUsed=rbTotalInvUpTo(lv);
+    const paFree=paAvail-paUsed;
+    
     const isCurr=lv===state.level;
     const isMile=lv%10===0;
     const freeColor=paFree<0?'#fb7185':paFree===0?'#facc15':'#4ade80';
     const rowCls=isCurr?'rb-current':isMile?'rb-milestone':'';
     const bgSticky=isCurr?'rgba(80,15,35,0.98)':isMile?'rgba(40,30,5,0.96)':'rgba(22,8,14,0.97)';
+    const cap=lv*10+50;
+
+    // Calcular vitales para este nivel
+    const vit=rbVIT(lv), ene=rbENE(lv), esp=rbESP(lv);
 
     planRows+=`<tr class="${rowCls}">
-      <td class="rb-sticky-col" style="background:${bgSticky};padding:4px 8px;text-align:center;font-weight:700;color:${isCurr?'#F25C8D':isMile?'#facc15':'#8A7F73'};min-width:52px;">
+      <td class="rb-sticky-col" style="background:${bgSticky};padding:4px 8px;text-align:center;font-weight:700;color:${isCurr?'#F25C8D':isMile?'#facc15':'#8A7F73'};">
         ${isCurr?'★':isMile?'◆':''}${lv}
       </td>
-      <td style="padding:3px 5px;text-align:center;color:#4ade80;font-weight:600;">+${paPlus}</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${paAvail}</td>
-      <td style="padding:3px 5px;text-align:center;color:#facc15;">${invAtLv}</td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:${freeColor};font-size:0.72rem;">${paFree}</td>
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:${freeColor};font-size:1rem;">${paFree}</td>
+      
       ${D.attrs.map(a=>{
-        const v=rbGetPAAtLevel(a,lv);
-        const cumAuto=rbAutoBase(a,lv);
-        const cumPA=rbGetCumulativePA(a,lv);
-        const cap=lv*10+50;
-        const overCap=(cumAuto+cumPA)>cap;
-        return `<td style="padding:2px 2px;text-align:center;">
-          <input class="rb-input" type="number" value="${v}" min="0" step="1"
-            style="border-color:${overCap?'#fb7185':v>0?'var(--accent-primary)':'var(--panel-border)'};"
-            title="${a} en Nv${lv}: Auto=${cumAuto}, PA acumulado=${cumPA}, Cap=${cap}"
-            onchange="onRBPlanChange(${lv},'${a}',this.value)">
+        const inputVal = rbGetPAAtLevel(a,lv);
+        const auto = rbAutoBase(a,lv);
+        const cumPA = rbGetCumulativePA(a,lv);
+        const extra = rbGetRaceKarmaExtra(a); // ¡Aquí se coge el bono de raza!
+        const totalEff = auto + cumPA + extra;
+        const overCap = (auto + cumPA) > cap;
+        
+        return `<td style="padding:4px;text-align:center;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <input class="rb-input" type="number" value="${inputVal}" min="0" step="1"
+              style="width:100%;max-width:50px;border-color:${overCap?'#fb7185':inputVal>0?'var(--accent-primary)':'var(--panel-border)'};"
+              title="Añadir PA en Nivel ${lv}"
+              onchange="onRBPlanChange(${lv},'${a}',this.value)">
+            <span style="font-size:0.75rem;font-weight:bold;color:${overCap?'#fb7185':'var(--text-bright)'}" title="Stat Real Efectivo (Incluye raza, karma y auto)">
+              Total: ${totalEff}
+            </span>
+          </div>
         </td>`;
       }).join('')}
+      
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#fb7185;">${vit.toLocaleString()}</td>
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#60a5fa;">${ene.toLocaleString()}</td>
+      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#c084fc;">${esp}</td>
     </tr>`;
   }
   planEl.innerHTML=planRows;
+}
 
   if(!statsEl)return;
   let statsRows='';
@@ -1029,90 +1042,39 @@ function buildResumenTab(){
 function buildRoadBuildTab(){
   const maxLv=state.roadBuild?.targetLevel||state.level;
   return `<div>
-    <!-- Controls bar -->
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;background:rgba(74,222,128,0.05);border:1px solid rgba(74,222,128,0.2);border-radius:var(--radius);margin-bottom:18px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-family:var(--font-heading);font-size:0.65rem;color:var(--stat-good);text-transform:uppercase;letter-spacing:1px;">Nivel objetivo:</span>
+        <span style="font-family:var(--font-heading);font-size:0.65rem;color:var(--stat-good);text-transform:uppercase;">Nivel objetivo:</span>
         <button class="lvl-btn" style="width:26px;height:26px;border-color:var(--stat-good);color:var(--stat-good);" onclick="changeRBTarget(-1)"><i class="fas fa-minus"></i></button>
         <span class="rb-target-lv" style="font-family:var(--font-mono);font-size:1.6rem;font-weight:900;color:var(--stat-good);min-width:32px;text-align:center;">${maxLv}</span>
         <button class="lvl-btn" style="width:26px;height:26px;border-color:var(--stat-good);color:var(--stat-good);" onclick="changeRBTarget(1)"><i class="fas fa-plus"></i></button>
       </div>
       <div style="width:1px;height:30px;background:var(--panel-border);flex-shrink:0;"></div>
-      <button class="btn btn-primary" onclick="syncRBFromMain()" title="Copia los PA del personaje actual al nivel 1 del plan">
-        <i class="fas fa-sync"></i> Sincronizar desde personaje
+      <button class="btn btn-primary" onclick="syncRBFromMain()" title="Copia los PA del personaje actual al plan">
+        <i class="fas fa-sync"></i> Importar Personaje Actual
       </button>
       <button class="btn btn-danger" onclick="resetRoadBuild()">
-        <i class="fas fa-trash"></i> Resetear Plan
+        <i class="fas fa-trash"></i> Limpiar Plan
       </button>
-      <div style="margin-left:auto;font-size:0.6rem;color:var(--text-muted);text-align:right;line-height:1.6;">
-        Usa raza <b style="color:var(--accent-secondary);">${state.race}</b> + karmas + extras del personaje<br>
-        ★ nivel actual · ◆ hito cada 10 niveles · hover en celda = desglose
+      <div style="margin-left:auto;font-size:0.65rem;color:var(--accent-secondary);text-align:right;">
+        Raza activa: <b>${state.race}</b> <br>
+        <span style="color:var(--text-muted);font-size:0.6rem;">Los totales ya incluyen bonos de raza, karma y auto-stats.</span>
       </div>
     </div>
 
-    <!-- Legend -->
-    <div class="rb-legend">
-      <span><span class="dot" style="background:#4ade80;"></span><span style="color:#4ade80;">PA+: ganados este nivel</span></span>
-      <span><span class="dot" style="background:var(--accent-secondary);"></span><span style="color:var(--accent-secondary);">PA∑: acumulado disponible</span></span>
-      <span><span class="dot" style="background:#facc15;"></span><span style="color:#facc15;">Inv.Nv: invertido este nivel</span></span>
-      <span><span class="dot" style="background:#4ade80;"></span><span style="color:var(--text-muted);">Libre: PA∑ - todo invertido hasta aquí</span></span>
-      <span style="color:#fb7185;">⚠ Rojo = overcap o PA negativos</span>
-      <span style="color:var(--text-muted);">Blanco = tiene PA invertidos | Gris = solo auto</span>
-    </div>
-
-    <!-- PA Planner Table -->
-    <div class="rb-section-header"><i class="fas fa-sitemap"></i> Distribución de PA Nivel a Nivel (editable)</div>
-    <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">
-      Escribe cuántos PA inviertes en cada atributo en cada nivel. Los valores de la tabla de stats se recalculan automáticamente.
-    </div>
-    <div class="rb-scroll" style="margin-bottom:4px;">
-      <table class="rb-table">
+    <div class="rb-scroll">
+      <table class="rb-table" style="min-width:1200px;">
         <thead>
           <tr>
-            <th class="rb-sticky-head" style="min-width:54px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
-            <th style="min-width:48px;color:#4ade80;" title="PA ganados en este nivel">PA+</th>
-            <th style="min-width:52px;color:var(--accent-secondary);" title="PA totales disponibles acumulados">PA∑</th>
-            <th style="min-width:50px;color:#facc15;" title="PA invertidos en este nivel (suma de todos los attrs)">Inv.Nv</th>
-            <th style="min-width:58px;" title="PA libres: disponibles menos invertido total hasta este nivel">⚡Libre</th>
-            ${D.attrs.map(a=>`<th style="min-width:50px;color:var(--accent-secondary);">${a}</th>`).join('')}
-          </tr>
-          <tr style="background:rgba(0,0,0,0.3);">
-            <td class="rb-sticky-head" style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);background:rgba(10,4,7,0.99);">—</td>
-            <td colspan="4" style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);">PA acum. = ${D.config.PA_START} + Nv × ${D.config.PA_PER_LEVEL}</td>
-            ${D.attrs.map(a=>`<td style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);text-align:center;" title="Auto base crece ${D.config.AUTO_PER_LEVEL}/nv">${a==='CH'||a==='CA'?'Auto=0':'Auto+PA'}</td>`).join('')}
+            <th class="rb-sticky-head" style="min-width:40px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
+            <th style="min-width:50px;color:#4ade80;" title="PA Libres para gastar">PA Libres</th>
+            ${D.attrs.map(a=>`<th style="min-width:75px;color:var(--accent-secondary);text-align:center;">${a}</th>`).join('')}
+            <th style="min-width:60px;color:#fb7185;">VIT</th>
+            <th style="min-width:60px;color:#60a5fa;">ENE</th>
+            <th style="min-width:50px;color:#c084fc;">ESP</th>
           </tr>
         </thead>
         <tbody id="rbPlannerBody"></tbody>
-      </table>
-    </div>
-
-    <!-- Stats Result Table -->
-    <div class="rb-section-header" style="margin-top:24px;"><i class="fas fa-chart-line"></i> Progresión Completa de Stats por Nivel (calculado)</div>
-    <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">
-      Todos los valores efectivos (Auto + PA acumulado + Raza/Karma/Extras). Hover sobre cualquier celda para ver el desglose exacto.
-    </div>
-    <div class="rb-scroll">
-      <table class="rb-table">
-        <thead>
-          <tr>
-            <th class="rb-sticky-head" style="min-width:54px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
-            <th style="min-width:54px;color:#4ade80;" title="PA libres acumulados en ese nivel">⚡Libre</th>
-            ${D.attrs.map(a=>`<th style="min-width:46px;color:var(--accent-secondary);">${a}</th>`).join('')}
-            <th style="min-width:68px;color:#fb7185;">VIT</th>
-            <th style="min-width:62px;color:#60a5fa;">ENE</th>
-            <th style="min-width:54px;color:#c084fc;">ESP</th>
-            <th style="min-width:56px;color:#facc15;" title="Golpe Blanco Melé">G.Blanco</th>
-            <th style="min-width:48px;color:#4ade80;" title="Mitigación Física">Mit.F</th>
-            <th style="min-width:48px;color:#60a5fa;" title="Mitigación Elemental">Mit.E</th>
-            <th style="min-width:48px;color:var(--accent-secondary);" title="Movimiento m/turno (AGI/10)">Mov</th>
-            <th style="min-width:48px;color:var(--accent-secondary);" title="Salto m ((FUE+AGI)/20)">>Salto</th>
-            <th style="min-width:50px;color:var(--text-muted);" title="Caída sin daño (RES/5+1m)">Caída</th>
-            <th style="min-width:58px;color:#fb7185;" title="VIT para muerte (−VOL×2 o ×4 Bucc)">VIT✝</th>
-            <th style="min-width:56px;color:#60a5fa;" title="ENE para muerte (−RES)">ENE✝</th>
-            <th style="min-width:54px;color:#c084fc;" title="ESP para muerte (−VOL/2)">ESP✝</th>
-          </tr>
-        </thead>
-        <tbody id="rbStatsBody"></tbody>
       </table>
     </div>
   </div>`;
