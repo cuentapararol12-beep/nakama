@@ -1,1798 +1,202 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="rosa" data-layout="rpg">
+<html lang="es" data-theme="pink">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nakama no Mi - Constructor de Personaje</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root {
-  --radius-lg: 16px; --radius: 12px; --radius-sm: 8px;
-  --font-display: 'Cinzel Decorative', serif;
-  --font-heading: 'Cinzel', serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-}
-[data-theme="rosa"] {
-  --bg-overlay: rgba(60,10,28,0.82);
-  --panel-bg: rgba(92,31,55,0.88);
-  --panel-bg-hover: rgba(119,42,68,0.95);
-  --panel-border: #7A2746;
-  --panel-border-bright: #E34B7F;
-  --glass-bg: rgba(92,31,55,0.75);
-  --accent-primary: #F25C8D;
-  --accent-secondary: #F7A1B8;
-  --accent-glow: rgba(242,92,141,0.4);
-  --accent-alpha: rgba(242,92,141,0.15);
-  --text-main: #E6D3B3;
-  --text-muted: #8A7F73;
-  --text-bright: #ffffff;
-  --stat-good: #4ade80;
-  --stat-bad: #fb7185;
-  --stat-warn: #facc15;
-  --stat-magic: #e879f9;
-  --stat-vit: #fb7185;
-  --stat-ene: #60a5fa;
-  --stat-esp: #c084fc;
-  --shadow-sm: 0 4px 16px rgba(60,10,28,0.5);
-  --shadow-lg: 0 12px 40px rgba(60,10,28,0.8);
-  --good-bg: rgba(74,222,128,0.1);
-  --bad-bg: rgba(251,113,133,0.1);
-  --bar-vit: linear-gradient(90deg,#7A2746,#fb7185);
-  --bar-ene: linear-gradient(90deg,#1e3a8a,#60a5fa);
-  --bar-esp: linear-gradient(90deg,#4c1d95,#c084fc);
-  --scrollbar: #7A2746;
-}
-[data-theme="azul"] {
-  --bg-overlay: rgba(4,6,11,0.88);
-  --panel-bg: rgba(16,24,40,0.90);
-  --panel-bg-hover: rgba(20,31,48,0.97);
-  --panel-border: #1e2a3e;
-  --panel-border-bright: #2a3b57;
-  --glass-bg: rgba(16,24,40,0.75);
-  --accent-primary: #c9a227;
-  --accent-secondary: #f0cf6e;
-  --accent-glow: rgba(201,162,39,0.35);
-  --accent-alpha: rgba(201,162,39,0.12);
-  --text-main: #c8bfa8;
-  --text-muted: #8b8372;
-  --text-bright: #ffffff;
-  --stat-good: #00e5cc;
-  --stat-bad: #ff4757;
-  --stat-warn: #ffa502;
-  --stat-magic: #a55eea;
-  --stat-vit: #ff6b81;
-  --stat-ene: #70a1ff;
-  --stat-esp: #a55eea;
-  --shadow-sm: 0 4px 16px rgba(0,0,0,0.4);
-  --shadow-lg: 0 12px 40px rgba(0,0,0,0.7);
-  --good-bg: rgba(0,229,204,0.1);
-  --bad-bg: rgba(255,71,87,0.1);
-  --bar-vit: linear-gradient(90deg,#8b0000,#ff4757);
-  --bar-ene: linear-gradient(90deg,#004d40,#00e5cc);
-  --bar-esp: linear-gradient(90deg,#4a0080,#a55eea);
-  --scrollbar: #1e2a3e;
-}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:var(--font-body);font-size:14px;line-height:1.5;color:var(--text-main);min-height:100vh;overflow-x:hidden;background-image:url('https://i.imgur.com/0ZZoQTF.png');background-repeat:repeat;background-size:auto;background-attachment:fixed;position:relative;}
-body::before{content:'';position:fixed;inset:0;background:var(--bg-overlay);z-index:0;transition:background 0.5s ease;}
-body>*{position:relative;z-index:1;}
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px;}
-::-webkit-scrollbar-thumb:hover{background:var(--accent-primary);}
-[data-tip]{position:relative;cursor:help;border-bottom:1px dotted var(--accent-primary);display:inline-block;}
-[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--panel-bg);color:var(--text-bright);border:1px solid var(--accent-primary);box-shadow:var(--shadow-lg);padding:8px 12px;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:0.72rem;white-space:pre-wrap;width:max-content;max-width:280px;z-index:9999;pointer-events:none;text-align:center;}
-.card{background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);backdrop-filter:blur(10px);transition:var(--transition);}
-.card-title{font-family:var(--font-heading);font-size:0.85rem;font-weight:700;color:var(--accent-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--panel-border);display:flex;align-items:center;gap:8px;}
-.btn{background:transparent;border:1px solid var(--panel-border-bright);color:var(--text-main);font-family:var(--font-heading);font-size:0.72rem;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
-.btn:hover{background:rgba(255,255,255,0.05);color:var(--text-bright);}
-.btn-primary{border-color:var(--accent-primary);color:var(--accent-primary);background:var(--accent-alpha);}
-.btn-primary:hover{background:var(--accent-primary);color:#fff;box-shadow:0 0 15px var(--accent-glow);}
-.btn-danger{border-color:var(--stat-bad);color:var(--stat-bad);}
-.btn-danger:hover{background:var(--stat-bad);color:#fff;}
-input[type="text"],input[type="number"],select{background:rgba(0,0,0,0.25);border:1px solid var(--panel-border);color:var(--text-bright);font-family:var(--font-mono);font-size:0.85rem;padding:8px 12px;border-radius:var(--radius-sm);outline:none;width:100%;transition:var(--transition);}
-input:focus,select:focus{border-color:var(--accent-primary);box-shadow:0 0 10px var(--accent-glow);}
-.toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;margin:6px 0;}
-.toggle-wrap input{display:none;}
-.toggle{width:40px;height:20px;background:rgba(0,0,0,0.4);border:1px solid var(--panel-border);border-radius:10px;position:relative;transition:var(--transition);flex-shrink:0;}
-.toggle::after{content:'';position:absolute;top:1px;left:2px;width:16px;height:16px;background:var(--text-muted);border-radius:50%;transition:var(--transition);}
-.toggle-wrap input:checked + .toggle{background:var(--good-bg);border-color:var(--stat-good);}
-.toggle-wrap input:checked + .toggle::after{transform:translateX(20px);background:var(--stat-good);box-shadow:0 0 8px var(--stat-good);}
-.toggle-label{font-size:0.8rem;font-weight:500;}
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-family:var(--font-mono);font-size:0.8rem;border-bottom:1px dashed rgba(255,255,255,0.05);}
-.info-row:last-child{border-bottom:none;}
-.info-key{color:var(--text-muted);}
-.info-val{color:var(--text-bright);font-weight:600;text-align:right;}
-.info-val.good{color:var(--stat-good);text-shadow:0 0 8px var(--stat-good);}
-.info-val.bad{color:var(--stat-bad);}
-.info-val.warn{color:var(--stat-warn);}
-.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-family:var(--font-mono);font-size:0.65rem;font-weight:600;background:var(--panel-bg);border:1px solid var(--panel-border);margin:2px;}
-.badge.gold{border-color:var(--accent-primary);color:var(--accent-primary);}
-.badge.green{border-color:var(--stat-good);color:var(--stat-good);}
-.badge.red{border-color:var(--stat-bad);color:var(--stat-bad);}
-.badge.purple{border-color:var(--stat-magic);color:var(--stat-magic);}
-.badge.blue{border-color:var(--stat-ene);color:var(--stat-ene);}
-.list-item{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:rgba(0,0,0,0.18);border:1px solid var(--panel-border);border-radius:var(--radius-sm);margin-bottom:7px;cursor:pointer;transition:var(--transition);}
-.list-item:hover{border-color:var(--accent-primary);background:rgba(0,0,0,0.35);}
-.list-item.selected,.list-item.sel-pos{border-color:var(--stat-good);background:var(--good-bg);}
-.list-item.sel-neg{border-color:var(--stat-bad);background:var(--bad-bg);}
-.list-item.sel-race{border-color:var(--accent-primary);background:var(--accent-alpha);box-shadow:0 0 12px var(--accent-glow);}
-.list-title{font-family:var(--font-heading);font-weight:700;color:var(--text-bright);font-size:0.82rem;margin-bottom:2px;}
-.list-desc{font-size:0.7rem;color:var(--text-muted);line-height:1.3;}
-.rpg-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.75rem;margin-top:10px;}
-.rpg-table th{color:var(--accent-secondary);font-weight:600;padding:8px;text-align:left;border-bottom:1px solid var(--panel-border-bright);background:rgba(0,0,0,0.3);}
-.rpg-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text-muted);}
-.stat-tag{padding:3px 7px;border-radius:4px;font-family:var(--font-mono);font-size:0.65rem;font-weight:600;}
-.stat-tag.pos{background:rgba(74,222,128,0.1);color:var(--stat-good);border:1px solid rgba(74,222,128,0.3);}
-.stat-tag.neg{background:rgba(251,113,133,0.1);color:var(--stat-bad);border:1px solid rgba(251,113,133,0.3);}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
-header{background:var(--panel-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--panel-border);padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:64px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow-lg);}
-.logo{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--accent-primary);letter-spacing:2px;text-shadow:0 0 20px var(--accent-glow);}
-.logo em{color:var(--accent-secondary);font-style:normal;}
-.header-center{display:flex;align-items:center;gap:8px;}
-.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.layout-pill{display:flex;background:rgba(0,0,0,0.3);border:1px solid var(--panel-border-bright);border-radius:20px;overflow:hidden;padding:3px;gap:2px;}
-.layout-pill button{border:none;border-radius:16px;padding:5px 14px;font-family:var(--font-heading);font-size:0.65rem;font-weight:700;cursor:pointer;transition:var(--transition);text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);background:transparent;}
-.layout-pill button.active{background:var(--accent-primary);color:#fff;box-shadow:0 0 12px var(--accent-glow);}
-.theme-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid var(--panel-border-bright);display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--transition);}
-.theme-dot:hover{border-color:var(--accent-primary);transform:scale(1.15);}
-.rpg-layout{display:grid;grid-template-columns:300px 1fr 340px;gap:16px;padding:16px;max-width:1700px;margin:0 auto;align-items:start;}
-.col-left,.col-right{position:sticky;top:80px;max-height:calc(100vh - 100px);overflow-y:auto;padding-right:4px;}
-.col-center{display:flex;flex-direction:column;gap:14px;padding-right:4px;}
-.classic-layout{max-width:1340px;margin:0 auto;padding:16px 20px 80px;}
-.nav-tabs{display:flex;gap:4px;border-bottom:2px solid var(--panel-border);padding-bottom:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:10;background:var(--panel-bg);backdrop-filter:blur(8px);border-radius:var(--radius-sm) var(--radius-sm) 0 0;padding:8px 8px 8px 8px;margin-bottom:0;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.nav-tab{background:transparent;border:none;color:var(--text-muted);font-family:var(--font-heading);font-size:0.68rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:8px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);white-space:nowrap;flex-shrink:0;}
-.nav-tab:hover{background:var(--panel-bg-hover);color:var(--text-bright);}
-.nav-tab.active{background:var(--accent-alpha);color:var(--accent-primary);border:1px solid var(--accent-primary);box-shadow:inset 0 0 10px var(--accent-glow);}
-.nav-tab.rb-tab{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:var(--stat-good);}
-.nav-tab.rb-tab.active{background:rgba(74,222,128,0.18);border-color:var(--stat-good);box-shadow:inset 0 0 10px rgba(74,222,128,0.2);}
-.tab-content{display:none;animation:fadeIn 0.3s ease;padding-top:14px;}
-.tab-content.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.tabs-wrapper{background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);}
-.tabs-body{padding:0 16px 16px;}
-.attr-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
-.attr-card{background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);border-radius:var(--radius-sm);padding:12px 8px;display:flex;flex-direction:column;align-items:center;transition:var(--transition);text-align:center;gap:4px;}
-.attr-card:hover{border-color:var(--accent-primary);background:rgba(0,0,0,0.35);transform:translateY(-2px);}
-.attr-icon{font-size:1.5rem;color:var(--accent-secondary);width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
-.attr-name{font-family:var(--font-heading);color:var(--text-bright);font-weight:700;font-size:0.82rem;letter-spacing:1px;}
-.attr-breakdown{font-family:var(--font-mono);font-size:0.58rem;color:var(--text-muted);background:rgba(0,0,0,0.25);border-radius:4px;padding:4px;width:100%;margin:3px 0;}
-.attr-total{font-family:var(--font-mono);font-size:1.8rem;font-weight:700;color:var(--accent-secondary);line-height:1;text-shadow:0 0 10px rgba(0,0,0,0.5);}
-.attr-controls{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;}
-.attr-btn{width:26px;height:26px;border-radius:5px;border:1px solid var(--panel-border-bright);background:var(--panel-bg);color:var(--text-main);font-size:0.85rem;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;}
-.attr-btn:hover{background:var(--accent-primary);color:#fff;border-color:var(--accent-primary);}
-.attr-input{width:38px;text-align:center;padding:3px;font-size:0.85rem;border-color:var(--panel-border-bright);}
-.identity-input{font-family:var(--font-display) !important;font-size:1.4rem !important;text-align:center;border:none !important;border-bottom:2px solid var(--accent-primary) !important;background:transparent !important;color:var(--accent-primary) !important;padding:4px !important;border-radius:0 !important;margin-bottom:10px;font-weight:700;}
-.level-wrapper{display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0;}
-.lvl-btn{width:32px;height:32px;border-radius:50%;cursor:pointer;background:var(--panel-bg);border:1px solid var(--accent-primary);color:var(--accent-primary);display:flex;align-items:center;justify-content:center;transition:var(--transition);font-size:1rem;}
-.lvl-btn:hover{background:var(--accent-primary);color:#fff;box-shadow:0 0 10px var(--accent-glow);}
-.lvl-display{text-align:center;}
-.lvl-num{font-family:var(--font-mono);font-size:2.8rem;font-weight:900;color:var(--accent-secondary);line-height:1;}
-.lvl-lbl{font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;}
-.rpg-bar{margin-bottom:12px;}
-.rpg-bar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-family:var(--font-heading);font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.rpg-bar-val{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;}
-.rpg-bar-bg{height:8px;background:rgba(0,0,0,0.4);border-radius:4px;overflow:hidden;}
-.rpg-bar-fill{height:100%;width:100%;border-radius:4px;transition:width 0.5s ease;}
-.bar-vit .rpg-bar-header,.bar-vit .rpg-bar-val{color:var(--stat-vit);}
-.bar-vit .rpg-bar-fill{background:var(--bar-vit);box-shadow:0 0 8px var(--stat-vit);}
-.bar-ene .rpg-bar-header,.bar-ene .rpg-bar-val{color:var(--stat-ene);}
-.bar-ene .rpg-bar-fill{background:var(--bar-ene);box-shadow:0 0 8px var(--stat-ene);}
-.bar-esp .rpg-bar-header,.bar-esp .rpg-bar-val{color:var(--stat-esp);}
-.bar-esp .rpg-bar-fill{background:var(--bar-esp);box-shadow:0 0 8px var(--stat-esp);}
-.regen-text{font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);text-align:right;margin-top:2px;}
-.pa-display{text-align:center;padding-top:14px;border-top:1px dashed var(--panel-border);margin-top:14px;}
-.pa-num{font-family:var(--font-mono);font-size:2.8rem;font-weight:900;color:var(--stat-good);text-shadow:0 0 15px rgba(74,222,128,0.3);line-height:1;}
-.pa-lbl{font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;}
-.radar-box{display:flex;justify-content:center;align-items:center;margin-bottom:10px;padding:8px;background:radial-gradient(circle at center,rgba(0,0,0,0.3) 0%,transparent 70%);border-radius:50%;}
-.bbcode-panel{background:rgba(0,0,0,0.3);border:1px solid var(--panel-border-bright);border-radius:var(--radius);padding:16px;margin-top:10px;}
-.bbcode-text{font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;background:rgba(0,0,0,0.2);padding:10px;border-radius:var(--radius-sm);border:1px solid var(--panel-border);margin-bottom:10px;}
-.btn-bbcode{background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));border:none;color:#fff;font-family:var(--font-heading);font-size:0.78rem;font-weight:700;padding:10px 20px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:8px;box-shadow:0 4px 14px var(--accent-glow);text-transform:uppercase;letter-spacing:1px;}
-.btn-bbcode:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-glow);}
-.btn-bbcode.copied{background:linear-gradient(135deg,var(--stat-good),#22c55e);}
-.mastery-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--panel-border);cursor:pointer;transition:var(--transition);}
-.mastery-dot.filled{background:var(--accent-primary);border-color:var(--accent-primary);box-shadow:0 0 6px var(--accent-glow);}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:9999;justify-content:center;align-items:center;}
-.modal-overlay.open{display:flex;}
-.modal-box{background:var(--panel-bg);border:1px solid var(--accent-primary);border-radius:var(--radius-lg);padding:24px;width:90%;max-width:560px;box-shadow:var(--shadow-lg);}
-.modal-title{font-family:var(--font-heading);font-size:1rem;color:var(--accent-secondary);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
-.modal-box textarea{width:100%;height:220px;background:rgba(0,0,0,0.4);color:var(--text-bright);border:1px solid var(--panel-border);border-radius:var(--radius-sm);padding:12px;font-family:var(--font-mono);font-size:0.75rem;outline:none;resize:none;margin-bottom:14px;}
-.modal-box textarea:focus{border-color:var(--accent-primary);}
-.umbral-row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;font-family:var(--font-mono);font-size:0.72rem;border-bottom:1px dashed rgba(255,255,255,0.04);}
-.umbral-row:last-child{border-bottom:none;}
-.big-vitals{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
-.big-vital{text-align:center;padding:20px 14px;background:var(--panel-bg);border:1px solid;border-radius:var(--radius-lg);backdrop-filter:blur(10px);}
-.big-vital-val{font-family:var(--font-mono);font-size:2.2rem;font-weight:700;line-height:1;margin:8px 0;}
-.big-vital-lbl{font-family:var(--font-heading);font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;}
-.big-vital-regen{font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);}
-.bv-vit{border-color:rgba(251,113,133,0.4);}.bv-vit .big-vital-val,.bv-vit .big-vital-lbl{color:var(--stat-vit);}
-.bv-ene{border-color:rgba(96,165,250,0.4);}.bv-ene .big-vital-val,.bv-ene .big-vital-lbl{color:var(--stat-ene);}
-.bv-esp{border-color:rgba(192,132,252,0.4);}.bv-esp .big-vital-val,.bv-esp .big-vital-lbl{color:var(--stat-esp);}
-.dashboard-hero{background:var(--glass-bg);backdrop-filter:blur(14px);border:1px solid var(--panel-border-bright);border-radius:var(--radius-lg);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:var(--shadow-lg);margin-bottom:20px;flex-wrap:wrap;}
-.dash-circle{display:flex;flex-direction:column;align-items:center;gap:8px;}
-.dash-circle-wrap{width:68px;height:68px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);border:2px solid var(--accent-primary);border-radius:50%;box-shadow:0 0 18px var(--accent-glow);position:relative;}
-.dash-circle-val{font-family:var(--font-mono);font-size:1.7rem;font-weight:700;color:var(--accent-secondary);}
-.dash-circle-lbl{font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
-.dash-name-input{font-family:var(--font-display) !important;font-size:1.3rem !important;border:none !important;border-bottom:2px solid var(--accent-primary) !important;background:transparent !important;color:var(--accent-primary) !important;padding:4px !important;border-radius:0 !important;font-weight:700;min-width:200px;}
-.resumen-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.resumen-section{background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);border-radius:var(--radius);padding:16px;}
-.resumen-section-title{font-family:var(--font-heading);font-size:0.72rem;font-weight:700;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--panel-border);}
-.stat-highlight{background:rgba(0,0,0,0.3);border-radius:var(--radius-sm);padding:12px 16px;text-align:center;border:1px solid var(--panel-border);}
-.stat-highlight-val{font-family:var(--font-mono);font-size:1.6rem;font-weight:700;line-height:1;}
-.stat-highlight-lbl{font-family:var(--font-heading);font-size:0.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-top:4px;}
-.akuma-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
-.akuma-type-card{background:rgba(0,0,0,0.2);border:1px solid var(--panel-border);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:pointer;transition:var(--transition);}
-.akuma-type-card:hover{border-color:var(--accent-primary);background:rgba(0,0,0,0.35);}
-.akuma-type-card.selected{border-color:var(--accent-primary);background:var(--accent-alpha);box-shadow:0 0 12px var(--accent-glow);}
-.akuma-type-card.logia.selected{border-color:var(--stat-ene);background:rgba(96,165,250,0.1);}
-.akuma-type-card.paramecia.selected{border-color:var(--stat-good);background:rgba(74,222,128,0.1);}
-.akuma-type-card.zoan.selected{border-color:var(--stat-warn);background:rgba(250,204,21,0.1);}
-.akuma-type-icon{font-size:1.5rem;margin-bottom:6px;color:var(--accent-secondary);}
-.akuma-type-name{font-family:var(--font-heading);font-size:0.75rem;font-weight:700;color:var(--text-bright);}
-.akuma-type-desc{font-size:0.62rem;color:var(--text-muted);margin-top:4px;}
-.zoan-sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
-.speed-row{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;font-family:var(--font-mono);font-size:0.75rem;border-bottom:1px dashed rgba(255,255,255,0.04);}
-.speed-row:last-child{border-bottom:none;}
-.ref-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:5px 8px;border-bottom:1px dashed rgba(255,255,255,0.04);font-size:0.68rem;}
-.ref-row:last-child{border-bottom:none;}
-.section-divider{font-family:var(--font-heading);font-size:0.7rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;padding:8px 0 6px 0;border-bottom:1px solid var(--panel-border);margin:12px 0 8px 0;display:flex;align-items:center;gap:6px;}
-
-/* ── Road Build styles ── */
-.rb-table{min-width:900px;width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.68rem;}
-.rb-table th{padding:6px 5px;text-align:center;font-weight:600;background:rgba(0,0,0,0.5);position:sticky;top:0;z-index:6;border-bottom:2px solid var(--panel-border-bright);}
-.rb-table td{padding:3px 3px;border-bottom:1px solid rgba(255,255,255,0.025);}
-.rb-sticky-col{position:sticky;left:0;z-index:4;border-right:1px solid var(--panel-border);}
-.rb-sticky-head{position:sticky;left:0;z-index:7;border-right:1px solid var(--panel-border);}
-.rb-milestone{background:rgba(250,204,21,0.06) !important;}
-.rb-current{background:rgba(242,92,141,0.1) !important;}
-.rb-input{width:44px;text-align:center;font-size:0.64rem;padding:2px 3px;border-radius:4px;}
-.rb-scroll{overflow-x:auto;border:1px solid var(--panel-border);border-radius:var(--radius);}
-.rb-section-header{font-family:var(--font-heading);font-size:0.72rem;color:var(--accent-secondary);text-transform:uppercase;letter-spacing:1px;padding:10px 0 6px 0;border-bottom:1px solid var(--panel-border);margin:18px 0 10px 0;display:flex;align-items:center;gap:8px;}
-.rb-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-family:var(--font-mono);font-size:0.6rem;}
-.rb-legend span{display:flex;align-items:center;gap:4px;}
-.rb-legend .dot{width:8px;height:8px;border-radius:50%;}
-
-@media(max-width:1300px){.rpg-layout{grid-template-columns:270px 1fr 310px;}}
-@media(max-width:1100px){.rpg-layout{grid-template-columns:1fr;height:auto;}.col-left,.col-right{position:static;max-height:none;}.attr-grid{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:768px){.attr-grid{grid-template-columns:repeat(2,1fr);}.grid-2,.grid-3{grid-template-columns:1fr;}.rpg-layout{gap:12px;padding:10px;}.header-center{display:none;}.akuma-type-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:480px){.attr-grid{grid-template-columns:1fr 1fr;}.logo{font-size:1rem;}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Piece RPG — Build Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="op-styles.css">
 </head>
 <body>
+<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div id="toast"></div>
 
-<div class="modal-overlay" id="ioModal">
+<!-- MODAL: Datos del Personaje -->
+<div id="charModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-title">
-      <span id="ioModalTitle"><i class="fas fa-file-export"></i> Datos del Personaje</span>
-      <button class="btn" style="border:none;padding:4px;" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-header">
+      <h2 style="margin-bottom:0">Datos del Personaje</h2>
     </div>
-    <textarea id="ioDataText"></textarea>
-    <div style="display:flex;gap:10px;justify-content:flex-end;">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" id="ioActionBtn" onclick="executeIO()"><i class="fas fa-check"></i> Aceptar</button>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input type="text" id="modal-name" class="form-input" placeholder="Nombre del personaje" maxlength="40">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Raza</label>
+        <select id="modal-race" class="form-select"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nivel</label>
+        <div class="form-lvl-row">
+          <button class="lb" onclick="adjModalLevel(-1)">-</button>
+          <input type="number" id="modal-level" class="form-lvl-val" value="1" min="1">
+          <button class="lb" onclick="adjModalLevel(1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCharModal()">Cancelar</button>
+      <button class="btn btn-glow" onclick="applyCharModal()">Confirmar</button>
     </div>
   </div>
 </div>
 
-<header>
-  <div class="logo">Nakama <em>no Mi</em></div>
-  <div class="header-center">
-    <div class="layout-pill">
-      <button id="btnRPG" onclick="setLayout('rpg')" class="active">RPG</button>
-      <button id="btnClassic" onclick="setLayout('classic')">Clasico</button>
-    </div>
-  </div>
-  <div class="header-actions">
-    <div class="theme-dot" onclick="toggleTheme()" title="Cambiar tema" id="themeBtn">
-      <i class="fas fa-palette" style="font-size:12px;"></i>
-    </div>
-    <button class="btn" onclick="openModal('import')"><i class="fas fa-file-import"></i> Importar</button>
-    <button class="btn btn-primary" onclick="openModal('export')"><i class="fas fa-file-export"></i> Exportar</button>
-  </div>
-</header>
-
-<div id="layoutWrapper"></div>
-
-<script>
-
-let D = {};
-let currentLayout = 'rpg';
-
-let state = {
-  name:'', level:1, race:'Humano',
-  customAttrs:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
-  passiveExtras:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
-  selectedKarmas:{},
-  weapon:{cat:'filo',sub:'Espada / Katana / Lanza / Hacha',tier:0,mode:'normal',shield:'no'},
-  akuma:{type:'none',zoanSub:'normal'},
-  haki:{busho:false,ken:false,haos:false},
-  masteries:[{type:'Cuerpo a Cuerpo',grade:1}],
-  oficios:{},
-  combatCalc:{transformation:'humano',style:'desarmado'},
-  zoanBonuses:{FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0},
-  roadBuild:{targetLevel:1,plans:{}}
-};
-
-// ============================================================
-// MATH ENGINE
-// ============================================================
-const rnd = x => Math.round(x);
-
-function autoBase(a){
-  return (a==='CH'||a==='CA') ? 0 : 3+(state.level-1)*D.config.AUTO_PER_LEVEL;
-}
-function cval(a){return state.customAttrs[a]||0;}
-function getLevelCap(){return state.level*10+50;}
-function getRaceBonus(a){const r=D.races[state.race];return r?(r.bonuses[a]||0):0;}
-
-function getKarmaMod(a){
-  let m=0;
-  for(const[id,sel]of Object.entries(state.selectedKarmas)){
-    if(!sel)continue;
-    if(id==='tuerto'&&(a==='REF'||a==='PRE'))m-=50;
-    if(id==='ciego'&&(a==='PRE'||a==='REF'))m-=100;
-    if(id==='mal_oido'&&a==='REF')m-=25;
-    if(id==='sordo'&&a==='REF')m-=50;
-    if(id==='pierna_amputada'&&a==='AGI')m-=100;
-    if(id==='arrepentido'&&a==='VOL')m-=40;
-  }
-  return m;
-}
-
-function getPExtra(a){return(state.passiveExtras&&state.passiveExtras[a])||0;}
-
-function getZoanBonus(a){
-  const trans=state.combatCalc?.transformation||'humano';
-  if(trans==='humano'||!state.akuma?.type?.startsWith('zoan'))return 0;
-  return(state.zoanBonuses&&state.zoanBonuses[a])||0;
-}
-
-function getAttr(a){return autoBase(a)+cval(a)+getRaceBonus(a);}
-function getEff(a){return getAttr(a)+getKarmaMod(a)+getPExtra(a)+getZoanBonus(a);}
-
-function calcVIT(){
-  const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),A=getEff('AGI'),V=getEff('VOL'),n=state.level;
-  return rnd((F*5+R*6+Ds*2+A+V)*(1+n/33.33));
-}
-function calcENE(){
-  const F=getEff('FUE'),R=getEff('RES'),Ds=getEff('DES'),P=getEff('PRE'),
-        A=getEff('AGI'),Rf=getEff('REF'),I=getEff('INT'),V=getEff('VOL'),Ca=getEff('CA');
-  return Math.floor(F*4+R*5+Ds+P+A+Rf+I*3+V+Ca);
-}
-function calcESP(){
-  const V=getEff('VOL'),C=getEff('CH');
-  return rnd(V*3+C*3);
-}
-function calcPhysRes(){
-  const R=getEff('RES');
-  if(R>=400)return 300;if(R>=300)return 200;if(R>=100)return 100;if(R>=50)return rnd(R*0.5);return 0;
-}
-function calcElRes(){
-  const R=getEff('RES');
-  if(R>=400)return 300;if(R>=300)return 200;if(R>=150)return 100;if(R>=50)return rnd(R*0.5);return 0;
-}
-function calcGB(){
-  const F=getEff('FUE');
-  if(F>=300)return F+150;if(F>=150)return F+50;return F;
-}
-function calcHits(v){
-  if(v<=150)return 1;if(v<=300)return 2;if(v<=450)return 3;if(v<=600)return 4;return 5;
-}
-function totalUsed(){return D.attrs.reduce((s,a)=>s+(state.customAttrs[a]||0),0);}
-function freePA(){return D.config.PA_START+state.level*D.config.PA_PER_LEVEL-totalUsed();}
-function calcInventorySpaces(){
-  const F=getEff('FUE');
-  let sp=Math.floor(F/15)*3;
-  if(state.selectedKarmas['organizado'])sp+=5;
-  if(state.selectedKarmas['bolsillo_magico'])sp+=5;
-  if(state.selectedKarmas['desorganizado'])sp-=5;
-  return Math.max(0,sp);
-}
-function calcWeightCapacity(){
-  const F=getEff('FUE');
-  const tier=D.config.weightTiers.find(t=>F<=t.maxFUE)||D.config.weightTiers[D.config.weightTiers.length-1];
-  return rnd(tier.base+(F*F/tier.div));
-}
-function calcFallHeight(){return rnd(getEff('RES')/5)+1;}
-function calcDeathThresholds(){
-  const vol=getEff('VOL'),res=getEff('RES'),vit=calcVIT();
-  const isBuccaneer=state.race==='Buccaneer';
-  const vitDeathMult=isBuccaneer?4:2;
-  const umbralBase=Math.floor(vol/150)+1;
-  return{vitKO:0,vitIrrec:-vol,vitDeath:-(vol*vitDeathMult),vitBigKO:rnd(vit*0.9),vitBigDeath:vit,eneKO:0,eneDeath:-res,espKO:0,espDeath:-Math.ceil(vol/2),isBuccaneer,umbralBase};
-}
-function calcUmbralesDolorValues(){
-  const vol=getEff('VOL');
-  const base=Math.floor(vol/150)+1;
-  let buccBonus=0;
-  if(state.race==='Buccaneer'){buccBonus=150;if(state.level>=10)buccBonus+=300;if(state.level>=25)buccBonus+=500;}
-  return [1,2,3,4,5].map(i=>vol*(base+i-1)+buccBonus);
-}
-function getAkumaRegen(){
-  const t=state.akuma.type,n=state.level;
-  if(t==='none')return{c:0,f:0};if(t==='logia')return{c:0,f:0};if(t==='paramecia')return{c:0,f:0};
-  if(t==='zoan_normal')return{c:n,f:n*2};if(t==='zoan_pre')return{c:n*2,f:n*3};
-  if(t==='zoan_mito')return{c:n*3,f:n*4};return{c:0,f:0};
-}
-function getZoanEneRegen(n){
-  const t=state.akuma.type;
-  if(t==='zoan_normal')return{c:n*2,f:n*3};if(t==='zoan_pre')return{c:n*3,f:n*4};
-  if(t==='zoan_mito')return{c:n*4,f:n*5};return{c:n,f:n*2};
-}
-function getBaseEneRegen(){return state.level;}
-function getBaseEspRegen(){return(getEff('CH')/6);}
-function getAkumaLabel(){
-  const t=state.akuma.type;
-  if(t==='none')return'Ninguna';if(t==='logia')return'Logia';if(t==='paramecia')return'Paramecia';
-  if(t==='zoan_normal')return'Zoan Normal';if(t==='zoan_pre')return'Zoan Prehistorica';return'Zoan Mitologica';
-}
-function getWeaponStats(){
-  const catD=D.weapons[state.weapon.cat];if(!catD)return null;
-  const subD=catD.subs[state.weapon.sub];if(!subD)return null;
-  const FUE=getEff('FUE'),DES=getEff('DES'),PRE=getEff('PRE');
-  let fM=1,dM=1;if(state.weapon.mode.includes('dual')){fM=0.5;dM=0.5;}
-  const base=subD.bases[state.weapon.tier]||0,sc=subD.scales;
-  let dmg=base;
-  if(subD.special==='gloves')dmg=FUE+base+(sc.FUE||0)*FUE;
-  else{dmg+=rnd((sc.FUE||0)*FUE*fM);if(subD.usePRE)dmg+=rnd((sc.PRE||0)*PRE+(sc.DES||0)*DES*dM);else dmg+=rnd((sc.DES||0)*DES*dM);}
-  const hitsAttr=(subD.special==='gloves')?getEff('AGI'):DES;
-  let nH=calcHits(hitsAttr);
-  if(state.weapon.shield==='yes')nH=calcHits(Math.max(0,hitsAttr-20));
-  if(state.weapon.mode==='dual'&&subD.special!=='gloves')dmg=dmg*2;
-  return{name:state.weapon.sub,tier:state.weapon.tier+1,dmg,hits:nH,dpt:dmg*nH};
-}
-function getKarmaBalance(){
-  let b=0;
-  [...D.karmasPos,...D.karmasNeg].forEach(k=>{if(state.selectedKarmas[k.id])b+=k.val;});
-  return b;
-}
-
-// ============================================================
-// ROAD BUILD ENGINE
-// ============================================================
-function rbAutoBase(attr, lv){
-  return (attr==='CH'||attr==='CA') ? 0 : 3+(lv-1)*D.config.AUTO_PER_LEVEL;
-}
-function rbGetRaceKarmaExtra(attr){
-  return getRaceBonus(attr)+getKarmaMod(attr)+getPExtra(attr);
-}
-function rbGetPAAtLevel(attr, lv){
-  return (state.roadBuild?.plans[lv]?.[attr]) || 0;
-}
-function rbGetCumulativePA(attr, upToLv){
-  let total=0;
-  for(let l=1;l<=upToLv;l++) total+=rbGetPAAtLevel(attr,l);
-  return total;
-}
-function rbTotalInvAtLevel(lv){
-  return D.attrs.reduce((s,a)=>s+rbGetPAAtLevel(a,lv),0);
-}
-function rbTotalInvUpTo(lv){
-  return D.attrs.reduce((s,a)=>s+rbGetCumulativePA(a,lv),0);
-}
-function rbPAAvail(lv){return D.config.PA_START+lv*D.config.PA_PER_LEVEL;}
-function rbPAFree(lv){return rbPAAvail(lv)-rbTotalInvUpTo(lv);}
-function rbEff(attr, lv){
-  return rbAutoBase(attr,lv)+rbGetCumulativePA(attr,lv)+rbGetRaceKarmaExtra(attr);
-}
-function rbVIT(lv){
-  const F=rbEff('FUE',lv),R=rbEff('RES',lv),Ds=rbEff('DES',lv),A=rbEff('AGI',lv),V=rbEff('VOL',lv);
-  return rnd((F*5+R*6+Ds*2+A+V)*(1+lv/33.33));
-}
-function rbENE(lv){
-  const F=rbEff('FUE',lv),R=rbEff('RES',lv),Ds=rbEff('DES',lv),P=rbEff('PRE',lv),
-        A=rbEff('AGI',lv),Rf=rbEff('REF',lv),I=rbEff('INT',lv),V=rbEff('VOL',lv),Ca=rbEff('CA',lv);
-  return Math.floor(F*4+R*5+Ds+P+A+Rf+I*3+V+Ca);
-}
-function rbESP(lv){return rnd(rbEff('VOL',lv)*3+rbEff('CH',lv)*3);}
-function rbGB(lv){
-  const F=rbEff('FUE',lv);
-  if(F>=300)return F+150;if(F>=150)return F+50;return F;
-}
-function rbMitF(lv){
-  const R=rbEff('RES',lv);
-  if(R>=400)return 300;if(R>=300)return 200;if(R>=100)return 100;if(R>=50)return rnd(R*0.5);return 0;
-}
-function rbMitE(lv){
-  const R=rbEff('RES',lv);
-  if(R>=400)return 300;if(R>=300)return 200;if(R>=150)return 100;if(R>=50)return rnd(R*0.5);return 0;
-}
-function rbDeath(lv){
-  const vol=rbEff('VOL',lv),res=rbEff('RES',lv);
-  const isBucc=state.race==='Buccaneer';
-  return{vitDeath:-(vol*(isBucc?4:2)),eneDeath:-res,espDeath:-Math.ceil(vol/2)};
-}
-
-function changeRBTarget(delta){
-  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
-  state.roadBuild.targetLevel=Math.max(1,Math.min(D.config.MAX_LEVEL,(state.roadBuild.targetLevel||1)+delta));
-  renderRoadBuildTable();
-}
-function resetRoadBuild(){
-  if(!confirm('¿Resetear todo el Road Build? Se perderá el plan completo.'))return;
-  state.roadBuild={targetLevel:state.roadBuild?.targetLevel||state.level,plans:{}};
-  renderRoadBuildTable();
-}
-function syncRBFromMain(){
-  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
-  state.roadBuild.targetLevel=state.level;
-  state.roadBuild.plans={};
-  const plan={};
-  for(const a of D.attrs) plan[a]=state.customAttrs[a]||0;
-  state.roadBuild.plans[1]=plan;
-  renderRoadBuildTable();
-}
-function onRBPlanChange(lv,attr,val){
-  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
-  if(!state.roadBuild.plans[lv])state.roadBuild.plans[lv]={};
-  state.roadBuild.plans[lv][attr]=Math.max(0,parseInt(val)||0);
-  renderRoadBuildTable();
-}
-
-function renderRoadBuildTable(){
-  const planEl=document.getElementById('rbPlannerBody');
-  const statsEl=document.getElementById('rbStatsBody');
-  const lvEls=document.querySelectorAll('.rb-target-lv');
-  if(!planEl)return;
-
-  if(!state.roadBuild)state.roadBuild={targetLevel:state.level,plans:{}};
-  const rb=state.roadBuild;
-  const maxLv=Math.min(Math.max(rb.targetLevel||1,1),D.config.MAX_LEVEL);
-  lvEls.forEach(el=>el.textContent=maxLv);
-
-  let planRows='';
-  for(let lv=1;lv<=maxLv;lv++){
-    const paPlus=lv===1?D.config.PA_START+D.config.PA_PER_LEVEL:D.config.PA_PER_LEVEL;
-    const paAvail=rbPAAvail(lv);
-    const invAtLv=rbTotalInvAtLevel(lv);
-    const paFree=rbPAFree(lv);
-    const isCurr=lv===state.level;
-    const isMile=lv%10===0;
-    const freeColor=paFree<0?'#fb7185':paFree===0?'#facc15':'#4ade80';
-    const rowCls=isCurr?'rb-current':isMile?'rb-milestone':'';
-    const bgSticky=isCurr?'rgba(80,15,35,0.98)':isMile?'rgba(40,30,5,0.96)':'rgba(22,8,14,0.97)';
-
-    planRows+=`<tr class="${rowCls}">
-      <td class="rb-sticky-col" style="background:${bgSticky};padding:4px 8px;text-align:center;font-weight:700;color:${isCurr?'#F25C8D':isMile?'#facc15':'#8A7F73'};min-width:52px;">
-        ${isCurr?'★':isMile?'◆':''}${lv}
-      </td>
-      <td style="padding:3px 5px;text-align:center;color:#4ade80;font-weight:600;">+${paPlus}</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${paAvail}</td>
-      <td style="padding:3px 5px;text-align:center;color:#facc15;">${invAtLv}</td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:${freeColor};font-size:0.72rem;">${paFree}</td>
-      ${D.attrs.map(a=>{
-        const v=rbGetPAAtLevel(a,lv);
-        const cumAuto=rbAutoBase(a,lv);
-        const cumPA=rbGetCumulativePA(a,lv);
-        const cap=lv*10+50;
-        const overCap=(cumAuto+cumPA)>cap;
-        return `<td style="padding:2px 2px;text-align:center;">
-          <input class="rb-input" type="number" value="${v}" min="0" step="1"
-            style="border-color:${overCap?'#fb7185':v>0?'var(--accent-primary)':'var(--panel-border)'};"
-            title="${a} en Nv${lv}: Auto=${cumAuto}, PA acumulado=${cumPA}, Cap=${cap}"
-            onchange="onRBPlanChange(${lv},'${a}',this.value)">
-        </td>`;
-      }).join('')}
-    </tr>`;
-  }
-  planEl.innerHTML=planRows;
-
-  if(!statsEl)return;
-  let statsRows='';
-  for(let lv=1;lv<=maxLv;lv++){
-    const isCurr=lv===state.level;
-    const isMile=lv%10===0;
-    const rowCls=isCurr?'rb-current':isMile?'rb-milestone':'';
-    const bgSticky=isCurr?'rgba(80,15,35,0.98)':isMile?'rgba(40,30,5,0.96)':'rgba(22,8,14,0.97)';
-    const cap=lv*10+50;
-    const vit=rbVIT(lv),ene=rbENE(lv),esp=rbESP(lv);
-    const gb=rbGB(lv),mf=rbMitF(lv),me=rbMitE(lv);
-    const mov=rnd(rbEff('AGI',lv)/10);
-    const salto=rnd((rbEff('FUE',lv)+rbEff('AGI',lv))/20);
-    const caida=rnd(rbEff('RES',lv)/5)+1;
-    const d=rbDeath(lv);
-    const paAvail=rbPAAvail(lv);
-    const paUsed=rbTotalInvUpTo(lv);
-    const paFree=paAvail-paUsed;
-    const freeColor=paFree<0?'#fb7185':paFree===0?'#facc15':'#4ade80';
-
-    statsRows+=`<tr class="${rowCls}">
-      <td class="rb-sticky-col" style="background:${bgSticky};padding:4px 8px;text-align:center;font-weight:700;color:${isCurr?'#F25C8D':isMile?'#facc15':'#8A7F73'};min-width:52px;">
-        ${isCurr?'★':isMile?'◆':''}${lv}
-      </td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:${freeColor};">${paFree}</td>
-      ${D.attrs.map(a=>{
-        const v=rbEff(a,lv);
-        const auto=rbAutoBase(a,lv);
-        const pa=rbGetCumulativePA(a,lv);
-        const bonus=rbGetRaceKarmaExtra(a);
-        const overCap=(auto+pa)>cap;
-        return `<td style="padding:3px 4px;text-align:center;color:${overCap?'#fb7185':pa>0?'#ffffff':'#8A7F73'};"
-          title="${a} Nv${lv}: Auto ${auto} + PA ${pa} + Bonos ${bonus} = ${v} (cap ${cap})">${v}</td>`;
-      }).join('')}
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#fb7185;">${vit.toLocaleString()}</td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#60a5fa;">${ene.toLocaleString()}</td>
-      <td style="padding:3px 5px;text-align:center;font-weight:700;color:#c084fc;">${esp}</td>
-      <td style="padding:3px 5px;text-align:center;color:#facc15;">${gb}</td>
-      <td style="padding:3px 5px;text-align:center;color:#4ade80;">${mf}</td>
-      <td style="padding:3px 5px;text-align:center;color:#60a5fa;">${me}</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${mov}m</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--accent-secondary);">${salto}m</td>
-      <td style="padding:3px 5px;text-align:center;color:var(--text-muted);">${caida}m</td>
-      <td style="padding:3px 5px;text-align:center;color:#fb7185;font-size:0.62rem;">${d.vitDeath}</td>
-      <td style="padding:3px 5px;text-align:center;color:#60a5fa;font-size:0.62rem;">${d.eneDeath}</td>
-      <td style="padding:3px 5px;text-align:center;color:#c084fc;font-size:0.62rem;">${d.espDeath}</td>
-    </tr>`;
-  }
-  statsEl.innerHTML=statsRows;
-}
-
-// ============================================================
-// MUTATORS
-// ============================================================
-function changeLevel(d){
-  state.level=Math.max(1,Math.min(D.config.MAX_LEVEL,state.level+d));
-  const cap=getLevelCap();
-  for(const a of D.attrs)state.customAttrs[a]=Math.min(state.customAttrs[a]||0,Math.max(0,cap-autoBase(a)));
-  let ovr=totalUsed()-(D.config.PA_START+state.level*D.config.PA_PER_LEVEL);
-  if(ovr>0)for(const a of D.attrs){if(ovr<=0)break;let r=Math.min(state.customAttrs[a],ovr);state.customAttrs[a]-=r;ovr-=r;}
-  renderAll();
-}
-function onAttrChange(attr,val){
-  val=Math.max(0,parseInt(val)||0);
-  const cap=getLevelCap(),maxC=Math.max(0,cap-autoBase(attr)),old=state.customAttrs[attr]||0;
-  let diff=val-old;
-  if(diff>0){const can=Math.min(diff,freePA());val=old+can;}
-  state.customAttrs[attr]=Math.min(val,maxC);
-  renderAll();
-}
-function resetAttrs(){for(const a of D.attrs)state.customAttrs[a]=0;renderAll();}
-function onPassiveExtra(attr,val){
-  if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-  state.passiveExtras[attr]=parseInt(val)||0;
-  renderAll();
-}
-function onZoanBonus(attr,val){
-  if(!state.zoanBonuses)state.zoanBonuses={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-  state.zoanBonuses[attr]=parseInt(val)||0;
-  renderAll();
-}
-function autoDistribute(){
-  const pts=freePA();if(pts<=0)return;
-  const each=Math.floor(pts/D.attrs.length),rem=pts%D.attrs.length,cap=getLevelCap();
-  for(let i=0;i<D.attrs.length;i++){
-    const a=D.attrs[i],mc=Math.max(0,cap-autoBase(a));
-    state.customAttrs[a]=Math.min(mc,(state.customAttrs[a]||0)+each+(i<rem?1:0));
-  }
-  renderAll();
-}
-function onKarmaToggle(id){state.selectedKarmas[id]=!state.selectedKarmas[id];renderAll();}
-function onAkumaChange(type){state.akuma.type=type;renderAll();}
-function onHakiChange(){
-  state.haki.busho=document.getElementById('hakiBusho')?.checked||false;
-  state.haki.ken=document.getElementById('hakiKen')?.checked||false;
-  state.haki.haos=document.getElementById('hakiHaos')?.checked||false;
-  renderAll();
-}
-function onWeaponCatChange(selEl){
-  const v=(selEl||document.getElementById('weapCat'))?.value;
-  if(v)state.weapon.cat=v;
-  const subs=D.weapons[state.weapon.cat].subs;
-  state.weapon.sub=Object.keys(subs)[0];
-  state.weapon.tier=0;
-  renderAll();
-}
-function onWeaponDetailChange(selEl){
-  const st=(selEl&&selEl.value?selEl.value:document.getElementById('weapTier')?.value||'').split('|');
-  if(st&&st.length===2){state.weapon.sub=st[0];state.weapon.tier=parseInt(st[1]);}
-  state.weapon.mode=document.getElementById('weapMode')?.value||'normal';
-  state.weapon.shield=document.getElementById('weapShield')?.value||'no';
-  renderAll();
-}
-function onOficioToggle(k){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k].level=state.oficios[k].level>0?0:1;renderAll();}
-function onOficioLevel(k,v){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k].level=parseInt(v)||1;renderAll();}
-function onOficioSpec(k,i,v){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k]['spec'+i]=parseInt(v)||0;renderAll();}
-function onOficioSuper(k,c){if(!state.oficios[k])state.oficios[k]={level:0,spec1:0,spec2:0,super:false};state.oficios[k].super=c;renderAll();}
-function addMaestria(){state.masteries.push({type:'Cuerpo a Cuerpo',grade:1});renderAll();}
-function updMaestriaType(i,v){state.masteries[i].type=v;renderAll();}
-function updMaestriaGrade(i,g){state.masteries[i].grade=g;renderAll();}
-function delMaestria(i){state.masteries.splice(i,1);renderAll();}
-function onNameChange(v){state.name=v;}
-
-// ============================================================
-// LAYOUT SYSTEM
-// ============================================================
-function setLayout(layout){
-  currentLayout=layout;
-  document.documentElement.setAttribute('data-layout',layout);
-  document.getElementById('btnRPG').classList.toggle('active',layout==='rpg');
-  document.getElementById('btnClassic').classList.toggle('active',layout==='classic');
-  const wrap=document.getElementById('layoutWrapper');
-  wrap.style.opacity='0';
-  setTimeout(()=>{buildLayout();wrap.style.opacity='1';wrap.style.transition='opacity 0.35s ease';renderAll();},200);
-}
-function buildLayout(){
-  const wrapper=document.getElementById('layoutWrapper');
-  if(currentLayout==='rpg')wrapper.innerHTML=buildRPGLayout();
-  else wrapper.innerHTML=buildClassicLayout();
-}
-
-function buildRPGLayout(){
-  return `<div class="rpg-layout">
-    <div class="col-left">
-      <div class="card" style="border-color:var(--accent-primary)">
-        <div style="text-align:center;">
-          <input type="text" id="charName" class="identity-input" value="${state.name}" placeholder="Nombre del personaje..." oninput="onNameChange(this.value)">
-          <div style="font-family:var(--font-heading);color:var(--text-muted);font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;" id="displayRace">${state.race}</div>
-        </div>
-        <div class="level-wrapper">
-          <button class="lvl-btn" onclick="changeLevel(-1)"><i class="fas fa-minus"></i></button>
-          <div class="lvl-display"><div class="lvl-num" id="hNivel">${state.level}</div><div class="lvl-lbl">Nivel</div></div>
-          <button class="lvl-btn" onclick="changeLevel(1)"><i class="fas fa-plus"></i></button>
-        </div>
-        <div class="rpg-bar bar-vit">
-          <div class="rpg-bar-header"><span>VIT</span><span class="rpg-bar-val" id="barVIT">0</span></div>
-          <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillVIT" style="width:100%"></div></div>
-          <div class="regen-text" id="regenVIT">Regen: Solo Zoan/habilidades</div>
-        </div>
-        <div class="rpg-bar bar-ene">
-          <div class="rpg-bar-header"><span>ENE</span><span class="rpg-bar-val" id="barENE">0</span></div>
-          <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillENE" style="width:100%"></div></div>
-          <div class="regen-text" id="regenENE">Regen: +Nv/turno | ×2 fuera combate</div>
-        </div>
-        <div class="rpg-bar bar-esp">
-          <div class="rpg-bar-header"><span>ESP</span><span class="rpg-bar-val" id="barESP">0</span></div>
-          <div class="rpg-bar-bg"><div class="rpg-bar-fill" id="fillESP" style="width:100%"></div></div>
-          <div class="regen-text" id="regenESP">Regen: CH/6 | CH/4 fuera combate</div>
-        </div>
-        <div class="pa-display">
-          <div class="pa-num" id="hPA">${freePA()}</div>
-          <div class="pa-lbl">PA Libres</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title"><i class="fas fa-heart-broken"></i> Umbrales de Dolor (VOL)</div>
-        <div id="umbralesPanel"></div>
-      </div>
-      <div class="card" style="border-color:rgba(251,113,133,0.4);">
-        <div class="card-title" style="color:var(--stat-bad);"><i class="fas fa-skull-crossbones"></i> Límites Críticos</div>
-        <div id="criticalThresholdsPanel"></div>
-      </div>
-    </div>
-
-    <div class="col-center">
-      <div class="tabs-wrapper">
-        <nav class="nav-tabs">
-          <button class="nav-tab active" onclick="switchTab('atributos',this)">Atributos</button>
-          <button class="nav-tab" onclick="switchTab('raza',this)">Raza y Akuma</button>
-          <button class="nav-tab" onclick="switchTab('combate',this)">Combate</button>
-          <button class="nav-tab" onclick="switchTab('haki',this)">Haki</button>
-          <button class="nav-tab" onclick="switchTab('maestrias',this)">Maestrias</button>
-          <button class="nav-tab" onclick="switchTab('oficios',this)">Oficios</button>
-          <button class="nav-tab" onclick="switchTab('karma',this)">Karmas</button>
-          <button class="nav-tab rb-tab" onclick="switchTab('roadbuild',this)">🗺 Road Build</button>
-        </nav>
-        <div class="tabs-body">
-          <div id="tab-atributos" class="tab-content active">${buildAttrTab()}</div>
-          <div id="tab-raza" class="tab-content">${buildRazaTab()}</div>
-          <div id="tab-combate" class="tab-content">${buildCombateTab()}</div>
-          <div id="tab-haki" class="tab-content">${buildHakiTab()}</div>
-          <div id="tab-maestrias" class="tab-content">${buildMaestriasTab()}</div>
-          <div id="tab-oficios" class="tab-content">${buildOficiosTab()}</div>
-          <div id="tab-karma" class="tab-content">${buildKarmaTab()}</div>
-          <div id="tab-roadbuild" class="tab-content">${buildRoadBuildTab()}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-right">
-      <div class="card" style="border-color:var(--accent-primary)">
-        <div class="card-title"><i class="fas fa-chart-area"></i> Radar de Poder</div>
-        <div class="radar-box"><canvas id="statRadar" width="220" height="220"></canvas></div>
-        <div class="info-row"><span class="info-key">Control Haki</span><span class="info-val" id="resCH" style="color:var(--stat-magic)">${getEff('CH')}</span></div>
-        <div class="info-row"><span class="info-key">Control Akuma</span><span class="info-val" id="resCA" style="color:var(--stat-ene)">${getEff('CA')}</span></div>
-      </div>
-      <div class="card" id="resumenCard">
-        <div class="card-title"><i class="fas fa-id-card"></i> Hoja de Personaje</div>
-        <div id="resumenBody"></div>
-      </div>
-      <div class="bbcode-panel">
-        <div class="card-title" style="border:none;padding-bottom:8px;margin-bottom:8px;"><i class="fas fa-code"></i> BBCode para foro</div>
-        <div class="bbcode-text" id="bbcodeText">Configura tu personaje para generar el BBCode...</div>
-        <button class="btn-bbcode" id="bbcodeBtn" onclick="copyBBCode()"><i class="fas fa-copy"></i> Copiar BBCode</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function buildClassicLayout(){
-  return `<div class="classic-layout">
-    <div class="dashboard-hero">
-      <div>
-        <div style="font-family:var(--font-heading);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Nombre del Personaje</div>
-        <input type="text" id="charName" class="dash-name-input" value="${state.name}" placeholder="Introduce un nombre..." oninput="onNameChange(this.value)">
-      </div>
-      <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;">
-        <div class="dash-circle">
-          <div class="dash-circle-wrap">
-            <button class="lvl-btn" style="position:absolute;left:-14px;width:22px;height:22px;font-size:0.7rem;" onclick="changeLevel(-1)">-</button>
-            <span class="dash-circle-val" id="hNivel">${state.level}</span>
-            <button class="lvl-btn" style="position:absolute;right:-14px;width:22px;height:22px;font-size:0.7rem;" onclick="changeLevel(1)">+</button>
-          </div>
-          <span class="dash-circle-lbl">Nivel</span>
-        </div>
-        <div class="dash-circle">
-          <div class="dash-circle-wrap" style="border-color:var(--stat-good);box-shadow:0 0 18px rgba(74,222,128,0.2)">
-            <span class="dash-circle-val" id="hPA" style="color:var(--stat-good);font-size:1.6rem;">${freePA()}</span>
-          </div>
-          <span class="dash-circle-lbl">PA Libres</span>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-danger" onclick="resetAttrs()"><i class="fas fa-undo"></i> Reset</button>
-        <button class="btn btn-primary" onclick="autoDistribute()"><i class="fas fa-magic"></i> Auto</button>
-      </div>
-    </div>
-    <div class="big-vitals">
-      <div class="big-vital bv-vit">
-        <div class="big-vital-lbl">Vitalidad</div>
-        <div class="big-vital-val" id="barVIT">0</div>
-        <div class="big-vital-regen" id="regenVIT">Solo Zoan/habilidades</div>
-      </div>
-      <div class="big-vital bv-ene">
-        <div class="big-vital-lbl">Energia</div>
-        <div class="big-vital-val" id="barENE">0</div>
-        <div class="big-vital-regen" id="regenENE">+Nv/turno | ×2 fuera</div>
-      </div>
-      <div class="big-vital bv-esp">
-        <div class="big-vital-lbl">Espiritu</div>
-        <div class="big-vital-val" id="barESP">0</div>
-        <div class="big-vital-regen" id="regenESP">CH/6 | CH/4 fuera</div>
-      </div>
-    </div>
-    <div class="tabs-wrapper">
-      <nav class="nav-tabs">
-        <button class="nav-tab active" onclick="switchTab('atributos',this)">Atributos</button>
-        <button class="nav-tab" onclick="switchTab('raza',this)">Raza y Akuma</button>
-        <button class="nav-tab" onclick="switchTab('combate',this)">Combate</button>
-        <button class="nav-tab" onclick="switchTab('haki',this)">Haki</button>
-        <button class="nav-tab" onclick="switchTab('maestrias',this)">Maestrias</button>
-        <button class="nav-tab" onclick="switchTab('oficios',this)">Oficios</button>
-        <button class="nav-tab" onclick="switchTab('karma',this)">Karmas</button>
-        <button class="nav-tab" onclick="switchTab('resumen',this)">Resumen</button>
-        <button class="nav-tab rb-tab" onclick="switchTab('roadbuild',this)">🗺 Road Build</button>
-      </nav>
-      <div class="tabs-body">
-        <div id="tab-atributos" class="tab-content active">${buildAttrTab()}</div>
-        <div id="tab-raza" class="tab-content">${buildRazaTab()}</div>
-        <div id="tab-combate" class="tab-content">${buildCombateTab()}</div>
-        <div id="tab-haki" class="tab-content">${buildHakiTab()}</div>
-        <div id="tab-maestrias" class="tab-content">${buildMaestriasTab()}</div>
-        <div id="tab-oficios" class="tab-content">${buildOficiosTab()}</div>
-        <div id="tab-karma" class="tab-content">${buildKarmaTab()}</div>
-        <div id="tab-resumen" class="tab-content">${buildResumenTab()}</div>
-        <div id="tab-roadbuild" class="tab-content">${buildRoadBuildTab()}</div>
-      </div>
-    </div>
-  </div>`;
-}
-
-// ============================================================
-// TAB BUILDERS
-// ============================================================
-function buildAttrTab(){
-  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-    <span style="font-family:var(--font-mono);font-size:0.7rem;background:var(--panel-bg);border:1px solid var(--stat-warn);color:var(--stat-warn);padding:4px 10px;border-radius:20px;" data-tip="Nivel × 10 + 50 = Cap. máximo por atributo">
-      Cap Max: <strong id="capAtrib">${getLevelCap()}</strong>
-    </span>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-primary" style="padding:4px 10px;font-size:0.65rem;" onclick="autoDistribute()"><i class="fas fa-magic"></i> Auto</button>
-      <button class="btn btn-danger" style="padding:4px 10px;font-size:0.65rem;" onclick="resetAttrs()"><i class="fas fa-undo"></i> Reset</button>
-    </div>
-  </div>
-  <div id="attrPanel" class="attr-grid"></div>
-  <div style="margin-top:18px;border-top:1px solid var(--panel-border);padding-top:14px;">
-    <div style="font-family:var(--font-heading);font-size:0.72rem;color:var(--stat-ene);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
-      <i class="fas fa-plus-circle"></i> Puntos Pasivos Extras
-    </div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:10px;">
-      Bonos <b>no PA</b>: Akuma (pasivas), historia, eventos especiales.<br>
-      Fórmula: <code style="color:var(--accent-secondary);">Stat efectivo = (Auto + PA invertidos) + Raza + Karma + Extras</code>
-    </div>
-    <div id="passiveExtrasPanel"></div>
-  </div>`;
-}
-
-function buildRazaTab(){
-  return `<div class="grid-2" style="margin-bottom:20px;">
-    <div>
-      <h3 style="font-family:var(--font-heading);color:var(--text-muted);margin-bottom:10px;font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;">Razas Puras</h3>
-      <div id="raceGridPure"></div>
-    </div>
-    <div>
-      <h3 style="font-family:var(--font-heading);color:var(--text-muted);margin-bottom:10px;font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;">Razas Hibridas</h3>
-      <div id="raceGridHybrid"></div>
-    </div>
-  </div>
-  <div class="card" style="border-color:var(--accent-primary)">
-    <div class="card-title"><i class="fas fa-dragon"></i> Akuma no Mi</div>
-    <div id="akumaGridContainer"></div>
-  </div>`;
-}
-
-function buildCombateTab(){
-  let catOpts='';
-  for(const[k,v]of Object.entries(D.weapons))catOpts+=`<option value="${k}" ${state.weapon.cat===k?'selected':''}>${v.name}</option>`;
-  let subOpts='';
-  const catD=D.weapons[state.weapon.cat];
-  if(catD)for(const[sn,sd]of Object.entries(catD.subs))for(let t=0;t<5;t++)subOpts+=`<option value="${sn}|${t}" ${state.weapon.sub===sn&&state.weapon.tier===t?'selected':''}>${sn} T${t+1} (nv${sd.tierLevels[t]}+)</option>`;
-  return `<div class="card" style="border-color:var(--accent-primary);margin-bottom:16px;">
-    <div class="card-title"><i class="fas fa-hammer"></i> Configuracion de Arma</div>
-    <div class="grid-2">
-      <div>
-        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;">Categoria</label>
-        <select id="weapCat" onchange="onWeaponCatChange(this)">${catOpts}</select>
-        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;margin-top:8px;">Arma y Tier</label>
-        <select id="weapTier" onchange="onWeaponDetailChange(this)">${subOpts}</select>
-      </div>
-      <div>
-        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;">Modo</label>
-        <select id="weapMode" onchange="onWeaponDetailChange(this)">
-          <option value="normal" ${state.weapon.mode==='normal'?'selected':''}>Normal (1 mano o 2 manos)</option>
-          <option value="dual" ${state.weapon.mode==='dual'?'selected':''}>Dual (FUE×0.5 / DES×0.5 por arma)</option>
-        </select>
-        <label style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;display:block;margin-top:8px;">Escudo</label>
-        <select id="weapShield" onchange="onWeaponDetailChange(this)">
-          <option value="no" ${state.weapon.shield==='no'?'selected':''}>Sin escudo</option>
-          <option value="yes" ${state.weapon.shield==='yes'?'selected':''}>Con escudo (−20 DES hits)</option>
-        </select>
-      </div>
-    </div>
-  </div>
-  <div class="card" id="weaponStats">
-    <div class="card-title"><i class="fas fa-chart-bar"></i> Estadisticas de Combate</div>
-    <div id="combatStatsBody"></div>
-  </div>`;
-}
-
-function buildHakiTab(){
-  return `<div class="grid-3">
-    <div class="card" id="cardBusho">
-      <div class="card-title"><label class="toggle-wrap" style="margin:0;gap:10px;"><input type="checkbox" id="hakiBusho" ${state.haki.busho?'checked':''} onchange="onHakiChange()"><div class="toggle"></div><span>Busoshoku</span></label></div>
-      <div id="bushoStats"></div>
-    </div>
-    <div class="card" id="cardKen">
-      <div class="card-title"><label class="toggle-wrap" style="margin:0;gap:10px;"><input type="checkbox" id="hakiKen" ${state.haki.ken?'checked':''} onchange="onHakiChange()"><div class="toggle"></div><span>Kenbunshoku</span></label></div>
-      <div id="kenStats"></div>
-    </div>
-    <div class="card" id="cardHaos">
-      <div class="card-title"><label class="toggle-wrap" style="margin:0;gap:10px;"><input type="checkbox" id="hakiHaos" ${state.haki.haos?'checked':''} onchange="onHakiChange()"><div class="toggle"></div><span>Haoshoku</span></label></div>
-      <div id="haosStats"></div>
-    </div>
-  </div>`;
-}
-
-function buildMaestriasTab(){
-  const bonusRows=D.masteryBonuses.map(b=>`<tr><td style="color:var(--accent-secondary)">G${b.grade}</td><td style="color:var(--stat-good)">+${b.off} daño</td><td style="color:var(--stat-ene)">+${b.def} mit.</td></tr>`).join('');
-  return `<div class="card">
-    <div class="card-title" style="justify-content:space-between;"><span><i class="fas fa-medal"></i> Maestrias Belicas</span><button class="btn btn-primary" style="padding:4px 10px;font-size:0.65rem;" onclick="addMaestria()"><i class="fas fa-plus"></i> Añadir</button></div>
-    <div style="font-size:0.67rem;color:var(--text-muted);margin-bottom:10px;">Primera maestría gratis. Las adicionales requieren 50 pts de INT cada una y coste en PM.</div>
-    <div id="maestriasPanel"></div>
-  </div>
-  <div class="card" style="margin-top:14px;">
-    <div class="card-title"><i class="fas fa-info-circle"></i> Tabla de Bonos de Maestria</div>
-    <table class="rpg-table"><thead><tr><th>Grado</th><th>Bono Ofensivo</th><th>Bono Defensivo</th></tr></thead><tbody>${bonusRows}</tbody></table>
-    <div style="margin-top:8px;font-size:0.65rem;color:var(--text-muted);">
-      <p>La 1ª maestría progresa hasta G3 sin coste. De G4-G5 y maestrías adicionales cuestan PM.</p>
-      <p>Tipos: Cuerpo a Cuerpo · Escudos · Armas de Filo · Armas de Asta · Armas Contundentes · Armas de Fuego · Armas a Distancia · Armas Flexibles</p>
-    </div>
-  </div>`;
-}
-
-function buildOficiosTab(){
-  return `<div style="font-size:0.67rem;color:var(--text-muted);margin-bottom:10px;">
-    Primer oficio gratis. Oficios adicionales requieren 50 pts de INT cada uno. Superoficios: nv40 + ambas especializaciones al máximo + 150 PM.
-  </div>
-  <div id="oficiosGrid" class="grid-2"></div>`;
-}
-
-function buildKarmaTab(){
-  return `<input type="text" id="karmaSearch" placeholder="Buscar karma..." style="margin-bottom:14px;" oninput="renderKarmas()">
-  <div class="grid-2">
-    <div>
-      <div style="font-family:var(--font-heading);font-size:0.78rem;color:var(--stat-good);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--stat-good);">Karmas Positivos</div>
-      <div id="karmaListPos"></div>
-    </div>
-    <div>
-      <div style="font-family:var(--font-heading);font-size:0.78rem;color:var(--stat-bad);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--stat-bad);">Karmas Negativos</div>
-      <div id="karmaListNeg"></div>
-    </div>
-  </div>`;
-}
-
-function buildResumenTab(){
-  return `<div id="resumenFullBlock"></div>
-  <div class="bbcode-panel" style="margin-top:16px;">
-    <div class="card-title" style="border:none;padding-bottom:8px;margin-bottom:8px;"><i class="fas fa-code"></i> Exportar a BBCode</div>
-    <div class="bbcode-text" id="bbcodeText">Activa esta pestaña para generar el BBCode...</div>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-      <button class="btn-bbcode" id="bbcodeBtn" onclick="copyBBCode()"><i class="fas fa-copy"></i> Copiar BBCode</button>
-    </div>
-  </div>`;
-}
-
-function buildRoadBuildTab(){
-  const maxLv=state.roadBuild?.targetLevel||state.level;
-  return `<div>
-    <!-- Controls bar -->
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;background:rgba(74,222,128,0.05);border:1px solid rgba(74,222,128,0.2);border-radius:var(--radius);margin-bottom:18px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-family:var(--font-heading);font-size:0.65rem;color:var(--stat-good);text-transform:uppercase;letter-spacing:1px;">Nivel objetivo:</span>
-        <button class="lvl-btn" style="width:26px;height:26px;border-color:var(--stat-good);color:var(--stat-good);" onclick="changeRBTarget(-1)"><i class="fas fa-minus"></i></button>
-        <span class="rb-target-lv" style="font-family:var(--font-mono);font-size:1.6rem;font-weight:900;color:var(--stat-good);min-width:32px;text-align:center;">${maxLv}</span>
-        <button class="lvl-btn" style="width:26px;height:26px;border-color:var(--stat-good);color:var(--stat-good);" onclick="changeRBTarget(1)"><i class="fas fa-plus"></i></button>
-      </div>
-      <div style="width:1px;height:30px;background:var(--panel-border);flex-shrink:0;"></div>
-      <button class="btn btn-primary" onclick="syncRBFromMain()" title="Copia los PA del personaje actual al nivel 1 del plan">
-        <i class="fas fa-sync"></i> Sincronizar desde personaje
-      </button>
-      <button class="btn btn-danger" onclick="resetRoadBuild()">
-        <i class="fas fa-trash"></i> Resetear Plan
-      </button>
-      <div style="margin-left:auto;font-size:0.6rem;color:var(--text-muted);text-align:right;line-height:1.6;">
-        Usa raza <b style="color:var(--accent-secondary);">${state.race}</b> + karmas + extras del personaje<br>
-        ★ nivel actual · ◆ hito cada 10 niveles · hover en celda = desglose
-      </div>
-    </div>
-
-    <!-- Legend -->
-    <div class="rb-legend">
-      <span><span class="dot" style="background:#4ade80;"></span><span style="color:#4ade80;">PA+: ganados este nivel</span></span>
-      <span><span class="dot" style="background:var(--accent-secondary);"></span><span style="color:var(--accent-secondary);">PA∑: acumulado disponible</span></span>
-      <span><span class="dot" style="background:#facc15;"></span><span style="color:#facc15;">Inv.Nv: invertido este nivel</span></span>
-      <span><span class="dot" style="background:#4ade80;"></span><span style="color:var(--text-muted);">Libre: PA∑ - todo invertido hasta aquí</span></span>
-      <span style="color:#fb7185;">⚠ Rojo = overcap o PA negativos</span>
-      <span style="color:var(--text-muted);">Blanco = tiene PA invertidos | Gris = solo auto</span>
-    </div>
-
-    <!-- PA Planner Table -->
-    <div class="rb-section-header"><i class="fas fa-sitemap"></i> Distribución de PA Nivel a Nivel (editable)</div>
-    <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">
-      Escribe cuántos PA inviertes en cada atributo en cada nivel. Los valores de la tabla de stats se recalculan automáticamente.
-    </div>
-    <div class="rb-scroll" style="margin-bottom:4px;">
-      <table class="rb-table">
-        <thead>
-          <tr>
-            <th class="rb-sticky-head" style="min-width:54px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
-            <th style="min-width:48px;color:#4ade80;" title="PA ganados en este nivel">PA+</th>
-            <th style="min-width:52px;color:var(--accent-secondary);" title="PA totales disponibles acumulados">PA∑</th>
-            <th style="min-width:50px;color:#facc15;" title="PA invertidos en este nivel (suma de todos los attrs)">Inv.Nv</th>
-            <th style="min-width:58px;" title="PA libres: disponibles menos invertido total hasta este nivel">⚡Libre</th>
-            ${D.attrs.map(a=>`<th style="min-width:50px;color:var(--accent-secondary);">${a}</th>`).join('')}
-          </tr>
-          <tr style="background:rgba(0,0,0,0.3);">
-            <td class="rb-sticky-head" style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);background:rgba(10,4,7,0.99);">—</td>
-            <td colspan="4" style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);">PA acum. = ${D.config.PA_START} + Nv × ${D.config.PA_PER_LEVEL}</td>
-            ${D.attrs.map(a=>`<td style="padding:2px 4px;font-size:0.55rem;color:var(--text-muted);text-align:center;" title="Auto base crece ${D.config.AUTO_PER_LEVEL}/nv">${a==='CH'||a==='CA'?'Auto=0':'Auto+PA'}</td>`).join('')}
-          </tr>
-        </thead>
-        <tbody id="rbPlannerBody"></tbody>
-      </table>
-    </div>
-
-    <!-- Stats Result Table -->
-    <div class="rb-section-header" style="margin-top:24px;"><i class="fas fa-chart-line"></i> Progresión Completa de Stats por Nivel (calculado)</div>
-    <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">
-      Todos los valores efectivos (Auto + PA acumulado + Raza/Karma/Extras). Hover sobre cualquier celda para ver el desglose exacto.
-    </div>
-    <div class="rb-scroll">
-      <table class="rb-table">
-        <thead>
-          <tr>
-            <th class="rb-sticky-head" style="min-width:54px;background:rgba(10,4,7,0.99);color:var(--text-muted);">Nv</th>
-            <th style="min-width:54px;color:#4ade80;" title="PA libres acumulados en ese nivel">⚡Libre</th>
-            ${D.attrs.map(a=>`<th style="min-width:46px;color:var(--accent-secondary);">${a}</th>`).join('')}
-            <th style="min-width:68px;color:#fb7185;">VIT</th>
-            <th style="min-width:62px;color:#60a5fa;">ENE</th>
-            <th style="min-width:54px;color:#c084fc;">ESP</th>
-            <th style="min-width:56px;color:#facc15;" title="Golpe Blanco Melé">G.Blanco</th>
-            <th style="min-width:48px;color:#4ade80;" title="Mitigación Física">Mit.F</th>
-            <th style="min-width:48px;color:#60a5fa;" title="Mitigación Elemental">Mit.E</th>
-            <th style="min-width:48px;color:var(--accent-secondary);" title="Movimiento m/turno (AGI/10)">Mov</th>
-            <th style="min-width:48px;color:var(--accent-secondary);" title="Salto m ((FUE+AGI)/20)">>Salto</th>
-            <th style="min-width:50px;color:var(--text-muted);" title="Caída sin daño (RES/5+1m)">Caída</th>
-            <th style="min-width:58px;color:#fb7185;" title="VIT para muerte (−VOL×2 o ×4 Bucc)">VIT✝</th>
-            <th style="min-width:56px;color:#60a5fa;" title="ENE para muerte (−RES)">ENE✝</th>
-            <th style="min-width:54px;color:#c084fc;" title="ESP para muerte (−VOL/2)">ESP✝</th>
-          </tr>
-        </thead>
-        <tbody id="rbStatsBody"></tbody>
-      </table>
-    </div>
-  </div>`;
-}
-
-// ============================================================
-// RENDER ENGINE
-// ============================================================
-function renderAll(){
-  const pa=freePA();
-  document.querySelectorAll('#hPA').forEach(el=>{el.textContent=pa;el.style.color=pa<0?'var(--stat-bad)':pa===0?'var(--stat-warn)':'var(--stat-good)';});
-  document.querySelectorAll('#hNivel').forEach(el=>el.textContent=state.level);
-  document.querySelectorAll('#capAtrib').forEach(el=>el.textContent=getLevelCap());
-  document.querySelectorAll('#displayRace').forEach(el=>el.textContent=state.race);
-  renderVitals();
-  renderAttrPanel();
-  renderRaceGrid();
-  renderAkumaGrid();
-  renderCombatStats();
-  renderHakiStats();
-  renderMaestrias();
-  renderOficios();
-  renderKarmas();
-  renderResumen();
-  renderPassiveExtras();
-  renderRoadBuildTable();
-  document.querySelectorAll('#resCH').forEach(el=>el.textContent=getEff('CH'));
-  document.querySelectorAll('#resCA').forEach(el=>el.textContent=getEff('CA'));
-  setTimeout(drawRadar,20);
-}
-
-function renderPassiveExtras(){
-  document.querySelectorAll('#passiveExtrasPanel').forEach(el=>{
-    if(!state.passiveExtras)state.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-    const emojis={FUE:'💪',RES:'🛡️',DES:'🎯',PRE:'👁️',AGI:'⚡',REF:'🌀',INT:'🧠',VOL:'🔥',CH:'✨',CA:'🌊'};
-    const labels={FUE:'Fuerza',RES:'Resistencia',DES:'Destreza',PRE:'Precisión',AGI:'Agilidad',REF:'Reflejos',INT:'Inteligencia',VOL:'Voluntad',CH:'Control Haki',CA:'Control Akuma'};
-    el.innerHTML=D.attrs.map(a=>{
-      const v=state.passiveExtras[a]||0;
-      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="width:22px;text-align:center;font-size:0.9rem;">${emojis[a]}</span>
-        <span style="flex:1;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">${labels[a]}</span>
-        <input type="number" value="${v}" min="-9999" max="9999" step="1"
-          style="width:72px;text-align:center;font-size:0.78rem;padding:4px 6px;"
-          onchange="onPassiveExtra('${a}',this.value)" oninput="onPassiveExtra('${a}',this.value)">
-        <span style="width:50px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;color:${v>0?'var(--stat-good)':v<0?'var(--stat-bad)':'var(--text-muted)'};">
-          ${v>0?'+'+v:v}
-        </span>
-      </div>`;
-    }).join('');
-  });
-}
-
-function renderAkumaGrid(){
-  const container=document.getElementById('akumaGridContainer');if(!container)return;
-  const akuma=state.akuma.type;
-  container.innerHTML=`<div class="akuma-type-grid">
-    <div class="akuma-type-card ${akuma==='none'?'selected':''}" onclick="onAkumaChange('none')">
-      <div class="akuma-type-icon"><i class="fas fa-times-circle"></i></div>
-      <div class="akuma-type-name">Ninguna</div>
-      <div class="akuma-type-desc">Sin fruta del diablo</div>
-    </div>
-    <div class="akuma-type-card paramecia ${akuma==='paramecia'?'selected':''}" onclick="onAkumaChange('paramecia')">
-      <div class="akuma-type-icon" style="color:var(--stat-good)"><i class="fas fa-hand-sparkles"></i></div>
-      <div class="akuma-type-name">Paramecia</div>
-      <div class="akuma-type-desc">Poderes sobrehumanos variados</div>
-    </div>
-    <div class="akuma-type-card logia ${akuma==='logia'?'selected':''}" onclick="onAkumaChange('logia')">
-      <div class="akuma-type-icon" style="color:var(--stat-ene)"><i class="fas fa-cloud-bolt"></i></div>
-      <div class="akuma-type-name">Logia</div>
-      <div class="akuma-type-desc">Transformación elemental</div>
-    </div>
-    <div class="akuma-type-card" style="background:rgba(0,0,0,0.1);border-style:dashed;cursor:default;">
-      <div class="akuma-type-icon" style="color:var(--stat-warn)"><i class="fas fa-paw"></i></div>
-      <div class="akuma-type-name">Zoan</div>
-      <div class="akuma-type-desc">Selecciona subtipo abajo</div>
-    </div>
-  </div>
-  <div class="zoan-sub-grid">
-    <div class="akuma-type-card zoan ${akuma==='zoan_normal'?'selected':''}" onclick="onAkumaChange('zoan_normal')">
-      <div class="akuma-type-name">Zoan Normal</div>
-      <div class="akuma-type-desc">VIT: +Nv comb / +Nv×2 fuera<br>ENE: ×2 / ×3 fuera</div>
-    </div>
-    <div class="akuma-type-card zoan ${akuma==='zoan_pre'?'selected':''}" onclick="onAkumaChange('zoan_pre')">
-      <div class="akuma-type-name">Zoan Prehistorica</div>
-      <div class="akuma-type-desc">VIT: +Nv×2 / +Nv×3 fuera<br>ENE: ×3 / ×4 fuera</div>
-    </div>
-    <div class="akuma-type-card zoan ${akuma==='zoan_mito'?'selected':''}" onclick="onAkumaChange('zoan_mito')">
-      <div class="akuma-type-name">Zoan Mitologica</div>
-      <div class="akuma-type-desc">VIT: +Nv×3 / +Nv×4 fuera<br>ENE: ×4 / ×5 fuera</div>
-    </div>
-  </div>`;
-}
-
-function renderVitals(){
-  const vit=calcVIT(),ene=calcENE(),esp=calcESP(),nv=state.level;
-  const zR=getAkumaRegen();
-  document.querySelectorAll('#barVIT').forEach(el=>el.textContent=vit.toLocaleString());
-  document.querySelectorAll('#barENE').forEach(el=>el.textContent=ene.toLocaleString());
-  document.querySelectorAll('#barESP').forEach(el=>el.textContent=esp.toLocaleString());
-  const vitRegenStr=zR.c>0?`Combate: +${zR.c}/turno | Fuera: +${zR.f}/turno`:'Sin regeneración (salvo habilidad especial)';
-  document.querySelectorAll('#regenVIT').forEach(el=>el.textContent=vitRegenStr);
-  const eneBase=getBaseEneRegen();
-  const eneR=getZoanEneRegen(nv);
-  const eneRegenStr=state.akuma.type.startsWith('zoan')?`Combate: +${eneR.c}/t | Fuera: +${eneR.f}/t`:`Combate: +${eneBase}/turno | Fuera: +${eneBase*2}/turno`;
-  document.querySelectorAll('#regenENE').forEach(el=>el.textContent=eneRegenStr);
-  const espR=getBaseEspRegen();
-  document.querySelectorAll('#regenESP').forEach(el=>el.textContent=`Combate: +${espR.toFixed(1)} | Fuera: +${(getEff('CH')/4).toFixed(1)}`);
-
-  const um=document.getElementById('umbralesPanel');
-  if(um){
-    const umVals=calcUmbralesDolorValues();
-    const effects=['Interrumpe acciones que requieran concentración','Interrumpe concentración y cargas','Interrumpe TODAS las acciones y técnicas con mantenimiento','Corta Haki + Desorientación/Confusión 3 seg.','Corta transformaciones Akuma no Mi'];
-    const vol=getEff('VOL');
-    const umbralBase=Math.floor(vol/150)+1;
-    const isBucc=state.race==='Buccaneer';
-    let buccBonus=0;
-    if(isBucc){buccBonus=150;if(state.level>=10)buccBonus+=300;if(state.level>=25)buccBonus+=500;}
-    um.innerHTML=[0,1,2,3,4].map((i)=>`
-      <div class="umbral-row">
+<div id="app">
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hl">
+      <div class="logo">
         <div>
-          <span style="color:var(--text-muted)">Umbral ${i+1} <span style="font-size:0.58rem;">(daño > VOL×${umbralBase+i})</span></span>
-          <div style="font-size:0.6rem;color:var(--text-muted);opacity:0.8;margin-top:1px;">${effects[i]}</div>
+          <h1 class="grad-text">Build Planner</h1>
+          <div class="logo-sub">One Piece RPG · v3.2</div>
         </div>
-        <span style="color:var(--stat-warn);font-weight:bold;">> ${umVals[i].toLocaleString()}${isBucc&&buccBonus>0?` <span style="font-size:0.58rem;color:var(--stat-magic);">(+${buccBonus} Bucc.)</span>`:''}</span>
-      </div>`).join('');
-  }
-  renderDeathThresholds();
-}
-
-function renderDeathThresholds(){
-  const el=document.getElementById('criticalThresholdsPanel');if(!el)return;
-  const t=calcDeathThresholds();
-  el.innerHTML=`
-    <div style="font-size:0.6rem;color:var(--stat-vit);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid rgba(251,113,133,0.2);">Vitalidad (PV)</div>
-    <div class="umbral-row"><span class="info-key">Inconsciente (10 turnos mín.)</span><span style="color:var(--stat-warn);">≤ 0</span></div>
-    <div class="umbral-row"><span class="info-key">Irrecuperable (−VOL)</span><span style="color:var(--stat-bad);">≤ ${t.vitIrrec}</span></div>
-    <div class="umbral-row"><span class="info-key">Muerte${t.isBuccaneer?' <span style="color:var(--stat-magic);font-size:0.58rem;">(×4 VOL Buccaneer)</span>':' (−VOL×2)'}</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.vitDeath}</span></div>
-    <div style="font-size:0.6rem;color:var(--stat-ene);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(96,165,250,0.2);">Energia (ENE)</div>
-    <div class="umbral-row"><span class="info-key">Inconsciente (5 turnos mín.)</span><span style="color:var(--stat-warn);">≤ 0</span></div>
-    <div class="umbral-row"><span class="info-key">Muerte (−RES)</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.eneDeath}</span></div>
-    <div style="font-size:0.6rem;color:var(--stat-esp);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(192,132,252,0.2);">Espiritu (ESP)</div>
-    <div class="umbral-row"><span class="info-key">Inconsciente (3 turnos mín.)</span><span style="color:var(--stat-warn);">< 0</span></div>
-    <div class="umbral-row"><span class="info-key">Muerte (−VOL/2)</span><span style="color:var(--stat-bad);font-weight:bold;">≤ ${t.espDeath}</span></div>
-    <div style="font-size:0.6rem;color:var(--text-muted);font-family:var(--font-heading);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(255,255,255,0.06);">Golpe Único Instantáneo</div>
-    <div class="umbral-row"><span class="info-key">→ KO inmediato (90% VIT)</span><span style="color:var(--stat-warn);">≥ ${t.vitBigKO.toLocaleString()}</span></div>
-    <div class="umbral-row"><span class="info-key">→ Muerte inmediata (100%)</span><span style="color:var(--stat-bad);font-weight:bold;">≥ ${t.vitBigDeath.toLocaleString()}</span></div>`;
-}
-
-function renderAttrPanel(){
-  const panel=document.getElementById('attrPanel');if(!panel)return;
-  panel.innerHTML='';
-  const cap=getLevelCap();
-  for(const attr of D.attrs){
-    const meta=D.attrMeta[attr],auto=autoBase(attr),cv=cval(attr),rb=getRaceBonus(attr),km=getKarmaMod(attr);
-    const pe=getPExtra(attr);
-    const total=(auto+cv)+rb+km+pe;
-    const div=document.createElement('div');
-    div.className='attr-card';
-    let extText='';
-    if(rb!==0||km!==0)extText+=` Raza/Karma:${(rb+km)>0?'+':''}${rb+km}`;
-    if(pe!==0)extText+=` Extra:${pe>0?'+':''}${pe}`;
-    div.innerHTML=`<div class="attr-icon">${meta.emoji}</div>
-      <div class="attr-name" data-tip="${meta.desc}\n\nFórmula: Auto + PA + Raza + Karma + Extras\n= ${auto}+${cv}+${rb}+${km}+${pe} = ${total}\n\nAuto aumenta ${D.config.AUTO_PER_LEVEL}/nivel">${attr}</div>
-      <div class="attr-breakdown">
-        <div>Auto: ${auto} | PA: ${cv}</div>
-        <div>Cap PA: ${auto+cv}/${cap}${extText}</div>
-      </div>
-      <div class="attr-total">${total}</div>
-      <div class="attr-controls">
-        <button class="attr-btn" onclick="onAttrChange('${attr}',${cv}-1)"><i class="fas fa-minus"></i></button>
-        <input class="attr-input" type="number" value="${cv}" onchange="onAttrChange('${attr}',this.value)">
-        <button class="attr-btn" onclick="onAttrChange('${attr}',${cv}+1)"><i class="fas fa-plus"></i></button>
-      </div>`;
-    panel.appendChild(div);
-  }
-}
-
-function renderRaceGrid(){
-  const pure=document.getElementById('raceGridPure'),hyb=document.getElementById('raceGridHybrid');
-  if(!pure)return;
-  pure.innerHTML='';hyb.innerHTML='';
-  for(const[name,data]of Object.entries(D.races)){
-    const div=document.createElement('div');
-    div.className='list-item '+(state.race===name?'sel-race':'');
-    const tags=Object.entries(data.bonuses).map(([k,v])=>`<span class="stat-tag ${v>0?'pos':'neg'}">${v>0?'+':''}${v} ${k}</span>`).join(' ');
-    div.innerHTML=`<div><div class="list-title">${name}</div><div class="list-desc">${data.special}</div></div><div style="flex-shrink:0;text-align:right;">${tags}</div>`;
-    div.onclick=()=>{state.race=name;renderAll();};
-    (data.type==='pure'?pure:hyb).appendChild(div);
-  }
-}
-
-function renderCombatStats(){
-  const el=document.getElementById('combatStatsBody');if(!el)return;
-  const w=getWeaponStats();
-  const physR=calcPhysRes(),elR=calcElRes();
-  const inv=calcInventorySpaces(),wt=calcWeightCapacity();
-  const REF=getEff('REF'),AGI=getEff('AGI'),DES=getEff('DES'),PRE=getEff('PRE');
-  const CH=getEff('CH'),CA=getEff('CA'),VOL=getEff('VOL'),FUE=getEff('FUE'),RES=getEff('RES');
-  const move=rnd(AGI/10);
-  const jump=rnd((FUE+AGI)/20);
-  const fall=calcFallHeight();
-
-  const speedRows=[
-    {label:'Reacción / Percepción',attr:'REF',val:REF,color:'var(--stat-warn)',desc:'Velocidad de percepción de ataques y reacción general'},
-    {label:'CaC / Desplazamiento',attr:'AGI',val:AGI,color:'var(--accent-secondary)',desc:'Ataques cuerpo a cuerpo y velocidad de movimiento'},
-    {label:'Arma / Desenfunde / Recarga',attr:'DES',val:DES,color:'var(--accent-secondary)',desc:'Ataques con arma, desenfunde y recarga'},
-    {label:'Disparo / Distancia',attr:'PRE',val:PRE,color:'var(--accent-secondary)',desc:'Ataques a distancia y proyectiles'},
-    ...(state.haki.busho||state.haki.ken||state.haki.haos?[{label:'Manifestar Haki',attr:'CH',val:CH,color:'var(--stat-magic)',desc:'Activar cualquier tipo de Haki'}]:[]),
-    ...(state.akuma.type!=='none'?[{label:'Crear / Transformar (Akuma)',attr:'CA',val:CA,color:'var(--stat-ene)',desc:'Transformaciones y manifestaciones del Akuma no Mi'}]:[]),
-    ...(state.akuma.type==='logia'?[{label:'Desplazamiento Logia',attr:'(CA+AGI)/2',val:rnd((CA+AGI)/2),color:'var(--stat-ene)',desc:'Velocidad de movimiento en forma elemental'}]:[]),
-    ...(state.haki.haos?[{label:'Onda Haoshoku',attr:'VOL',val:VOL,color:'var(--stat-magic)',desc:'Velocidad de propagación del Haoshoku'}]:[]),
-  ];
-
-  el.innerHTML=`
-  ${w?`
-  <div class="section-divider"><i class="fas fa-fire-alt"></i> Daño y Defensa</div>
-  <div class="grid-2" style="margin-bottom:4px;">
-    <div>
-      <div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
-      <div class="info-row"><span class="info-key">Daño por golpe</span><span class="info-val">${w.dmg}</span></div>
-      <div class="info-row"><span class="info-key">Golpes / turno (DES)</span><span class="info-val">${w.hits}</span></div>
-      <div class="info-row" style="background:var(--bad-bg);padding:5px 6px;border-radius:5px;margin-top:3px;">
-        <span class="info-key" style="color:var(--stat-bad);font-weight:bold;">DPT Máximo</span>
-        <span class="info-val bad" style="font-size:1.1rem;">${w.dpt.toLocaleString()}</span>
       </div>
     </div>
-    <div>
-      <div class="info-row"><span class="info-key" data-tip="FUE < 150: FUE | FUE ≥ 150: FUE+50 | FUE ≥ 300: FUE+150">Golpe Blanco Melé</span><span class="info-val">${calcGB()}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-99: RES×0.5 | 100-299: 100 fijo | 300-399: 200 | ≥400: 300">Mit. Física (pasiva)</span><span class="info-val good">${physR}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="RES < 50: 0 | 50-149: RES×0.5 | 150-299: 100 | 300-399: 200 | ≥400: 300">Mit. Elemental (pasiva)</span><span class="info-val" style="color:var(--stat-ene)">${elR}</span></div>
+    <div class="hr">
+      <button class="char-btn" onclick="openCharModal()">
+        <div>
+          <div class="char-btn-label">Personaje activo</div>
+          <div class="char-btn-name" id="charBtnName">Sin nombre</div>
+        </div>
+        <span style="color:rgba(255,255,255,.4);font-size:.7rem">editar</span>
+      </button>
+      <button class="btn btn-acc" onclick="toggleTheme()" id="themeBtn">Rosa</button>
     </div>
-  </div>
-  `:''}
+  </header>
 
-  <div class="section-divider"><i class="fas fa-bolt"></i> Velocidades de Combate</div>
-  <div style="margin-bottom:12px;">
-    ${speedRows.map(s=>`
-      <div class="speed-row">
-        <span style="color:var(--text-muted);" data-tip="${s.desc}">${s.label} <span style="font-size:0.62rem;opacity:0.6;">(${s.attr})</span></span>
-        <span style="color:${s.color};font-weight:700;font-family:var(--font-mono);">${s.val}</span>
-      </div>`).join('')}
-    <div style="margin-top:8px;padding:8px;background:rgba(0,0,0,0.2);border-radius:var(--radius-sm);border-left:3px solid var(--stat-warn);">
-      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);line-height:1.7;">
-        <span style="color:var(--stat-warn);font-weight:600;">Tu REF: ${REF}</span> — Puedes reaccionar a ataques de velocidad ≤ ${REF}<br>
-        <span style="color:var(--stat-warn);">−1 a −10:</span> Solo percibes mirando directamente la zona de origen<br>
-        <span style="color:var(--stat-bad);">−11 a −20:</span> Solo si cubre >20m y estás a >10m del origen<br>
-        <span style="color:var(--stat-bad);font-weight:700;">≤ −21:</span> Recibes el ataque irremediablemente
-      </div>
-    </div>
+
+  <!-- CHARACTER INFO STRIP -->
+  <div class="char-strip" id="charStrip">
+    <div class="char-strip-item">Nombre: <strong id="stripName">—</strong></div>
+    <div class="char-strip-item">Raza: <strong id="stripRace">—</strong></div>
+    <div class="char-strip-item">Nivel: <strong id="stripLevel">—</strong></div>
   </div>
 
-  <div class="section-divider"><i class="fas fa-eye"></i> Tabla de Reflejos (REF - Vel. ataque)</div>
-  <div style="margin-bottom:12px;">
-    ${D.config.refReactions.map(r=>`
-      <div class="ref-row">
-        <span style="font-family:var(--font-mono);font-size:0.68rem;color:${r.color};font-weight:700;white-space:nowrap;flex-shrink:0;">${r.range}</span>
-        <span style="font-size:0.65rem;color:var(--text-muted);text-align:right;">${r.result}</span>
-      </div>`).join('')}
-  </div>
-
-  <div class="section-divider"><i class="fas fa-running"></i> Movimiento y Físico</div>
-  <div class="grid-2" style="margin-bottom:12px;">
-    <div>
-      <div class="info-row"><span class="info-key" data-tip="1m por cada 10 pts de AGI">Vel. carrera</span><span class="info-val">${move} m/turno</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Con inercia activa (2 turnos corriendo): +50% distancia">Vel. inercia</span><span class="info-val">${rnd(move*1.5)} m/turno</span></div>
-      <div class="info-row"><span class="info-key" data-tip="1m por cada 20 pts de (FUE+AGI)">Salto máximo</span><span class="info-val">${jump} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Con inercia activa: +50% al salto también">Salto con inercia</span><span class="info-val">${rnd(jump*1.5)} m</span></div>
-    </div>
-    <div>
-      <div class="info-row"><span class="info-key" data-tip="Cada 5 pts RES = 1m extra + 1m base">Caída sin daño</span><span class="info-val">${fall} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="(FUE / 15) × 3, modificado por karmas">Espacios inv.</span><span class="info-val">${inv}</span></div>
-      <div class="info-row"><span class="info-key">Cap. peso (2 manos)</span><span class="info-val">${wt.toLocaleString()} kg</span></div>
-      <div class="info-row"><span class="info-key">Cap. peso (1 mano)</span><span class="info-val">${rnd(wt/2).toLocaleString()} kg</span></div>
-    </div>
-  </div>`;
-}
-
-function renderHakiStats(){
-  const C=getEff('CH'),I=getEff('INT'),R=getEff('RES'),V=getEff('VOL');
-  const bExp=C*3+R*2,kExp=C*3+I*2,hExp=C*3+V*2;
-  const {base:hBase,medio:hMedio}=D.config.hakiThresholds;
-  const tier=e=>e>=hMedio?`<span style="color:var(--stat-magic)">Medio (≥${hMedio})</span>`:e>=hBase?`<span style="color:var(--stat-good)">Base (≥${hBase})</span>`:`<span style="color:var(--text-muted)">Sin desbloquear (<${hBase})</span>`;
-  const bAtr=C+R,kAtr=C+I,hAtr=C+V;
-  const cards=[
-    ['cardBusho',state.haki.busho,'var(--stat-ene)','bushoStats',`
-      <div class="info-row"><span class="info-key">Experiencia (CH×3+RES×2)</span><span class="info-val">${bExp}</span></div>
-      <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(bExp)}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + RES. Defensa = Atributo completo. Daño = Atributo/2.">Atributo Busoshoku</span><span class="info-val" style="color:var(--stat-ene)">${bAtr}</span></div>
-      <div class="info-row"><span class="info-key">Defensa (endurecimiento)</span><span class="info-val good">+${bAtr}</span></div>
-      <div class="info-row"><span class="info-key">Daño (imbuimiento)</span><span class="info-val good">+${rnd(bAtr/2)}</span></div>`],
-    ['cardKen',state.haki.ken,'var(--stat-good)','kenStats',`
-      <div class="info-row"><span class="info-key">Experiencia (CH×3+INT×2)</span><span class="info-val">${kExp}</span></div>
-      <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(kExp)}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + INT.">Atributo Kenbunshoku</span><span class="info-val" style="color:var(--stat-good)">${kAtr}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m diámetro por punto de Atributo Ken">Radio Base (diámetro)</span><span class="info-val good">${kAtr} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m radio por cada 10 pts Atributo Ken">Radio Medio (radio)</span><span class="info-val good">${rnd(kAtr/10)} m</span></div>`],
-    ['cardHaos',state.haki.haos,'var(--stat-magic)','haosStats',`
-      <div class="info-row"><span class="info-key">Experiencia (CH×3+VOL×2)</span><span class="info-val">${hExp}</span></div>
-      <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${tier(hExp)}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Atributo = CH + VOL.">Atributo Haoshoku</span><span class="info-val" style="color:var(--stat-magic)">${hAtr}</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel base: 1m por cada 10 pts">Radio Base</span><span class="info-val good">${rnd(hAtr/10)} m</span></div>
-      <div class="info-row"><span class="info-key" data-tip="Nivel medio: 1m por cada 20 pts">Radio Medio</span><span class="info-val good">${rnd(hAtr/20)} m</span></div>`]
-  ];
-  cards.forEach(([cId,active,color,sId,content])=>{
-    const card=document.getElementById(cId);
-    if(card){card.style.borderColor=active?color:'var(--panel-border)';card.style.opacity=active?'1':'0.5';}
-    const s=document.getElementById(sId);
-    if(s)s.innerHTML=content;
-  });
-  document.querySelectorAll('#resCH').forEach(el=>el.textContent=getEff('CH'));
-  document.querySelectorAll('#resCA').forEach(el=>el.textContent=getEff('CA'));
-}
-
-function renderMaestrias(){
-  const el=document.getElementById('maestriasPanel');if(!el)return;
-  el.innerHTML='';
-  state.masteries.forEach((m,i)=>{
-    const row=document.createElement('div');
-    row.className='list-item';row.style.cursor='default';
-    row.innerHTML=`<select style="width:200px;background:var(--panel-bg)" onchange="updMaestriaType(${i},this.value)">${D.masteriesList.map(ml=>`<option value="${ml}" ${m.type===ml?'selected':''}>${ml}</option>`).join('')}</select>
-      <div style="display:flex;gap:5px;align-items:center;">${[1,2,3,4,5].map(g=>`<div class="mastery-dot ${m.grade>=g?'filled':''}" onclick="updMaestriaGrade(${i},${g})"></div>`).join('')}</div>
-      <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-secondary)">G${m.grade}</span>
-      <button class="btn btn-danger" style="padding:3px 8px;" onclick="delMaestria(${i})"><i class="fas fa-trash"></i></button>`;
-    el.appendChild(row);
-  });
-}
-
-function renderOficios(){
-  const grid=document.getElementById('oficiosGrid');if(!grid)return;
-  grid.innerHTML='';
-  for(const[key,d]of Object.entries(D.oficios)){
-    const s=state.oficios[key]||{level:0,spec1:0,spec2:0,super:false};
-    const card=document.createElement('div');
-    card.className='card';
-    card.style.borderColor=s.level>0?'var(--accent-primary)':'var(--panel-border)';
-    card.innerHTML=`<div class="card-title" style="justify-content:space-between;cursor:pointer;" onclick="onOficioToggle('${key}')">
-      <span>${d.name}${s.level>0?` <span style="color:var(--stat-good);font-size:0.7rem;">(Nv${s.level})</span>`:''}</span>
-      <i class="fas ${s.level>0?'fa-check-circle':'fa-circle'}" style="color:${s.level>0?'var(--stat-good)':'var(--panel-border)'}"></i>
-    </div>
-    ${s.level>0?`<div>
-      <div class="info-row" style="margin-bottom:8px;"><span>Nivel (1-3)</span><input type="number" class="attr-input" style="width:50px;" value="${s.level}" min="1" max="3" onchange="onOficioLevel('${key}',this.value)"></div>
-      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px;">Nivel 1: ${d.levels[0]}</div>
-      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px;">Nivel 2: ${d.levels[1]}</div>
-      <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:8px;">Nivel 3: ${d.levels[2]}</div>
-      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">Esp. 1: ${d.specs[0]}</span><input type="range" min="0" max="3" value="${s.spec1}" onchange="onOficioSpec('${key}',1,this.value)" style="width:80px;"></div>
-      <div class="info-row"><span style="color:var(--accent-secondary);font-size:0.7rem;">Esp. 2: ${d.specs[1]}</span><input type="range" min="0" max="3" value="${s.spec2}" onchange="onOficioSpec('${key}',2,this.value)" style="width:80px;"></div>
-      <label class="toggle-wrap" style="margin-top:8px;"><input type="checkbox" ${s.super?'checked':''} onchange="onOficioSuper('${key}',this.checked)"><div class="toggle"></div><span class="toggle-label" style="color:var(--stat-magic)">⭐ Superoficio: ${d.super}</span></label>
-    </div>`:''}`;
-    grid.appendChild(card);
-  }
-}
-
-function renderKarmas(){
-  const pos=document.getElementById('karmaListPos'),neg=document.getElementById('karmaListNeg');
-  if(!pos)return;
-  const search=(document.getElementById('karmaSearch')?.value||'').toLowerCase();
-  pos.innerHTML='';neg.innerHTML='';
-  for(const k of D.karmasPos){
-    if(search&&!k.name.toLowerCase().includes(search)&&!k.effect.toLowerCase().includes(search))continue;
-    const sel=state.selectedKarmas[k.id];
-    const d=document.createElement('div');
-    d.className='list-item '+(sel?'sel-pos':'');
-    d.innerHTML=`<div><div class="list-title">${k.name}</div><div class="list-desc">${k.effect}</div></div><div style="font-family:var(--font-mono);font-weight:bold;color:var(--stat-good);flex-shrink:0;margin-left:8px;">+${k.val}</div>`;
-    d.onclick=()=>onKarmaToggle(k.id);
-    pos.appendChild(d);
-  }
-  for(const k of D.karmasNeg){
-    if(search&&!k.name.toLowerCase().includes(search)&&!k.effect.toLowerCase().includes(search))continue;
-    const sel=state.selectedKarmas[k.id];
-    const d=document.createElement('div');
-    d.className='list-item '+(sel?'sel-neg':'');
-    d.innerHTML=`<div><div class="list-title">${k.name}</div><div class="list-desc">${k.effect}</div></div><div style="font-family:var(--font-mono);font-weight:bold;color:var(--stat-bad);flex-shrink:0;margin-left:8px;">${k.val}</div>`;
-    d.onclick=()=>onKarmaToggle(k.id);
-    neg.appendChild(d);
-  }
-}
-
-function renderResumen(){
-  const w=getWeaponStats();
-  const bal=getKarmaBalance();
-  const activeKarmasPos=[...D.karmasPos].filter(k=>state.selectedKarmas[k.id]);
-  const activeKarmasNeg=[...D.karmasNeg].filter(k=>state.selectedKarmas[k.id]);
-  const hakiBadges=[
-    state.haki.busho?'<span class="badge blue">Busoshoku</span>':'',
-    state.haki.ken?'<span class="badge green">Kenbunshoku</span>':'',
-    state.haki.haos?'<span class="badge purple">Haoshoku</span>':''
-  ].filter(Boolean).join(' ');
-  const mastBadges=state.masteries.map(m=>`<span class="badge gold">${m.type} G${m.grade}</span>`).join(' ');
-  const ofBadges=Object.entries(state.oficios).filter(([k,o])=>o.level>0).map(([k,o])=>`<span class="badge gold">${D.oficios[k].name} Nv${o.level}</span>`).join(' ');
-  const t=calcDeathThresholds();
-  const physR=calcPhysRes(),elR=calcElRes();
-  const inv=calcInventorySpaces(),wt=calcWeightCapacity();
-  const resRPG=`<div style="display:flex;flex-direction:column;gap:0;">
-    <div class="info-row" style="padding:10px 0;"><span class="info-key" style="font-size:0.9rem;">Nombre</span><span class="info-val" style="font-size:1.1rem;color:var(--accent-secondary)">${state.name||'Sin Nombre'}</span></div>
-    <div class="info-row"><span class="info-key">Raza</span><span class="info-val">${state.race}</span></div>
-    <div class="info-row"><span class="info-key">Nivel</span><span class="info-val">${state.level}</span></div>
-    <div class="info-row"><span class="info-key">Akuma no Mi</span><span class="info-val">${getAkumaLabel()}</span></div>
-    <div class="info-row"><span class="info-key">Karma Balance</span><span class="info-val ${bal>0?'good':bal<0?'bad':'warn'}">${bal>0?'+':''}${bal}</span></div>
-    <div style="height:1px;background:var(--panel-border);margin:6px 0;"></div>
-    <div class="info-row"><span class="info-key" style="color:var(--stat-vit)">VIT</span><span class="info-val" style="color:var(--stat-vit);">${calcVIT().toLocaleString()}</span></div>
-    <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">ENE</span><span class="info-val" style="color:var(--stat-ene);">${calcENE().toLocaleString()}</span></div>
-    <div class="info-row"><span class="info-key" style="color:var(--stat-esp)">ESP</span><span class="info-val" style="color:var(--stat-esp);">${calcESP().toLocaleString()}</span></div>
-    <div style="height:1px;background:var(--panel-border);margin:6px 0;"></div>
-    ${w?`<div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
-    <div class="info-row"><span class="info-key">DPT Max</span><span class="info-val bad">${w.dpt.toLocaleString()}</span></div>`:''}
-    <div class="info-row"><span class="info-key">Mit. Fís. / Elem.</span><span class="info-val">${physR} / ${elR}</span></div>
-    <div class="info-row"><span class="info-key">Inventario</span><span class="info-val">${inv} esp. | ${wt.toLocaleString()} kg</span></div>
-    ${hakiBadges?`<div style="margin-top:6px;">${hakiBadges}</div>`:''}
-    ${mastBadges?`<div style="margin-top:4px;">${mastBadges}</div>`:''}
-    ${ofBadges?`<div style="margin-top:4px;">${ofBadges}</div>`:''}
-  </div>`;
-
-  const resClassic=`
-  <div style="background:linear-gradient(135deg,var(--panel-bg),rgba(0,0,0,0.3));border:1px solid var(--accent-primary);border-radius:var(--radius-lg);padding:24px;text-align:center;margin-bottom:20px;">
-    <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--accent-primary);text-shadow:0 0 20px var(--accent-glow);margin-bottom:4px;">${state.name||'Sin Nombre'}</div>
-    <div style="font-family:var(--font-heading);color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:3px;">${state.race} &nbsp;|&nbsp; Nivel ${state.level} &nbsp;|&nbsp; ${getAkumaLabel()}</div>
-    <div style="margin-top:12px;"><span class="badge ${bal>0?'green':bal<0?'red':'gold'}" style="font-size:0.75rem;padding:5px 14px;">Karma: ${bal>0?'+':''}${bal}</span></div>
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
-    <div class="stat-highlight" style="border-color:rgba(251,113,133,0.4);"><div class="stat-highlight-val" style="color:var(--stat-vit);">${calcVIT().toLocaleString()}</div><div class="stat-highlight-lbl">Vitalidad</div></div>
-    <div class="stat-highlight" style="border-color:rgba(96,165,250,0.4);"><div class="stat-highlight-val" style="color:var(--stat-ene);">${calcENE().toLocaleString()}</div><div class="stat-highlight-lbl">Energia</div></div>
-    <div class="stat-highlight" style="border-color:rgba(192,132,252,0.4);"><div class="stat-highlight-val" style="color:var(--stat-esp);">${calcESP().toLocaleString()}</div><div class="stat-highlight-lbl">Espiritu</div></div>
-  </div>
-  <div class="resumen-grid">
-    <div class="resumen-section">
-      <div class="resumen-section-title"><i class="fas fa-fist-raised"></i> Atributos</div>
-      ${D.attrs.slice(0,8).map(a=>`<div class="info-row"><span class="info-key">${D.attrMeta[a].label}</span><span class="info-val">${getEff(a)}</span></div>`).join('')}
-      <div class="info-row"><span class="info-key" style="color:var(--stat-magic)">Control Haki</span><span class="info-val" style="color:var(--stat-magic)">${getEff('CH')}</span></div>
-      <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">Control Akuma</span><span class="info-val" style="color:var(--stat-ene)">${getEff('CA')}</span></div>
-    </div>
-    <div class="resumen-section">
-      <div class="resumen-section-title"><i class="fas fa-sword"></i> Combate</div>
-      ${w?`<div class="info-row"><span class="info-key">Arma</span><span class="info-val" style="color:var(--accent-secondary)">${w.name} T${w.tier}</span></div>
-      <div class="info-row"><span class="info-key">Daño por golpe</span><span class="info-val">${w.dmg}</span></div>
-      <div class="info-row"><span class="info-key">Golpes/turno</span><span class="info-val">${w.hits}</span></div>
-      <div class="info-row" style="background:var(--bad-bg);padding:5px 8px;border-radius:4px;"><span class="info-key" style="color:var(--stat-bad);font-weight:700;">DPT Máximo</span><span class="info-val bad" style="font-size:1.1rem;">${w.dpt.toLocaleString()}</span></div>`:''}
-      <div class="info-row"><span class="info-key">Golpe Blanco</span><span class="info-val">${calcGB()}</span></div>
-      <div class="info-row"><span class="info-key">Mit. Física</span><span class="info-val good">${physR}</span></div>
-      <div class="info-row"><span class="info-key">Mit. Elemental</span><span class="info-val" style="color:var(--stat-ene)">${elR}</span></div>
-      <div class="info-row"><span class="info-key">Movimiento</span><span class="info-val">${rnd(getEff('AGI')/10)} m/turno</span></div>
+  <!-- NPC CONTENT -->
+  <div id="npc-content">
+    <div class="nav-cards">
+      <a class="nav-card glass" href="free-mode.html" onclick="saveState()" id="card-free">
+        <div class="nav-card-title">Modo Libre</div>
+        <div class="nav-card-sub">Asigna todos los puntos de golpe. Ideal para planificar un build final de forma rapida sin restricciones de nivel.</div>
+        <div class="nav-card-badge">Pool total: Nivel x 46 pts</div>
+      </a>
+      <a class="nav-card glass" href="level-mode.html" onclick="saveState()" id="card-lvl">
+        <div class="nav-card-title">Nivel a Nivel</div>
+        <div class="nav-card-sub">Simula la progresion real: define un bloque de inicio (bulk) y distribuye 46 pts libres por cada nivel adicional.</div>
+        <div class="nav-card-badge">46 pts libres por nivel</div>
+      </a>
+      <a class="nav-card glass" href="karma.html" onclick="saveState()" id="card-lvl">
+        <div class="nav-card-title">Karmas</div>
+        <div class="nav-card-sub">Simula asignacion de karmas.</div>
+        <div class="nav-card-badge">Calculo atomatico</div>
+      </a>
+      <a class="nav-card glass" href="belico.html" onclick="saveState()" id="card-belico">
+        <div class="nav-card-title">Belico</div>
+        <div class="nav-card-sub">Gestiona tus tecnicas y arma. Calculo automatico de dano segun tus stats actuales.</div>
+        <div class="nav-card-badge" id="belicoBadge">Requiere personaje con stats</div>
+      </a>
     </div>
   </div>
-  <div class="resumen-grid" style="margin-bottom:16px;">
-    <div class="resumen-section">
-      <div class="resumen-section-title"><i class="fas fa-bolt"></i> Velocidades</div>
-      <div class="info-row"><span class="info-key">Reacción (REF)</span><span class="info-val" style="color:var(--stat-warn)">${getEff('REF')}</span></div>
-      <div class="info-row"><span class="info-key">CaC (AGI)</span><span class="info-val">${getEff('AGI')}</span></div>
-      <div class="info-row"><span class="info-key">Arma (DES)</span><span class="info-val">${getEff('DES')}</span></div>
-      <div class="info-row"><span class="info-key">Disparo (PRE)</span><span class="info-val">${getEff('PRE')}</span></div>
-    </div>
-    <div class="resumen-section">
-      <div class="resumen-section-title"><i class="fas fa-skull-crossbones"></i> Límites Críticos</div>
-      <div class="info-row"><span class="info-key" style="color:var(--stat-vit)">VIT Muerte${t.isBuccaneer?' (Bucc.)':''}</span><span class="info-val bad">${t.vitDeath}</span></div>
-      <div class="info-row"><span class="info-key" style="color:var(--stat-ene)">ENE Muerte</span><span class="info-val bad">${t.eneDeath}</span></div>
-      <div class="info-row"><span class="info-key" style="color:var(--stat-esp)">ESP Muerte</span><span class="info-val bad">${t.espDeath}</span></div>
-      <div class="info-row"><span class="info-key">Golpe único KO</span><span class="info-val warn">≥ ${t.vitBigKO.toLocaleString()}</span></div>
-      <div class="info-row"><span class="info-key">Inventario</span><span class="info-val">${inv} esp. / ${wt.toLocaleString()} kg</span></div>
+
+  <!-- CHARACTER CONTENT (proximamente) -->
+  <div id="char-content" class="hidden">
+    <div class="prox-card">
+      <div class="prox-title">Edicion de Personaje</div>
+      <div class="prox-sub">Esta seccion estara vinculada a tu ficha de personaje del foro.<br>Proximamente disponible.</div>
     </div>
   </div>
-  ${hakiBadges||mastBadges||ofBadges?`
-  <div class="resumen-section" style="margin-bottom:16px;">
-    <div class="resumen-section-title"><i class="fas fa-star"></i> Habilidades</div>
-    ${hakiBadges?`<div style="margin-bottom:8px;"><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:var(--font-heading);">Haki</div>${hakiBadges}</div>`:''}
-    ${mastBadges?`<div style="margin-bottom:8px;"><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:var(--font-heading);">Maestrias</div>${mastBadges}</div>`:''}
-    ${ofBadges?`<div><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:var(--font-heading);">Oficios</div>${ofBadges}</div>`:''}
-  </div>`:''}
-  ${activeKarmasPos.length||activeKarmasNeg.length?`
-  <div class="resumen-grid">
-    ${activeKarmasPos.length?`<div class="resumen-section" style="border-color:rgba(74,222,128,0.3);">
-      <div class="resumen-section-title" style="color:var(--stat-good);">Karmas Positivos</div>
-      ${activeKarmasPos.map(k=>`<span class="badge green">${k.name} +${k.val}</span>`).join('')}
-    </div>`:''}
-    ${activeKarmasNeg.length?`<div class="resumen-section" style="border-color:rgba(251,113,133,0.3);">
-      <div class="resumen-section-title" style="color:var(--stat-bad);">Karmas Negativos</div>
-      ${activeKarmasNeg.map(k=>`<span class="badge red">${k.name} ${k.val}</span>`).join('')}
-    </div>`:''}
-  </div>`:''}`;
 
-  document.querySelectorAll('#resumenBody').forEach(el=>el.innerHTML=resRPG);
-  document.querySelectorAll('#resumenFullBlock').forEach(el=>el.innerHTML=resClassic);
-  generateBBCode();
+  <!-- BOTTOM BAR -->
+  <div class="glass bbar">
+    <button class="btn btn-glow" onclick="saveChr()">Guardar</button>
+    <button class="btn btn-acc"  onclick="loadChr()">Cargar</button>
+    <button class="btn"          onclick="expJSON()">Exportar JSON</button>
+    <button class="btn"          onclick="impJSON()">Importar JSON</button>
+    <button class="btn btn-d"    onclick="resetChr()">Reset</button>
+  </div>
+</div>
+
+<input type="file" id="impFile" accept=".json" style="display:none" onchange="hdlImport(event)">
+
+<script src="op-engine.js"></script>
+<script>
+/* ── INDEX: edit mode ───────────────────────────────────────── */
+function setEditMode(mode) {
+  S.editMode = mode;
+  document.getElementById('em-char').classList.toggle('on', mode==='character');
+  document.getElementById('em-npc').classList.toggle('on', mode==='npc');
+  document.getElementById('npc-content').classList.toggle('hidden', mode!=='npc');
+  document.getElementById('char-content').classList.toggle('hidden', mode==='npc');
+  saveState();
 }
 
-function generateBBCode(){
-  const w=getWeaponStats();
-  const bal=getKarmaBalance();
-  const hakiList=[state.haki.busho&&'Busoshoku',state.haki.ken&&'Kenbunshoku',state.haki.haos&&'Haoshoku'].filter(Boolean).join(', ')||'Ninguno';
-  const mastList=state.masteries.map(m=>`${m.type} (G${m.grade})`).join(', ')||'Ninguna';
-  const ofList=Object.entries(state.oficios).filter(([k,o])=>o.level>0).map(([k,o])=>`${D.oficios[k].name} Nv${o.level}`).join(', ')||'Ninguno';
-  const karmaPosL=[...D.karmasPos].filter(k=>state.selectedKarmas[k.id]).map(k=>k.name).join(', ')||'Ninguno';
-  const karmaNegL=[...D.karmasNeg].filter(k=>state.selectedKarmas[k.id]).map(k=>k.name).join(', ')||'Ninguno';
-  const attrsLine=D.attrs.slice(0,8).map(a=>`${a}:${getEff(a)}`).join(' | ');
-  const physR=calcPhysRes(),elR=calcElRes(),inv=calcInventorySpaces(),wt=calcWeightCapacity();
-  const t=calcDeathThresholds();
-
-  const bb=`[center][b][size=18]${state.name||'Sin Nombre'}[/size][/b]
-[color=gray]${state.race} -- Nivel ${state.level} -- Akuma: ${getAkumaLabel()}[/color][/center]
-
-[b]--- ATRIBUTOS ---[/b]
-${attrsLine}
-CH:${getEff('CH')} | CA:${getEff('CA')}
-
-[b]--- VITALES ---[/b]
-[color=red][b]VIT:[/b][/color] ${calcVIT().toLocaleString()}
-[color=lightblue][b]ENE:[/b][/color] ${calcENE().toLocaleString()}
-[color=violet][b]ESP:[/b][/color] ${calcESP().toLocaleString()}
-
-[b]--- COMBATE ---[/b]
-${w?`[b]Arma:[/b] ${w.name} T${w.tier}
-[b]Daño:[/b] ${w.dmg}  |  [b]Hits/turno:[/b] ${w.hits}
-[color=red][b]DPT Máximo:[/b] ${w.dpt.toLocaleString()}[/color]`:'[b]Arma:[/b] Sin configurar'}
-[b]Golpe Blanco:[/b] ${calcGB()}
-[b]Mit. Física:[/b] ${physR}  |  [b]Mit. Elemental:[/b] ${elR}
-[b]Movimiento:[/b] ${rnd(getEff('AGI')/10)} m/turno  |  [b]Salto:[/b] ${rnd((getEff('FUE')+getEff('AGI'))/20)} m
-
-[b]--- VELOCIDADES ---[/b]
-[b]Reacción (REF):[/b] ${getEff('REF')}  |  [b]CaC (AGI):[/b] ${getEff('AGI')}
-[b]Arma (DES):[/b] ${getEff('DES')}  |  [b]Disparo (PRE):[/b] ${getEff('PRE')}
-
-[b]--- LÍMITES CRÍTICOS ---[/b]
-[b]VIT Muerte:[/b] ≤ ${t.vitDeath}${t.isBuccaneer?' (Buccaneer x4)':''}  |  [b]ENE Muerte:[/b] ≤ ${t.eneDeath}  |  [b]ESP Muerte:[/b] ≤ ${t.espDeath}
-
-[b]--- FÍSICO ---[/b]
-[b]Inventario:[/b] ${inv} espacios  |  [b]Peso max.:[/b] ${wt.toLocaleString()} kg
-
-[b]--- HAKI ---[/b]
-[b]Haki activo:[/b] ${hakiList}
-
-[b]--- ESPECIALIDADES ---[/b]
-[b]Maestrias:[/b] ${mastList}
-[b]Oficios:[/b] ${ofList}
-
-[b]--- KARMAS ---[/b]
-[b]Balance:[/b] ${bal>0?'+':''}${bal}
-[color=green][b]Positivos:[/b][/color] ${karmaPosL}
-[color=red][b]Negativos:[/b][/color] ${karmaNegL}`;
-
-  document.querySelectorAll('#bbcodeText').forEach(el=>el.textContent=bb);
+/* ── CHARACTER MODAL ────────────────────────────────────────── */
+function openCharModal() {
+  document.getElementById('modal-name').value  = S.name;
+  document.getElementById('modal-level').value = S.level;
+  // Populate race select
+  const ms = document.getElementById('modal-race');
+  ms.innerHTML = Object.keys(D.races).map(r=>`<option value="${r}"${r===S.race?' selected':''}>${r}</option>`).join('');
+  document.getElementById('charModal').classList.remove('hidden');
+}
+function closeCharModal() {
+  document.getElementById('charModal').classList.add('hidden');
+}
+function adjModalLevel(d) {
+  const el = document.getElementById('modal-level');
+  el.value = Math.max(1, (parseInt(el.value)||1)+d);
+}
+function applyCharModal() {
+  S.name  = document.getElementById('modal-name').value.trim() || S.name;
+  S.race  = document.getElementById('modal-race').value;
+  S.level = Math.max(1, parseInt(document.getElementById('modal-level').value)||1);
+  closeCharModal();
+  clampFreeStats();
+  saveState();
+  renderAll();
 }
 
-function copyBBCode(){
-  const text=document.getElementById('bbcodeText')?.textContent||'';
-  navigator.clipboard.writeText(text).then(()=>{
-    document.querySelectorAll('#bbcodeBtn').forEach(btn=>{btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i> Copiado!';});
-    setTimeout(()=>{document.querySelectorAll('#bbcodeBtn').forEach(btn=>{btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i> Copiar BBCode';});},2000);
-  });
+/* ── INDEX: renderAll ───────────────────────────────────────── */
+function renderAll() {
+  applyTheme();
+  // Char strip
+  document.getElementById('charBtnName').textContent = S.name || 'Sin nombre';
+  document.getElementById('stripName').textContent   = S.name || '—';
+  document.getElementById('stripRace').textContent   = S.race || '—';
+  document.getElementById('stripLevel').textContent  = S.level;
+  // Edit mode
+  const isNPC = S.editMode !== 'character';
+  document.getElementById('em-char').classList.toggle('on', !isNPC);
+  document.getElementById('em-npc').classList.toggle('on', isNPC);
+  document.getElementById('npc-content').classList.toggle('hidden', !isNPC);
+  document.getElementById('char-content').classList.toggle('hidden', isNPC);
 }
 
-// ============================================================
-// RADAR
-// ============================================================
-function drawRadar(){
-  const canvas=document.getElementById('statRadar');if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  const cx=canvas.width/2,cy=canvas.height/2,radius=Math.min(cx,cy)-22;
-  const vals=D.radarAttrs.map(a=>getEff(a));
-  const maxVal=Math.max(getLevelCap(),...vals);
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const rs=getComputedStyle(document.documentElement);
-  const cBorder=rs.getPropertyValue('--panel-border-bright').trim();
-  const cText=rs.getPropertyValue('--text-bright').trim();
-  const cAccent=rs.getPropertyValue('--accent-primary').trim();
-  const cAlpha=rs.getPropertyValue('--accent-alpha').trim();
-  const N=D.radarAttrs.length;
-  ctx.strokeStyle=cBorder;ctx.lineWidth=1;
-  for(let lv=1;lv<=4;lv++){
-    ctx.beginPath();
-    for(let i=0;i<N;i++){
-      const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*(lv/4);
-      if(i===0)ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
-      else ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
-    }
-    ctx.closePath();ctx.stroke();
-  }
-  ctx.fillStyle=cText;ctx.font='bold 9px "JetBrains Mono"';ctx.textAlign='center';ctx.textBaseline='middle';
-  for(let i=0;i<N;i++){
-    const a=(Math.PI*2/N)*i-Math.PI/2;
-    ctx.strokeStyle=cBorder;ctx.beginPath();
-    ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*radius,cy+Math.sin(a)*radius);ctx.stroke();
-    ctx.fillText(D.radarAttrs[i],cx+Math.cos(a)*(radius+14),cy+Math.sin(a)*(radius+14));
-  }
-  ctx.beginPath();ctx.strokeStyle=cAccent;ctx.lineWidth=2;ctx.fillStyle=cAlpha;
-  for(let i=0;i<N;i++){
-    const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*Math.min(vals[i]/maxVal,1);
-    if(i===0)ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
-    else ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
-  }
-  ctx.closePath();ctx.fill();ctx.stroke();
-  ctx.fillStyle=cAccent;
-  for(let i=0;i<N;i++){
-    const a=(Math.PI*2/N)*i-Math.PI/2,r=radius*Math.min(vals[i]/maxVal,1);
-    ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,3,0,Math.PI*2);ctx.fill();
-  }
+/* Stubs for engine calls that don't apply on this page */
+function hdlLvl(v)  { S.level=Math.max(1,parseInt(v)||1); clampFreeStats(); saveState(); renderAll(); }
+function chgLvl(d)  { hdlLvl(S.level+d); }
+function hdlRace(r) { S.race=r; clampFreeStats(); saveState(); renderAll(); }
+
+bootEngine(()=>{
+  renderAll();
+  if (localStorage.getItem('op_build_v3'))
+    setTimeout(()=>toast('Guardado encontrado — pulsa Cargar'),900);
+});
+// Tarjeta bélico: activa solo si hay stats asignados
+const hasBuild = ALL.some(s =>
+  (S.freeFree[s]||0) + (S.bulkFree[s]||0) + (S.extraBonus[s]||0) > 0
+);
+const cb = document.getElementById('card-belico');
+const bb = document.getElementById('belicoBadge');
+if (cb) {
+  cb.style.opacity    = hasBuild ? '1'       : '0.38';
+  cb.style.pointerEvents = hasBuild ? 'auto' : 'none';
+  cb.style.filter     = hasBuild ? 'none'    : 'grayscale(0.6)';
 }
-
-// ============================================================
-// TABS / THEME / IO
-// ============================================================
-function switchTab(id,btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  const el=document.getElementById('tab-'+id);
-  if(el)el.classList.add('active');
-  if(btn)btn.classList.add('active');
-  if(id==='resumen')renderResumen();
-  if(id==='roadbuild')renderRoadBuildTable();
-  setTimeout(drawRadar,50);
-}
-
-function toggleTheme(){
-  const html=document.documentElement;
-  const next=html.getAttribute('data-theme')==='rosa'?'azul':'rosa';
-  html.setAttribute('data-theme',next);
-  setTimeout(drawRadar,100);
-}
-
-let ioMode='export';
-function openModal(mode){
-  ioMode=mode;
-  document.getElementById('ioModal').classList.add('open');
-  const ta=document.getElementById('ioDataText');
-  const title=document.getElementById('ioModalTitle');
-  if(mode==='export'){
-    title.innerHTML='<i class="fas fa-file-export"></i> Exportar Personaje';
-    const s={...state,name:document.getElementById('charName')?.value||state.name};
-    ta.value=JSON.stringify(s,null,2);ta.readOnly=true;
-    document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-copy"></i> Copiar';
-  }else{
-    title.innerHTML='<i class="fas fa-file-import"></i> Importar Personaje';
-    ta.value='';ta.readOnly=false;ta.placeholder='Pega el JSON exportado...';
-    document.getElementById('ioActionBtn').innerHTML='<i class="fas fa-check"></i> Cargar';
-  }
-}
-
-function closeModal(){document.getElementById('ioModal').classList.remove('open');}
-
-function executeIO(){
-  if(ioMode==='export'){
-    navigator.clipboard.writeText(document.getElementById('ioDataText').value);
-    alert('JSON copiado al portapapeles!');
-  }else{
-    try{
-      const p=JSON.parse(document.getElementById('ioDataText').value);
-      if(!p.passiveExtras)p.passiveExtras={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-      if(!p.combatCalc)p.combatCalc={transformation:'humano',style:'desarmado'};
-      if(!p.zoanBonuses)p.zoanBonuses={FUE:0,RES:0,DES:0,PRE:0,AGI:0,REF:0,INT:0,VOL:0,CH:0,CA:0};
-      if(!p.roadBuild)p.roadBuild={targetLevel:p.level||1,plans:{}};
-      // Eliminar técnicas si vienen de un JSON antiguo
-      delete p.tecnicas;
-      Object.assign(state,p);
-      closeModal();
-      buildLayout();
-      renderAll();
-    }catch(e){alert('JSON inválido.');}
-  }
-}
-
-// ============================================================
-// INIT
-// ============================================================
-async function init(){
-  try{
-    const url='https://cdn.jsdelivr.net/gh/cuentapararol12-beep/nakama@abc983231bf4d2a24c1b84f441f9af1dae104b83/Data.json';
-    const response=await fetch(url);
-    if(!response.ok)throw new Error(`Error HTTP: ${response.status}`);
-    D=await response.json();
-    buildLayout();
-    renderAll();
-  }catch(error){
-    console.error('Error detallado:',error);
-    document.getElementById('layoutWrapper').innerHTML=`
-      <div style="text-align:center;margin-top:50px;padding:20px;">
-        <h3 style="color:var(--stat-bad);margin-bottom:10px;">Error al cargar el Data.json</h3>
-        <p style="color:var(--text-muted);font-family:var(--font-mono);">${error.message}</p>
-        <p style="color:var(--stat-warn);font-size:0.8rem;margin-top:15px;">Pulsa F12 → Consola para ver el error exacto.</p>
-      </div>`;
-  }
-}
-
-init();
+if (bb) bb.textContent = hasBuild
+  ? `${S.name} · Nv${S.level}`
+  : 'Requiere personaje con stats';
 </script>
 </body>
 </html>

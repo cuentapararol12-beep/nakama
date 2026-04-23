@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="pink">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karma — Build Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="op-styles.css">
+  <style>
+.k-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:860px){.k-columns{grid-template-columns:1fr}}
+
+/* balance bar */
+.bal-bar{display:flex;align-items:center;flex-wrap:wrap;gap:18px;padding:16px 22px;margin-bottom:16px;border-radius:16px}
+.bal-main{display:flex;align-items:baseline;gap:8px}
+.bal-num{font-family:'Cinzel',serif;font-size:2.6rem;font-weight:900;line-height:1;transition:color .3s,text-shadow .3s}
+.bal-num.zero{color:#00ff78;text-shadow:0 0 22px rgba(0,255,120,.55)}
+.bal-num.pos {color:#ffd700;text-shadow:0 0 22px rgba(255,215,0,.45)}
+.bal-num.neg {color:#ff6060;text-shadow:0 0 22px rgba(255,60,60,.45)}
+.bal-word{font-family:'Cinzel',serif;font-size:.72rem;color:rgba(255,255,255,.38);letter-spacing:1px;text-transform:uppercase}
+.bal-pills{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.bpill{padding:5px 13px;border-radius:18px;font-size:.72rem;font-weight:700;font-family:'Cinzel',serif;white-space:nowrap}
+.bpill-p{background:rgba(0,255,120,.08);border:1px solid rgba(0,255,120,.22);color:#00e86e}
+.bpill-n{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.22);color:#ff7070}
+.bpill-c{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6)}
+.bal-status{width:100%;font-size:.68rem;font-weight:600;letter-spacing:.2px;border-radius:8px;padding:6px 11px}
+.bal-status.zero{background:rgba(0,255,120,.07);color:rgba(0,255,120,.9);border:1px solid rgba(0,255,120,.18)}
+.bal-status.pos {background:rgba(255,215,0,.07);color:rgba(255,215,0,.9);border:1px solid rgba(255,215,0,.18)}
+.bal-status.neg {background:rgba(255,60,60,.07);color:rgba(255,100,100,.9);border:1px solid rgba(255,60,60,.18)}
+
+/* chips */
+.chips-bar{padding:12px 16px;margin-bottom:16px;border-radius:14px;min-height:56px}
+.chips-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.chips-label{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 9px;border-radius:18px;font-size:.68rem;font-weight:700;cursor:pointer;transition:filter .15s;user-select:none}
+.chip.cp{background:rgba(0,255,120,.1);border:1px solid rgba(0,255,120,.28);color:#00e86e}
+.chip.cn{background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.28);color:#ff7070}
+.chip:hover{filter:brightness(1.25)}
+.chip-x{font-size:.6rem;opacity:.55;margin-left:1px}
+.chip-v{font-size:.65rem;opacity:.7}
+.no-chips{font-size:.67rem;color:rgba(255,255,255,.22)}
+
+/* toolbar */
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.k-search{flex:1;min-width:180px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:7px 12px;color:#fff;font-family:'Exo 2',sans-serif;font-size:.82rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.k-search:focus{border-color:var(--a1);box-shadow:0 0 10px var(--glow)}
+.k-search::placeholder{color:rgba(255,255,255,.22)}
+.fbtn{padding:7px 13px;border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);font-size:.71rem;font-weight:700;cursor:pointer;transition:all .18s;font-family:'Exo 2',sans-serif;white-space:nowrap;letter-spacing:.2px}
+.fbtn:hover{background:rgba(255,255,255,.09);color:#fff}
+.fbtn.on{background:var(--gsoft);border-color:var(--tbo);color:var(--a3)}
+
+/* column panel */
+.k-panel{border-radius:16px;overflow:hidden}
+.k-panel-hdr{padding:11px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06)}
+.k-panel-title{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+.k-panel-title.pos{color:#00e86e}
+.k-panel-title.neg{color:#ff7070}
+.k-cnt{font-size:.62rem;padding:2px 8px;border-radius:10px;font-weight:700}
+.k-cnt.pos{background:rgba(0,255,120,.1);color:#00e86e}
+.k-cnt.neg{background:rgba(255,60,60,.1);color:#ff7070}
+.k-list{display:flex;flex-direction:column}
+
+/* karma card */
+.kcard{padding:10px 14px 10px 12px;border-bottom:1px solid rgba(255,255,255,.04);display:grid;grid-template-columns:17px 1fr auto;gap:0 10px;align-items:start;cursor:pointer;transition:background .15s}
+.kcard:last-child{border-bottom:none}
+.kcard:hover:not(.inc){background:rgba(255,255,255,.03)}
+.kcard.sel-pos{background:rgba(0,255,120,.055)}
+.kcard.sel-pos:hover{background:rgba(0,255,120,.09)}
+.kcard.sel-neg{background:rgba(255,60,60,.055)}
+.kcard.sel-neg:hover{background:rgba(255,60,60,.09)}
+.kcard.inc{opacity:.28;cursor:not-allowed;pointer-events:none}
+.kcard.req-miss{opacity:.48}
+
+.k-chk{width:17px;height:17px;border-radius:4px;flex-shrink:0;margin-top:2px;border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;transition:all .18s}
+.kcard.sel-pos .k-chk{background:#00e86e;border-color:#00e86e;color:#021a0a}
+.kcard.sel-neg .k-chk{background:#ff7070;border-color:#ff7070;color:#1a0202}
+
+.k-body{min-width:0}
+.k-name{font-size:.77rem;font-weight:700;color:rgba(255,255,255,.88);line-height:1.3;margin-bottom:3px}
+.k-desc{font-size:.65rem;color:rgba(255,255,255,.42);line-height:1.5;margin-bottom:3px}
+.k-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
+.ktag{font-size:.58rem;padding:1px 6px;border-radius:5px;font-weight:600}
+.ktag-req{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.22);color:#ffd060}
+.ktag-inc{background:rgba(255,100,100,.1);border:1px solid rgba(255,100,100,.22);color:#ff9090}
+
+.k-val-col{display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:2px;min-width:52px}
+.k-val{font-family:'Cinzel',serif;font-size:.92rem;font-weight:900;white-space:nowrap}
+.k-val.pv{color:#00e86e}
+.k-val.nv{color:#ff7070}
+.k-var-lbl{font-size:.54rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.3px;text-align:right}
+.k-var-inp{width:52px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:3px 5px;color:#fff;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;text-align:center;outline:none;transition:border-color .18s}
+.kcard.sel-pos .k-var-inp{border-color:rgba(0,255,120,.35)}
+.kcard.sel-neg .k-var-inp{border-color:rgba(255,60,60,.35)}
+.k-var-inp:focus{border-color:var(--a1)}
+.k-var-inp::-webkit-inner-spin-button{-webkit-appearance:none}
+.k-var-range{font-size:.54rem;color:rgba(255,255,255,.22);white-space:nowrap;text-align:right}
+  </style>
+</head>
+<body>
+<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div id="toast"></div>
+
+<div id="app">
+  <header class="hdr">
+    <div class="hl">
+      <a class="btn" href="index.html" onclick="saveState()">← Inicio</a>
+      <div class="logo">
+        <div><h1 class="grad-text">Karmas</h1><div class="logo-sub">Rasgos del personaje</div></div>
+      </div>
+      <input type="text" id="charName" placeholder="Nombre del personaje" maxlength="40">
+    </div>
+    <div class="hr">
+      <button class="btn btn-acc" onclick="toggleTheme()" id="themeBtn">Rosa</button>
+    </div>
+  </header>
+
+  <div class="glass bal-bar">
+    <div class="bal-main">
+      <div class="bal-num zero" id="balNum">0</div>
+      <div class="bal-word">balance</div>
+    </div>
+    <div class="bal-pills">
+      <div class="bpill bpill-p">Positivos: <span id="balPos">+0</span></div>
+      <div class="bpill bpill-n">Negativos: <span id="balNeg">0</span></div>
+      <div class="bpill bpill-c">Seleccionados: <span id="balCnt">0</span></div>
+    </div>
+    <div class="bal-status zero" id="balSt">La suma debe ser exactamente 0 para fichar un personaje. Combina rasgos positivos y negativos.</div>
+  </div>
+
+  <div class="glass chips-bar">
+    <div class="chips-hdr">
+      <span class="chips-label">Seleccionados</span>
+      <button class="btn btn-d" style="font-size:.65rem;padding:3px 9px" onclick="clearAll()">Limpiar todo</button>
+    </div>
+    <div class="chips-wrap" id="selChips"><span class="no-chips">Sin karmas seleccionados aun</span></div>
+  </div>
+
+  <div class="toolbar">
+    <input class="k-search" id="kSearch" placeholder="Buscar por nombre o descripcion..." oninput="renderLists()">
+    <button class="fbtn on" id="fb-all" onclick="setFilter('all')">Todos</button>
+    <button class="fbtn"    id="fb-sel" onclick="setFilter('sel')">Solo seleccionados</button>
+  </div>
+
+  <div class="k-columns">
+    <div class="glass k-panel">
+      <div class="k-panel-hdr">
+        <span class="k-panel-title pos">Rasgos Positivos</span>
+        <span class="k-cnt pos" id="cntPos">0</span>
+      </div>
+      <div class="k-list" id="listPos"></div>
+    </div>
+    <div class="glass k-panel">
+      <div class="k-panel-hdr">
+        <span class="k-panel-title neg">Rasgos Negativos</span>
+        <span class="k-cnt neg" id="cntNeg">0</span>
+      </div>
+      <div class="k-list" id="listNeg"></div>
+    </div>
+  </div>
+
+  <div class="glass bbar">
+    <a class="btn" href="index.html" onclick="saveState()">← Inicio</a>
+    <button class="btn btn-glow" onclick="saveChr()">Guardar</button>
+    <button class="btn btn-acc"  onclick="loadChr()">Cargar</button>
+    <button class="btn"          onclick="expJSON()">Exportar JSON</button>
+    <button class="btn"          onclick="impJSON()">Importar JSON</button>
+  </div>
+</div>
+
+<input type="file" id="impFile" accept=".json" style="display:none" onchange="hdlImport(event)">
+<script src="op-engine.js"></script>
+<script>
+let KP=[], KN=[], KMAP={};
+
+function initKarmaData(){
+  KP = D.karmas?.positivos || [];
+  KN = D.karmas?.negativos || [];
+  KMAP = {};
+  [...KP,...KN].forEach(k => KMAP[k.id]=k);
+}
+
+/* helpers */
+function isSel(id)  { return !!S.karmas[id]; }
+function getVal(id) {
+  const k=KMAP[id]; if(!k||!isSel(id)) return 0;
+  if(k.variable) return typeof S.karmas[id]==='number' ? S.karmas[id] : k.varMax;
+  return k.value;
+}
+function balance()  { return Object.keys(S.karmas).reduce((t,id)=>t+getVal(id),0); }
+function totPos()   { return KP.filter(k=>isSel(k.id)).reduce((t,k)=>t+getVal(k.id),0); }
+function totNeg()   { return KN.filter(k=>isSel(k.id)).reduce((t,k)=>t+getVal(k.id),0); }
+function isInc(id)  { return (KMAP[id]?.incompatible||[]).some(i=>isSel(i)); }
+function misReq(id) { return !(KMAP[id]?.requires||[]).every(r=>isSel(r)); }
+
+/* toggle */
+function toggleKarma(id,e){
+  if(e) e.stopPropagation();
+  const k=KMAP[id]; if(!k) return;
+  if(!isSel(id)&&isInc(id)){ toast('Incompatible con un karma ya seleccionado'); return; }
+  if(!isSel(id)&&misReq(id)){
+    const miss=(k.requires||[]).filter(r=>!isSel(r)).map(r=>KMAP[r]?.name||r).join(', ');
+    toast('Requiere primero: '+miss); return;
+  }
+  if(isSel(id)){
+    const deps=Object.keys(S.karmas).filter(s=>(KMAP[s]?.requires||[]).includes(id));
+    if(deps.length){
+      if(!confirm(`Quitar "${k.name}" eliminara tambien: ${deps.map(d=>KMAP[d]?.name||d).join(', ')}. Continuar?`)) return;
+      deps.forEach(d=>delete S.karmas[d]);
+    }
+    delete S.karmas[id];
+  } else {
+    S.karmas[id] = k.variable ? k.varMax : true;
+  }
+  renderAll();
+}
+
+/* variable input handler */
+function onVarInput(id,el){
+  const k=KMAP[id]; if(!k?.variable||!isSel(id)) return;
+  let v=parseInt(el.value);
+  if(isNaN(v)) return;
+  v=Math.max(k.varMin,Math.min(k.varMax,v));
+  S.karmas[id]=v;
+  renderBalance(); renderChips();
+}
+
+/* filter */
+let activeFilter='all';
+function setFilter(f){
+  activeFilter=f;
+  document.getElementById('fb-all').classList.toggle('on',f==='all');
+  document.getElementById('fb-sel').classList.toggle('on',f==='sel');
+  renderLists();
+}
+
+/* render balance */
+function renderBalance(){
+  const bal=balance();
+  const cls=bal===0?'zero':bal>0?'pos':'neg';
+  const el=document.getElementById('balNum');
+  el.textContent=(bal>0?'+':'')+bal; el.className='bal-num '+cls;
+  document.getElementById('balPos').textContent='+'+totPos();
+  document.getElementById('balNeg').textContent=''+totNeg();
+  document.getElementById('balCnt').textContent=Object.keys(S.karmas).length;
+  const st=document.getElementById('balSt'); st.className='bal-status '+cls;
+  if(bal===0)     st.textContent='Balance en cero. La ficha esta equilibrada y lista para el foro.';
+  else if(bal>0)  st.textContent=`Te sobran ${bal} pts. Agrega karmas negativos que sumen -${bal} para equilibrar.`;
+  else            st.textContent=`Te faltan ${Math.abs(bal)} pts. Agrega karmas positivos que sumen +${Math.abs(bal)} para equilibrar.`;
+}
+
+/* render chips */
+function renderChips(){
+  const el=document.getElementById('selChips');
+  const ids=Object.keys(S.karmas);
+  if(!ids.length){el.innerHTML='<span class="no-chips">Sin karmas seleccionados aun</span>';return;}
+  el.innerHTML=ids.map(id=>{
+    const k=KMAP[id]; if(!k) return '';
+    const v=getVal(id), type=KN.includes(k)?'cn':'cp';
+    return `<span class="chip ${type}" onclick="toggleKarma('${id}')">
+      ${k.name} <span class="chip-v">${v>0?'+':''}${v}</span><span class="chip-x">×</span>
+    </span>`;
+  }).join('');
+}
+
+/* build card */
+function buildCard(k,type){
+  const sel=isSel(k.id), inc=!sel&&isInc(k.id), mR=!sel&&misReq(k.id);
+  const v=k.variable?(sel?getVal(k.id):k.varMax):k.value;
+  const vStr=(v>0?'+':'')+v, valCls=type==='pos'?'pv':'nv';
+  let cls='';
+  if(sel) cls=type==='pos'?'sel-pos':'sel-neg';
+  else if(inc) cls='inc';
+  else if(mR)  cls='req-miss';
+
+  const tags=[];
+  (k.requires||[]).forEach(r=>tags.push(`<span class="ktag ktag-req">Req: ${KMAP[r]?.name||r}</span>`));
+  (k.incompatible||[]).forEach(i=>tags.push(`<span class="ktag ktag-inc">Inc: ${KMAP[i]?.name||i}</span>`));
+
+  let valCol;
+  if(k.variable&&sel){
+    valCol=`<div class="k-val-col">
+      <span class="k-var-lbl">Valor otorgado</span>
+      <input class="k-var-inp" type="number" value="${getVal(k.id)}"
+        min="${k.varMin}" max="${k.varMax}"
+        onclick="event.stopPropagation()"
+        oninput="onVarInput('${k.id}',this)">
+      <span class="k-var-range">${k.varMin} / ${k.varMax}</span>
+    </div>`;
+  } else if(k.variable){
+    valCol=`<div class="k-val-col"><span class="k-val ${valCls}" style="font-size:.72rem">${k.varMin}...${k.varMax}</span></div>`;
+  } else {
+    valCol=`<div class="k-val-col"><span class="k-val ${valCls}">${vStr}</span></div>`;
+  }
+
+  return `<div class="kcard ${cls}" onclick="toggleKarma('${k.id}',event)">
+    <div class="k-chk">${sel?'✓':''}</div>
+    <div class="k-body">
+      <div class="k-name">${k.name}</div>
+      <div class="k-desc">${k.desc}</div>
+      ${tags.length?`<div class="k-tags">${tags.join('')}</div>`:''}
+    </div>
+    ${valCol}
+  </div>`;
+}
+
+/* render lists */
+function renderLists(){
+  const q=document.getElementById('kSearch').value.trim().toLowerCase();
+  function filt(list,type){
+    let out=list;
+    if(q) out=out.filter(k=>k.name.toLowerCase().includes(q)||k.desc.toLowerCase().includes(q));
+    if(activeFilter==='sel') out=out.filter(k=>isSel(k.id));
+    return out.map(k=>buildCard(k,type)).join('');
+  }
+  const fp=KP.filter(k=>(!q||(k.name.toLowerCase().includes(q)||k.desc.toLowerCase().includes(q)))&&(activeFilter!=='sel'||isSel(k.id)));
+  const fn=KN.filter(k=>(!q||(k.name.toLowerCase().includes(q)||k.desc.toLowerCase().includes(q)))&&(activeFilter!=='sel'||isSel(k.id)));
+  document.getElementById('cntPos').textContent=fp.length;
+  document.getElementById('cntNeg').textContent=fn.length;
+  document.getElementById('listPos').innerHTML=fp.map(k=>buildCard(k,'pos')).join('');
+  document.getElementById('listNeg').innerHTML=fn.map(k=>buildCard(k,'neg')).join('');
+}
+
+function clearAll(){
+  if(!Object.keys(S.karmas).length) return;
+  if(!confirm('Limpiar todos los karmas seleccionados?')) return;
+  S.karmas={}; renderAll(); toast('Karmas limpiados');
+}
+
+function renderAll(){
+  document.getElementById('charName').value=S.name;
+  applyTheme(); renderBalance(); renderChips(); renderLists();
+}
+
+bootEngine(()=>{
+  initKarmaData();
+  document.getElementById('charName').addEventListener('input',function(){S.name=this.value;});
+  renderAll();
+  if(localStorage.getItem('op_build_v3'))
+    setTimeout(()=>toast('Guardado encontrado — pulsa Cargar'),900);
+});
+</script>
+</body>
+</html>

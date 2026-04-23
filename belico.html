@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="pink">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belico — Build Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="op-styles.css">
+  <style>
+    /* ── Stats strip ─────────────────────── */
+    .bel-strip{display:flex;flex-wrap:wrap;gap:7px;padding:12px 18px;margin-bottom:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;}
+    .bel-stat-chip{display:flex;flex-direction:column;align-items:center;padding:5px 11px;border-radius:9px;min-width:50px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);}
+    .bel-stat-key{font-family:'Cinzel',serif;font-size:.56rem;color:rgba(255,255,255,.32);}
+    .bel-stat-val{font-family:'Cinzel',serif;font-size:.9rem;font-weight:900;color:var(--a3);}
+
+    /* ── Layout ──────────────────────────── */
+    .bel-grid{display:grid;grid-template-columns:340px 1fr;gap:14px;align-items:start;}
+    @media(max-width:820px){.bel-grid{grid-template-columns:1fr;}}
+
+    /* ── Paste areas ─────────────────────── */
+    .bel-paste{width:100%;min-height:88px;resize:vertical;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.1);border-radius:11px;padding:10px 13px;font-family:'JetBrains Mono',monospace;font-size:.74rem;color:rgba(255,255,255,.8);line-height:1.7;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .bel-paste:focus{border-color:var(--a1);box-shadow:0 0 14px var(--glow);}
+    .bel-paste.valid{border-color:#00e86e;box-shadow:0 0 10px rgba(0,232,110,.22);}
+    .bel-paste.err{border-color:#ff6060;}
+    .bel-paste.multi{min-height:160px;}
+
+    /* ── Status ──────────────────────────── */
+    .bel-status{font-size:.64rem;min-height:17px;margin-top:6px;color:rgba(255,255,255,.28);}
+    .bel-status.ok{color:rgba(0,232,110,.85);}
+    .bel-status.err{color:rgba(255,130,130,.9);}
+
+    /* ── Chips / badges ──────────────────── */
+    .bel-chip{padding:3px 9px;border-radius:7px;font-size:.62rem;font-weight:700;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-family:'Exo 2',sans-serif;}
+    .bel-chip.gold{background:rgba(255,215,0,.09);border-color:rgba(255,215,0,.22);color:#ffd700;}
+    .bel-chip.green{background:rgba(0,232,110,.09);border-color:rgba(0,232,110,.25);color:#00e86e;}
+    .bel-chip.red{background:rgba(255,80,80,.1);border-color:rgba(255,80,80,.25);color:#ff8080;}
+    .bel-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
+    .bel-badge{padding:2px 8px;border-radius:6px;font-size:.58rem;font-weight:700;font-family:'Exo 2',sans-serif;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);}
+    .bel-badge.propio{background:rgba(161,80,255,.15);border-color:rgba(161,80,255,.3);color:var(--a1);}
+    .bel-badge.aprendido{background:rgba(0,200,255,.1);border-color:rgba(0,200,255,.25);color:#00c8ff;}
+    .bel-badge.err-reqs{background:rgba(255,80,80,.12);border-color:rgba(255,80,80,.3);color:#ff8080;}
+    .bel-badge.warn{background:rgba(255,170,50,.1);border-color:rgba(255,170,50,.25);color:rgba(255,200,80,.9);}
+
+    /* ── Weapon items ────────────────────── */
+    .bel-weapon-item{padding:13px 15px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);margin-bottom:8px;position:relative;}
+    .bel-weapon-item.active{border-color:rgba(161,80,255,.3);}
+    .bel-weapon-name{font-family:'Cinzel',serif;font-size:.88rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .bel-weapon-cat{font-size:.6rem;color:rgba(255,255,255,.28);margin-bottom:7px;}
+    .bel-dmg-big{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--a3);line-height:1;margin-bottom:2px;}
+    .bel-dmg-lbl{font-size:.57rem;color:rgba(255,255,255,.26);margin-bottom:7px;}
+
+    /* ── Technique cards ─────────────────── */
+    .bel-tech-card{padding:16px 18px;border-radius:14px;margin-bottom:10px;position:relative;}
+    .bel-tech-name{font-family:'Cinzel',serif;font-size:.9rem;font-weight:900;color:var(--a3);margin-bottom:4px;}
+    .bel-tech-dmg-row{display:flex;align-items:baseline;gap:10px;margin:10px 0 6px;}
+    .bel-tech-dmg-val{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:900;color:var(--a3);line-height:1;}
+    .bel-tech-dmg-val.partial{color:rgba(255,170,50,.85);}
+    .bel-tech-formula{font-size:.65rem;color:rgba(255,255,255,.28);font-family:'JetBrains Mono',monospace;}
+    .bel-del-btn{position:absolute;top:13px;right:13px;width:24px;height:24px;border-radius:50%;background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.2);color:rgba(255,100,100,.6);cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center;transition:all .18s;}
+    .bel-del-btn:hover{background:rgba(255,60,60,.25);color:#ff8080;border-color:rgba(255,60,60,.5);}
+    .bel-tech-fields{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;margin-top:8px;}
+    .bel-field-lbl{color:rgba(255,255,255,.26);text-transform:uppercase;font-size:.54rem;letter-spacing:.4px;margin-bottom:2px;font-family:'Cinzel',serif;}
+    .bel-field-val{font-size:.65rem;color:rgba(255,255,255,.7);line-height:1.45;}
+    .bel-desc{font-size:.64rem;color:rgba(255,255,255,.26);margin-top:8px;line-height:1.58;border-top:1px solid rgba(255,255,255,.05);padding-top:7px;}
+    .bel-empty{padding:22px 18px;text-align:center;font-size:.72rem;color:rgba(255,255,255,.18);border:1px dashed rgba(255,255,255,.08);border-radius:12px;}
+
+    /* ── Damage breakdown ────────────────── */
+    .bel-bd{margin:4px 0 10px;padding:8px 12px;border-radius:9px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.06);}
+    .bel-bd-row{display:grid;grid-template-columns:1fr auto auto;gap:4px 12px;align-items:center;padding:2px 0;}
+    .bel-bd-lbl{font-size:.64rem;color:rgba(255,255,255,.45);font-family:'Exo 2',sans-serif;}
+    .bel-bd-lbl.sub{padding-left:14px;color:rgba(255,255,255,.28);font-size:.6rem;}
+    .bel-bd-lbl.missing{color:rgba(255,150,50,.6);}
+    .bel-bd-val{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;color:var(--a3);text-align:right;}
+    .bel-bd-val.missing{color:rgba(255,150,50,.5);}
+    .bel-bd-detail{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(255,255,255,.2);text-align:right;}
+    .bel-bd-sep{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0;}
+    .bel-bd-total{display:grid;grid-template-columns:1fr auto;gap:4px;padding-top:4px;margin-top:2px;}
+    .bel-bd-total-lbl{font-family:'Cinzel',serif;font-size:.65rem;color:rgba(255,255,255,.35);font-weight:700;}
+    .bel-bd-total-val{font-family:'Cinzel',serif;font-size:.8rem;font-weight:900;color:var(--a3);text-align:right;}
+
+    /* ── Weapon slot selectors ───────────── */
+    .bel-slot-group{display:flex;flex-direction:column;gap:5px;margin:8px 0;}
+    .bel-slot-row{display:flex;align-items:center;gap:8px;}
+    .bel-slot-lbl{font-family:'Cinzel',serif;font-size:.63rem;color:rgba(255,255,255,.38);min-width:54px;flex-shrink:0;}
+    .bel-slot-sel{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:8px;padding:5px 10px;color:#fff;font-family:'Exo 2',sans-serif;font-size:.74rem;outline:none;cursor:pointer;transition:border-color .2s;}
+    .bel-slot-sel:focus{border-color:var(--a1);}
+    .bel-slot-sel option{background:#1a0a2e;}
+
+    /* ── Dual / Ambi toggles ─────────────── */
+    .bel-toggles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+    .bel-toggle-pill{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:20px;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);font-family:'Exo 2',sans-serif;font-size:.65rem;color:rgba(255,255,255,.4);transition:all .2s;user-select:none;}
+    .bel-toggle-pill.on{background:rgba(161,80,255,.15);border-color:rgba(161,80,255,.35);color:var(--a1);}
+    .bel-toggle-pill.on.ambi{background:rgba(0,220,110,.1);border-color:rgba(0,220,110,.3);color:#00dc6e;}
+    .bel-toggle-dot{width:6px;height:6px;border-radius:50%;background:currentColor;transition:all .2s;opacity:.6;}
+    .bel-toggle-pill.on .bel-toggle-dot{opacity:1;}
+
+    /* ── Buttons ─────────────────────────── */
+    .bel-add-btn{padding:9px 18px;border-radius:10px;font-family:'Cinzel',serif;font-size:.74rem;font-weight:700;cursor:pointer;border:none;background:var(--grad);color:#fff;box-shadow:0 4px 14px var(--glow);transition:all .22s;margin-top:8px;}
+    .bel-add-btn:disabled{opacity:.3;cursor:not-allowed;}
+    .bel-add-btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 22px var(--glow);}
+    .bel-sec-btn{padding:6px 12px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.7rem;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);transition:all .2s;}
+    .bel-sec-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .bel-sec-btn.danger:hover{background:rgba(255,60,60,.15);color:#ff8080;border-color:rgba(255,60,60,.3);}
+
+    /* ── Collapsible form ────────────────── */
+    .bel-toggle-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+    .bel-collapse{overflow:hidden;transition:max-height .3s ease;max-height:0;}
+    .bel-collapse.open{max-height:600px;}
+
+    /* ── Tab bar (single/bulk) ───────────── */
+    .bel-tabs{display:flex;gap:4px;margin-bottom:12px;padding:3px;background:rgba(0,0,0,.3);border-radius:10px;}
+    .bel-tab{flex:1;padding:6px 10px;border-radius:8px;border:none;font-family:'Exo 2',sans-serif;font-size:.7rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,.38);background:transparent;transition:all .2s;}
+    .bel-tab.on{background:var(--grad);color:#fff;box-shadow:0 2px 10px var(--glow);}
+    .bel-tab:not(.on):hover{color:rgba(255,255,255,.7);}
+
+    /* ── Bulk preview ────────────────────── */
+    .bel-bulk-preview{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+    .bel-bulk-row{display:flex;align-items:center;justify-content:space-between;padding:6px 11px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:.68rem;}
+    .bel-bulk-row.ok{border-color:rgba(0,232,110,.2);}
+    .bel-bulk-row.err{border-color:rgba(255,80,80,.2);}
+    .bel-bulk-name{color:rgba(255,255,255,.75);font-family:'Cinzel',serif;}
+    .bel-bulk-meta{color:rgba(255,255,255,.3);}
+  </style>
+</head>
+<body>
+<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div id="toast"></div>
+<div id="app">
+  <header class="hdr">
+    <div class="hl">
+      <a class="btn" href="index.html" onclick="saveState()">← Inicio</a>
+      <div class="logo">
+        <div><h1 class="grad-text">Belico</h1><div class="logo-sub">Tecnicas y armas</div></div>
+      </div>
+      <input type="text" id="charName" placeholder="Nombre del personaje" maxlength="40" readonly style="opacity:.5;cursor:default;">
+      <div class="lvl-ctrl">
+        <label>Nivel</label>
+        <input type="number" id="levelInput" value="1" readonly style="opacity:.5;cursor:default;width:54px;">
+      </div>
+    </div>
+    <div class="hr">
+      <button class="btn btn-acc" onclick="toggleTheme()" id="themeBtn">Rosa</button>
+    </div>
+  </header>
+
+  <div class="bel-strip" id="statsStrip"></div>
+
+  <div class="bel-grid">
+
+    <!-- ── Columna izquierda: Armas ─────── -->
+    <div>
+      <div class="glass" style="padding:18px;">
+        <div class="bel-toggle-hdr">
+          <h2 style="margin:0">Armas</h2>
+          <button class="bel-sec-btn" id="addWeaponToggleBtn" onclick="toggleAddWeapon()">+ Añadir</button>
+        </div>
+        <div class="bel-collapse" id="addWeaponForm">
+          <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-bottom:8px;">Pega el bloque del arma del foro.</div>
+          <textarea class="bel-paste" id="weaponPaste"
+            placeholder="Alabarda 1- Objetos belicos 1 Especificaciones +/- Requisitos: 30 FUE / 45 DES Resistencia: 500 Dano: 35 Escalado: 1 FUE / 0,2 DES ... Codigo: alabarda001"
+            oninput="onWeaponPaste(this.value)"></textarea>
+          <div class="bel-status" id="weaponStatus">Esperando datos...</div>
+          <div id="weaponPreview"></div>
+        </div>
+        <div id="weaponList" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- ── Columna derecha: Técnicas ────── -->
+    <div>
+      <div class="glass" style="padding:18px;margin-bottom:14px;">
+        <h2 style="margin-bottom:10px;">Añadir tecnica</h2>
+        <!-- Tabs: individual / bulk -->
+        <div class="bel-tabs">
+          <button class="bel-tab on" id="tab-single" onclick="setTechTab('single')">Individual</button>
+          <button class="bel-tab"    id="tab-bulk"   onclick="setTechTab('bulk')">Varias de golpe</button>
+        </div>
+
+        <!-- Single -->
+        <div id="panel-single">
+          <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-bottom:8px;">Pega el bloque de la tecnica del foro.</div>
+          <textarea class="bel-paste" id="techPaste"
+            placeholder="Oni no Ikari&#10;propio&#10;2&#10;Informacion +/-&#10;Requisitos: Armas Contundentes 1 | 50 Destreza | 30 Fuerza&#10;Dano: Arma + 2xFuerza&#10;Coste: 86 de Energia.&#10;Efecto: Aumenta la destreza 5 puntos durante el ataque&#10;Enfriamiento: Un turno&#10;Descripcion...&#10;Codigo: oninoikari001"
+            oninput="onTechPaste(this.value)"></textarea>
+          <div class="bel-status" id="techStatus">Esperando datos...</div>
+          <button class="bel-add-btn" id="addTechBtn" disabled onclick="addTechnique()">Añadir tecnica</button>
+        </div>
+
+        <!-- Bulk -->
+        <div id="panel-bulk" style="display:none;">
+          <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-bottom:8px;">Pega varias tecnicas a la vez. Se detectan automaticamente separando por <strong style="color:rgba(255,255,255,.5)">Codigo:</strong></div>
+          <textarea class="bel-paste multi" id="bulkPaste"
+            placeholder="Tecnica Uno&#10;propio&#10;2&#10;...&#10;Codigo: tec001&#10;&#10;Tecnica Dos&#10;propio&#10;3&#10;...&#10;Codigo: tec002"
+            oninput="onBulkPaste(this.value)"></textarea>
+          <div class="bel-status" id="bulkStatus">Esperando datos...</div>
+          <div id="bulkPreview" class="bel-bulk-preview"></div>
+          <button class="bel-add-btn" id="addBulkBtn" disabled onclick="addBulkTechniques()">Añadir todas las tecnicas validas</button>
+        </div>
+      </div>
+
+      <div id="techList"></div>
+    </div>
+  </div>
+
+  <div class="glass bbar">
+    <a class="btn" href="index.html" onclick="saveState()">← Inicio</a>
+    <button class="btn btn-glow" onclick="saveChr()">Guardar</button>
+    <button class="btn btn-acc"  onclick="loadChr()">Cargar</button>
+    <button class="btn btn-d"    onclick="clearAllTechs()">Limpiar tecnicas</button>
+  </div>
+</div>
+<script src="op-engine.js"></script>
+<script>
+let _wParsed=null, _tParsed=null, _bulkParsed=[], _addWeaponOpen=false, _techTab='single';
+
+/* ── RENDER ALL ──────────────────────────────────────── */
+function renderAll() {
+  document.getElementById('charName').value   = S.name;
+  document.getElementById('levelInput').value = S.level;
+  applyTheme(); renderStatsStrip(); renderWeaponList(); renderTechList();
+}
+
+function renderStatsStrip() {
+  const el=document.getElementById('statsStrip'); if(!el) return;
+  el.innerHTML=ALL.map(s=>`<div class="bel-stat-chip"><div class="bel-stat-key">${s}</div><div class="bel-stat-val">${effStat(s)}</div></div>`).join('');
+}
+
+/* ── TABS ────────────────────────────────────────────── */
+function setTechTab(t) {
+  _techTab=t;
+  document.getElementById('tab-single').classList.toggle('on',t==='single');
+  document.getElementById('tab-bulk').classList.toggle('on',t==='bulk');
+  document.getElementById('panel-single').style.display=t==='single'?'block':'none';
+  document.getElementById('panel-bulk').style.display=t==='bulk'?'block':'none';
+}
+
+/* ── WEAPON ──────────────────────────────────────────── */
+function toggleAddWeapon() {
+  _addWeaponOpen=!_addWeaponOpen;
+  document.getElementById('addWeaponForm').classList.toggle('open',_addWeaponOpen);
+  document.getElementById('addWeaponToggleBtn').textContent=_addWeaponOpen?'✕ Cerrar':'+ Añadir';
+  if(_addWeaponOpen) setTimeout(()=>document.getElementById('weaponPaste')?.focus(),80);
+}
+
+function onWeaponPaste(raw) {
+  const ta=document.getElementById('weaponPaste'), st=document.getElementById('weaponStatus'), pv=document.getElementById('weaponPreview');
+  if(!raw.trim()){ta.className='bel-paste';_wParsed=null;st.className='bel-status';st.textContent='Esperando datos...';pv.innerHTML='';return;}
+  _wParsed=parseWeaponBlock(raw);
+  if(parseWeaponValid(_wParsed)){
+    ta.className='bel-paste valid';st.className='bel-status ok';st.textContent=`"${_wParsed.name}" detectada`;
+    const eff=calcWeaponDmg(_wParsed), scalParts=Object.entries(_wParsed.scaling||{}).map(([s,m])=>`${m}×${s}`).join('+');
+    pv.innerHTML=`<div class="bel-weapon-item" style="margin-top:10px;">
+      <div class="bel-weapon-name">${_wParsed.name}</div>
+      <div class="bel-weapon-cat">${_wParsed.category||''}${_wParsed.wLevel?' · Nv'+_wParsed.wLevel:''}</div>
+      <div class="bel-dmg-big">${eff}</div><div class="bel-dmg-lbl">Daño con tus stats</div>
+      <div class="bel-row"><span class="bel-chip">Base: ${_wParsed.baseDmg}</span>${scalParts?`<span class="bel-chip gold">Escalado: ${scalParts}</span>`:''}</div>
+      <button class="bel-add-btn" style="margin-top:8px;padding:8px 14px;font-size:.7rem;" onclick="equipWeapon()">Equipar arma</button></div>`;
+  } else {
+    ta.className='bel-paste err';st.className='bel-status err';st.textContent='No se puede leer el bloque de arma.';pv.innerHTML='';
+  }
+}
+
+function equipWeapon() {
+  if(!_wParsed||!parseWeaponValid(_wParsed)) return;
+  if(_wParsed.code&&S.belico.weapons.some(w=>w.code===_wParsed.code)){toast('Esa arma ya esta equipada');return;}
+  S.belico.weapons.push(_wParsed); saveState();
+  ['weaponPaste','weaponPreview'].forEach(id=>{const el=document.getElementById(id);if(el){el.value!==undefined?el.value='':el.innerHTML='';el.className&&(el.className='bel-paste');}});
+  document.getElementById('weaponStatus').className='bel-status';
+  document.getElementById('weaponStatus').textContent='Esperando datos...';
+  _wParsed=null; toggleAddWeapon(); renderWeaponList(); renderTechList();
+  toast(`${S.belico.weapons[S.belico.weapons.length-1].name} equipada`);
+}
+
+function removeWeapon(idx) {
+  const w=S.belico.weapons[idx]; if(!confirm(`Quitar "${w.name}"?`)) return;
+  S.belico.weapons.splice(idx,1);
+  S.belico.techniques.forEach(t=>{
+    Object.keys(t.weaponSlots||{}).forEach(slot=>{
+      const wi=t.weaponSlots[slot];
+      if(wi===idx) delete t.weaponSlots[slot]; else if(wi>idx) t.weaponSlots[slot]=wi-1;
+    });
+  });
+  saveState(); renderWeaponList(); renderTechList(); toast('Arma retirada');
+}
+
+function renderWeaponList() {
+  const weapons=S.belico?.weapons||[], el=document.getElementById('weaponList');
+  if(!weapons.length){el.innerHTML='<div class="bel-empty">Sin armas equipadas.</div>';return;}
+  el.innerHTML=weapons.map((w,i)=>{
+    const bd=calcWeaponDmgBreakdown(w);
+    const scalParts=Object.entries(w.scaling||{}).map(([s,m])=>`${m}×${s}`).join('+');
+    return `<div class="bel-weapon-item active">
+      <button class="bel-del-btn" onclick="removeWeapon(${i})" title="Quitar">✕</button>
+      <div class="bel-weapon-name">${w.name}</div>
+      <div class="bel-weapon-cat">${w.category||''}${w.wLevel?' · Nv'+w.wLevel:''} · ${w.code}</div>
+      <div class="bel-dmg-big">${bd.total}</div><div class="bel-dmg-lbl">Daño con tus stats actuales</div>
+      <div class="bel-row"><span class="bel-chip">Base: ${w.baseDmg}</span>${scalParts?`<span class="bel-chip gold">Escalado: ${scalParts}</span>`:''}</div>
+      <div class="bel-bd">${bd.parts.map(p=>`<div class="bel-bd-row"><span class="bel-bd-lbl sub">${p.label}</span><span class="bel-bd-val">${Math.round(p.value)}</span><span class="bel-bd-detail">${p.detail||''}</span></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── SINGLE TECHNIQUE ────────────────────────────────── */
+function onTechPaste(raw) {
+  const ta=document.getElementById('techPaste'),st=document.getElementById('techStatus'),btn=document.getElementById('addTechBtn');
+  if(!raw.trim()){ta.className='bel-paste';_tParsed=null;st.className='bel-status';st.textContent='Esperando datos...';btn.disabled=true;return;}
+  _tParsed=parseTechniqueBlock(raw);
+  if(parseTechniqueValid(_tParsed)){
+    ta.className='bel-paste valid';st.className='bel-status ok';
+    st.textContent=`"${_tParsed.name}" · Nv${_tParsed.tLevel} ${_tParsed.tType} · ${_tParsed.dmgFormula}`;
+    btn.disabled=false;
+  } else {
+    ta.className='bel-paste err';st.className='bel-status err';
+    st.textContent='No se puede leer. Asegurate de que hay nombre, tipo, nivel y formula de daño.';
+    btn.disabled=true;
+  }
+}
+
+function addTechnique(tech) {
+  const t=tech||_tParsed; if(!t||!parseTechniqueValid(t)) return;
+  if(t.code&&S.belico.techniques.some(x=>x.code===t.code)){toast(`"${t.name}" ya esta en la lista`);return;}
+  S.belico.techniques.push({...t}); saveState();
+  if(!tech){
+    document.getElementById('techPaste').value='';
+    document.getElementById('techPaste').className='bel-paste';
+    document.getElementById('techStatus').className='bel-status';
+    document.getElementById('techStatus').textContent='Esperando datos...';
+    document.getElementById('addTechBtn').disabled=true; _tParsed=null;
+  }
+  renderTechList(); toast(`"${t.name}" añadida`);
+}
+
+/* ── BULK TECHNIQUES ─────────────────────────────────── */
+function onBulkPaste(raw) {
+  const st=document.getElementById('bulkStatus'),btn=document.getElementById('addBulkBtn'),pv=document.getElementById('bulkPreview');
+  if(!raw.trim()){st.className='bel-status';st.textContent='Esperando datos...';btn.disabled=true;pv.innerHTML='';_bulkParsed=[];return;}
+  const blocks=splitTechniqueBlocks(raw);
+  _bulkParsed=blocks.map(b=>parseTechniqueBlock(b));
+  const valid=_bulkParsed.filter(t=>parseTechniqueValid(t));
+  const invalid=_bulkParsed.length-valid.length;
+  st.className=`bel-status${valid.length>0?' ok':''}`;
+  st.textContent=`${valid.length} tecnica${valid.length!==1?'s':''} detectada${valid.length!==1?'s':''}${invalid>0?` · ${invalid} no reconocida${invalid!==1?'s':''}`:''} en ${blocks.length} bloque${blocks.length!==1?'s':''}`;
+  btn.disabled=valid.length===0;
+  pv.innerHTML=_bulkParsed.map(t=>parseTechniqueValid(t)
+    ? `<div class="bel-bulk-row ok"><span class="bel-bulk-name">${t.name}</span><span class="bel-bulk-meta">Nv${t.tLevel} ${t.tType} · ${t.dmgFormula}</span></div>`
+    : `<div class="bel-bulk-row err"><span class="bel-bulk-name" style="color:rgba(255,130,130,.7);">No reconocido</span><span class="bel-bulk-meta">${(t._raw||'').slice(0,40)}...</span></div>`
+  ).join('');
+}
+
+function addBulkTechniques() {
+  const valid=_bulkParsed.filter(t=>parseTechniqueValid(t));
+  let added=0;
+  valid.forEach(t=>{ if(!(t.code&&S.belico.techniques.some(x=>x.code===t.code))){S.belico.techniques.push({...t});added++;} });
+  saveState(); renderTechList();
+  document.getElementById('bulkPaste').value='';
+  document.getElementById('bulkPreview').innerHTML='';
+  document.getElementById('bulkStatus').className='bel-status';
+  document.getElementById('bulkStatus').textContent='Esperando datos...';
+  document.getElementById('addBulkBtn').disabled=true; _bulkParsed=[];
+  toast(`${added} tecnica${added!==1?'s':''} añadida${added!==1?'s':''}`);
+}
+
+/* ── TECHNIQUE HELPERS ───────────────────────────────── */
+function deleteTechnique(idx){S.belico.techniques.splice(idx,1);saveState();renderTechList();}
+function clearAllTechs(){if(!S.belico.techniques.length)return;if(!confirm('Eliminar todas las tecnicas?'))return;S.belico.techniques=[];saveState();renderTechList();toast('Tecnicas borradas');}
+
+function setWeaponSlot(techIdx,slot,val) {
+  if(!S.belico.techniques[techIdx].weaponSlots) S.belico.techniques[techIdx].weaponSlots={};
+  if(val==='') delete S.belico.techniques[techIdx].weaponSlots[slot];
+  else S.belico.techniques[techIdx].weaponSlots[slot]=parseInt(val);
+  saveState(); renderTechList();
+}
+
+function toggleTechDual(idx) {
+  S.belico.techniques[idx].isDual=!S.belico.techniques[idx].isDual;
+  if(!S.belico.techniques[idx].isDual) S.belico.techniques[idx].hasAmbi=false;
+  saveState(); renderTechList();
+}
+function toggleTechAmbi(idx) {
+  S.belico.techniques[idx].hasAmbi=!S.belico.techniques[idx].hasAmbi;
+  saveState(); renderTechList();
+}
+
+/* ── RENDER BREAKDOWN HTML ───────────────────────────── */
+function renderBreakdown(bd) {
+  const rows=bd.parts.map(p=>{
+    if(p.missing) return `<div class="bel-bd-row"><span class="bel-bd-lbl missing">${p.label} — sin asignar</span><span class="bel-bd-val missing">0</span><span class="bel-bd-detail"></span></div>`;
+    let html=`<div class="bel-bd-row"><span class="bel-bd-lbl">${p.label}</span><span class="bel-bd-val">${Math.round(p.value)}</span><span class="bel-bd-detail">${p.detail||''}</span></div>`;
+    if(p.sub) html+=p.sub.map(s=>`<div class="bel-bd-row"><span class="bel-bd-lbl sub">${s.label}</span><span class="bel-bd-val" style="opacity:.6;">${Math.round(s.value)}</span><span class="bel-bd-detail">${s.detail||''}</span></div>`).join('');
+    return html;
+  }).join('');
+  return `<div class="bel-bd">${rows}<hr class="bel-bd-sep"><div class="bel-bd-total"><span class="bel-bd-total-lbl">Total</span><span class="bel-bd-total-val">${bd.total}</span></div></div>`;
+}
+
+/* ── RENDER TECHNIQUE LIST ───────────────────────────── */
+function renderTechList() {
+  const techs=S.belico?.techniques||[], weapons=S.belico?.weapons||[], list=document.getElementById('techList');
+  if(!techs.length){list.innerHTML='<div class="bel-empty">Sin tecnicas. Pega un bloque arriba para añadir.</div>';return;}
+
+  list.innerHTML=techs.map((tech,i)=>{
+    const slots  = detectWeaponSlots(tech.dmgFormula);
+    const bd     = calcTechniqueDmgBreakdown(tech, weapons);
+    const isPartial = bd.missing.length>0;
+
+    // Weapon slot selectors
+    const selectors=slots.map(slot=>{
+      const _raw=(tech.weaponSlots||{})[slot]; const curIdx=(_raw!==undefined&&_raw!==null)?Number(_raw):'';
+      const opts=weapons.map((w,wi)=>`<option value="${wi}"${Number(wi)===Number(curIdx)&&curIdx!==''?' selected':''}>${w.name}</option>`).join('');
+      return `<div class="bel-slot-row"><span class="bel-slot-lbl">${slot}</span><select class="bel-slot-sel" onchange="setWeaponSlot(${i},'${slot}',this.value)"><option value="">— Sin asignar —</option>${opts}</select></div>`;
+    }).join('');
+
+    // Dual/Ambi toggles — show dual if has weapon slots OR already flagged
+    const showDual=slots.length>=1;
+    const dualToggle=showDual?`<div class="bel-toggle-pill${tech.isDual?' on':''}" onclick="toggleTechDual(${i})"><div class="bel-toggle-dot"></div>Doble arma (sin Ambi)</div>`:'';
+    const ambiToggle=tech.isDual?`<div class="bel-toggle-pill${tech.hasAmbi?' on ambi':''}" onclick="toggleTechAmbi(${i})"><div class="bel-toggle-dot"></div>Ambidiestro</div>`:'';
+
+    // Reqs
+    const reqs=checkReqs(tech.reqStr);
+    const allMet=reqs.every(r=>r.met!==false);
+    const reqChips=reqs.map(r=>{const cls=r.met===null?'':r.met?' green':' red';return `<span class="bel-chip${cls}">${r.text}${r.met===false?' ('+r.have+'/'+r.need+')':''}</span>`;}).join('');
+
+    const typeClass=(tech.tType||'').replace(/\s+.*$/,'').replace(/[^a-z]/g,'');
+
+    const buffNote=bd.buffs?.length
+      ?`<span class="bel-badge warn">Buffs: ${bd.buffs.map(b=>'+'+b.bonus+' '+b.stat).join(', ')}</span>`:'';
+    const dualNote=bd.dualPenalty
+      ?`<span class="bel-badge warn">÷2 FUE/DES por arma (sin Ambi)</span>`:'';
+    const missingNote=isPartial
+      ?`<span class="bel-badge warn">Asigna ${bd.missing.join(', ')}</span>`:'';
+
+    return `<div class="bel-tech-card glass">
+      <button class="bel-del-btn" onclick="deleteTechnique(${i})" title="Eliminar">✕</button>
+      <div class="bel-tech-name">${tech.name}</div>
+      <div class="bel-badges" style="margin-bottom:8px;">
+        <span class="bel-badge ${typeClass}">${tech.tType||'—'}</span>
+        <span class="bel-badge">Nv${tech.tLevel}</span>
+        ${!allMet?'<span class="bel-badge err-reqs">Reqs no cumplidos</span>':''}
+        ${buffNote}${dualNote}${missingNote}
+      </div>
+
+      ${slots.length?`<div class="bel-slot-group">${selectors}</div>`:''}
+      ${showDual?`<div class="bel-toggles">${dualToggle}${ambiToggle}</div>`:''}
+
+      <div class="bel-tech-dmg-row">
+        <div class="bel-tech-dmg-val${isPartial?' partial':''}">${bd.total}</div>
+        <div class="bel-tech-formula">${tech.dmgFormula}</div>
+      </div>
+      ${renderBreakdown(bd)}
+
+      ${reqChips?`<div class="bel-row" style="margin-bottom:10px;">${reqChips}</div>`:''}
+      <div class="bel-tech-fields">
+        <div><div class="bel-field-lbl">Coste</div><div class="bel-field-val">${tech.costStr||'—'}</div></div>
+        <div><div class="bel-field-lbl">Enfriamiento</div><div class="bel-field-val">${tech.cooldown||'—'}</div></div>
+        ${tech.effect?`<div style="grid-column:1/-1"><div class="bel-field-lbl">Efecto</div><div class="bel-field-val">${tech.effect}</div></div>`:''}
+      </div>
+      ${tech.desc?`<div class="bel-desc">${tech.desc}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+/* ── BOOT ────────────────────────────────────────────── */
+function loadChr(){const d=loadFromStorage();if(!d){toast('Sin guardado encontrado');return;}Object.assign(S,d);applyTheme();renderAll();toast('Cargado');}
+
+bootEngine(()=>{
+  if(!S.belico) S.belico={weapons:[],techniques:[]};
+  if(!S.belico.weapons){S.belico.weapons=S.belico.weapon?[S.belico.weapon]:[];delete S.belico.weapon;}
+  if(!S.belico.techniques) S.belico.techniques=[];
+  S.belico.techniques.forEach(t=>{
+    if(!t.weaponSlots) t.weaponSlots={};
+    if(t.isDual===undefined)  t.isDual=false;
+    if(t.hasAmbi===undefined) t.hasAmbi=false;
+  });
+  document.getElementById('charName').addEventListener('input',function(){S.name=this.value;});
+  renderAll();
+  if(localStorage.getItem('op_build_v3')) setTimeout(()=>toast('Guardado encontrado — pulsa Cargar'),900);
+});
+</script>
+</body>
+</html>
