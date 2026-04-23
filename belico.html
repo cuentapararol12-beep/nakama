@@ -157,7 +157,7 @@
         <div class="bel-collapse" id="addWeaponForm">
           <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-bottom:8px;">Pega el bloque del arma del foro.</div>
           <textarea class="bel-paste" id="weaponPaste"
-            placeholder="Alabarda 1- Objetos belicos 1 Especificaciones +/- Requisitos: 30 FUE / 45 DES Resistencia: 500 Dano: 35 Escalado: 1 FUE / 0,2 DES ... Codigo: alabarda001"
+            placeholder="NombreArma 1- Categoria 1 Especificaciones +/- Requisitos: 30 FUE / 45 DES Resistencia: 500 Dano: 35 Escalado: 1 FUE / 0,2 DES Alcance: - Unidades de peso: 1 Berries: 5000 Descripcion: Descripcion del arma. Codigo: codigoarma001"
             oninput="onWeaponPaste(this.value)"></textarea>
           <div class="bel-status" id="weaponStatus">Esperando datos...</div>
           <div id="weaponPreview"></div>
@@ -180,7 +180,7 @@
         <div id="panel-single">
           <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-bottom:8px;">Pega el bloque de la tecnica del foro.</div>
           <textarea class="bel-paste" id="techPaste"
-            placeholder="Oni no Ikari&#10;propio&#10;2&#10;Informacion +/-&#10;Requisitos: Armas Contundentes 1 | 50 Destreza | 30 Fuerza&#10;Dano: Arma + 2xFuerza&#10;Coste: 86 de Energia.&#10;Efecto: Aumenta la destreza 5 puntos durante el ataque&#10;Enfriamiento: Un turno&#10;Descripcion...&#10;Codigo: oninoikari001"
+            placeholder="Nombre de la Tecnica&#10;propio&#10;2&#10;Informacion +/-&#10;Requisitos: Categoria de arma 1 | 50 Destreza | 30 Fuerza&#10;Dano: Arma + 2xFuerza&#10;Coste: 80 de Energia.&#10;Efecto: Aumenta la destreza 5 puntos durante el ataque&#10;Enfriamiento: Un turno&#10;Descripcion de la tecnica.&#10;Codigo: codigotecnica001"
             oninput="onTechPaste(this.value)"></textarea>
           <div class="bel-status" id="techStatus">Esperando datos...</div>
           <button class="bel-add-btn" id="addTechBtn" disabled onclick="addTechnique()">Añadir tecnica</button>
@@ -190,7 +190,7 @@
         <div id="panel-bulk" style="display:none;">
           <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-bottom:8px;">Pega varias tecnicas a la vez. Se detectan automaticamente separando por <strong style="color:rgba(255,255,255,.5)">Codigo:</strong></div>
           <textarea class="bel-paste multi" id="bulkPaste"
-            placeholder="Tecnica Uno&#10;propio&#10;2&#10;...&#10;Codigo: tec001&#10;&#10;Tecnica Dos&#10;propio&#10;3&#10;...&#10;Codigo: tec002"
+            placeholder="Nombre Tecnica Uno&#10;propio&#10;2&#10;Informacion +/-&#10;Requisitos: 30 Fuerza&#10;Dano: 50 + 2xFuerza&#10;Coste: 80 de Energia&#10;Enfriamiento: Un turno&#10;Descripcion.&#10;Codigo: tecnica001&#10;&#10;Nombre Tecnica Dos&#10;propio&#10;3&#10;Informacion +/-&#10;Requisitos: 50 Fuerza&#10;Dano: Arma + 3xFuerza&#10;Coste: 100 de Energia&#10;Enfriamiento: Dos turnos&#10;Descripcion.&#10;Codigo: tecnica002"
             oninput="onBulkPaste(this.value)"></textarea>
           <div class="bel-status" id="bulkStatus">Esperando datos...</div>
           <div id="bulkPreview" class="bel-bulk-preview"></div>
