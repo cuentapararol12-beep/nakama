@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="pink">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Piece RPG — Build Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="op-styles.css">
+</head>
+<body>
+<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div id="toast"></div>
+
+<div id="charModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 style="margin-bottom:0">Datos del Personaje</h2>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input type="text" id="modal-name" class="form-input" placeholder="Nombre del personaje" maxlength="40">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Raza</label>
+        <select id="modal-race" class="form-select"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nivel</label>
+        <div class="form-lvl-row">
+          <button class="lb" onclick="adjModalLevel(-1)">-</button>
+          <input type="number" id="modal-level" class="form-lvl-val" value="1" min="1">
+          <button class="lb" onclick="adjModalLevel(1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCharModal()">Cancelar</button>
+      <button class="btn btn-glow" onclick="applyCharModal()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <header class="hdr">
+    <div class="hl">
+      <div class="logo">
+        <div>
+          <h1 class="grad-text">Build Planner</h1>
+          <div class="logo-sub">One Piece RPG · v3.2</div>
+        </div>
+      </div>
+    </div>
+    <div class="hr">
+      <button class="char-btn" onclick="openCharModal()">
+        <div>
+          <div class="char-btn-label">Personaje activo</div>
+          <div class="char-btn-name" id="charBtnName">Sin nombre</div>
+        </div>
+        <span style="color:rgba(255,255,255,.4);font-size:.7rem">editar</span>
+      </button>
+      <button class="btn btn-acc" onclick="toggleTheme()" id="themeBtn">Rosa</button>
+    </div>
+  </header>
+
+  <div class="char-strip" id="charStrip">
+    <div class="char-strip-item">Nombre: <strong id="stripName">—</strong></div>
+    <div class="char-strip-item">Raza: <strong id="stripRace">—</strong></div>
+    <div class="char-strip-item">Nivel: <strong id="stripLevel">—</strong></div>
+  </div>
+
+  <div id="npc-content">
+    <div class="nav-cards">
+      <a class="nav-card glass" href="free-mode.html" onclick="saveState()" id="card-free">
+        <div class="nav-card-title">Modo Libre</div>
+        <div class="nav-card-sub">Asigna todos los puntos de golpe. Ideal para planificar un build final de forma rápida sin restricciones de nivel.</div>
+        <div class="nav-card-badge">Pool total: nivel × 46 pts</div>
+      </a>
+      <a class="nav-card glass" href="level-mode.html" onclick="saveState()" id="card-lvl">
+        <div class="nav-card-title">Nivel a Nivel</div>
+        <div class="nav-card-sub">Simula la progresión real: define un bloque de inicio (bulk) y distribuye 46 pts libres por cada nivel adicional.</div>
+        <div class="nav-card-badge">46 pts libres por nivel</div>
+      </a>
+      <a class="nav-card glass" href="karma.html" onclick="saveState()" id="card-karma">
+        <div class="nav-card-title">Karmas</div>
+        <div class="nav-card-sub">Simula la asignación de karmas.</div>
+        <div class="nav-card-badge">Cálculo automático</div>
+      </a>
+      <a class="nav-card glass" href="belico.html" onclick="saveState()" id="card-belico">
+        <div class="nav-card-title">Bélico</div>
+        <div class="nav-card-sub">Gestiona tus técnicas y armas. Cálculo automático de daño según tus stats actuales.</div>
+        <div class="nav-card-badge" id="belicoBadge">Requiere personaje con stats</div>
+      </a>
+    </div>
+  </div>
+
+  <div id="char-content" class="hidden">
+    <div class="prox-card">
+      <div class="prox-title">Edicion de Personaje</div>
+      <div class="prox-sub">Esta seccion estara vinculada a tu ficha de personaje del foro.<br>Proximamente disponible.</div>
+    </div>
+  </div>
+
+  <div class="glass bbar">
+    <button class="btn btn-glow" onclick="saveChr()">Guardar</button>
+    <button class="btn btn-acc"  onclick="loadChr()">Cargar</button>
+    <button class="btn"          onclick="expJSON()">Exportar JSON</button>
+    <button class="btn"          onclick="impJSON()">Importar JSON</button>
+    <button class="btn btn-d"    onclick="resetChr()">Reset</button>
+  </div>
+</div>
+
+<input type="file" id="impFile" accept=".json" style="display:none" onchange="hdlImport(event)">
+
+<script src="op-engine.js"></script>
+<script>
+
+function setEditMode(mode) {
+  S.editMode = mode;
+  document.getElementById('em-char').classList.toggle('on', mode==='character');
+  document.getElementById('em-npc').classList.toggle('on', mode==='npc');
+  document.getElementById('npc-content').classList.toggle('hidden', mode!=='npc');
+  document.getElementById('char-content').classList.toggle('hidden', mode==='npc');
+  saveState();
+}
+
+function openCharModal() {
+  document.getElementById('modal-name').value  = S.name;
+  document.getElementById('modal-level').value = S.level;
+
+  const ms = document.getElementById('modal-race');
+  ms.innerHTML = Object.keys(D.races).map(r=>`<option value="${r}"${r===S.race?' selected':''}>${r}</option>`).join('');
+  document.getElementById('charModal').classList.remove('hidden');
+}
+function closeCharModal() {
+  document.getElementById('charModal').classList.add('hidden');
+}
+function adjModalLevel(d) {
+  const el = document.getElementById('modal-level');
+  el.value = Math.max(1, (parseInt(el.value)||1)+d);
+}
+function applyCharModal() {
+  S.name  = document.getElementById('modal-name').value.trim() || S.name;
+  S.race  = document.getElementById('modal-race').value;
+  S.level = Math.max(1, parseInt(document.getElementById('modal-level').value)||1);
+  closeCharModal();
+  clampFreeStats();
+  saveState();
+  renderAll();
+}
+
+function renderAll() {
+  applyTheme();
+
+  document.getElementById('charBtnName').textContent = S.name || 'Sin nombre';
+  document.getElementById('stripName').textContent   = S.name || '—';
+  document.getElementById('stripRace').textContent   = S.race || '—';
+  document.getElementById('stripLevel').textContent  = S.level;
+
+  const isNPC = S.editMode !== 'character';
+  document.getElementById('em-char').classList.toggle('on', !isNPC);
+  document.getElementById('em-npc').classList.toggle('on', isNPC);
+  document.getElementById('npc-content').classList.toggle('hidden', !isNPC);
+  document.getElementById('char-content').classList.toggle('hidden', isNPC);
+}
+
+function hdlLvl(v)  { S.level=Math.max(1,parseInt(v)||1); clampFreeStats(); saveState(); renderAll(); }
+function chgLvl(d)  { hdlLvl(S.level+d); }
+function hdlRace(r) { S.race=r; clampFreeStats(); saveState(); renderAll(); }
+
+bootEngine(()=>{
+  renderAll();
+  if (localStorage.getItem('op_build_v3'))
+    setTimeout(()=>toast('Guardado encontrado — pulsa Cargar'),900);
+  const hasBuild = ALL.some(s =>
+    (S.freeFree[s]||0) + (S.bulkFree[s]||0) + (S.extraBonus[s]||0) > 0
+  );
+  const cb = document.getElementById('card-belico');
+  const bb = document.getElementById('belicoBadge');
+  if (cb) {
+    cb.style.opacity = hasBuild ? '1' : '0.38';
+    cb.style.pointerEvents = hasBuild ? 'auto' : 'none';
+    cb.style.filter = hasBuild ? 'none' : 'grayscale(0.6)';
+  }
+  if (bb) bb.textContent = hasBuild
+    ? `${S.name} · Nv${S.level}`
+    : 'Requiere personaje con stats';
+});
+</script>
+</body>
+</html>

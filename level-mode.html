@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="pink">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nivel a Nivel — Build Planner</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="op-styles.css">
+  <link rel="stylesheet" href="op-import-modal.css">
+</head>
+<body>
+<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div id="toast"></div>
+<div class="modal-bd" id="importModal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <div class="modal-title">Importar Personaje</div>
+      <button type="button" class="modal-close modal-close--text" onclick="closeModalBtn()">Cerrar</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-sub">Pega el bloque de estadisticas tal como aparece en el foro. Se detecta automaticamente nombre, nivel y stats.</div>
+      <textarea class="m-paste" id="mPaste" placeholder="__Estadísticas de NombrePersonaje:__&#10;100 FUE80 RES50 DES50 PRE120 AGI120 REF60 INT80 VOL0 CH100 CA&#10;Vitalidad: 500 / 1800&#10;Energía: 700 / 2000&#10;Espíritu: 240 / 240&#10;Nivel: 10" oninput="onModalPaste(this.value)"></textarea>
+      <div class="m-status" id="mStatus"><div class="m-status-dot"></div><span class="m-status-txt">Esperando datos...</span></div>
+      <div class="m-race-row">
+        <span class="m-race-lbl">Raza del personaje</span>
+        <select id="mRaceSelect" onchange="onModalRecalc()"></select>
+      </div>
+      <div class="m-preview" id="mPreview">
+        <div class="m-prev-title">Vista previa — distribucion calculada</div>
+        <div class="m-prev-grid" id="mPrevGrid"></div>
+        <div class="m-pool-bar">
+          <div class="m-pool-lbl"><span>Puntos libres usados</span><span id="mPoolTxt">0 / 0</span></div>
+          <div class="m-pool-track"><div class="m-pool-fill" id="mPoolFill" style="width:0%"></div></div>
+        </div>
+        <div class="m-extra-warn" id="mExtraWarn"></div>
+      </div>
+      <div class="m-confirm">
+        <button class="m-btn primary" id="mConfirmBtn" disabled onclick="confirmImport()">Aplicar al editor</button>
+        <button class="m-btn secondary" onclick="closeModalBtn()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <header class="hdr">
+    <div class="hl">
+      <a class="btn" href="index.html" onclick="saveState()">← Inicio</a>
+      <div class="logo">
+        <div><h1 class="grad-text">Nivel a Nivel</h1><div class="logo-sub">46 pts libres por nivel</div></div>
+      </div>
+      <input type="text" id="charName" placeholder="Nombre del personaje" maxlength="40">
+      <div class="lvl-ctrl">
+        <label>Nivel</label>
+        <button class="lb" onclick="chgLvl(-1)">-</button>
+        <input type="number" id="levelInput" value="1" min="1" oninput="hdlLvl(this.value)">
+        <button class="lb" onclick="chgLvl(1)">+</button>
+      </div>
+    </div>
+    <div class="hr">
+      <div class="em-toggle">
+        <button class="em-btn on" id="em-npc" onclick="setEditMode('npc')">NPC</button>
+        <button class="em-btn"    id="em-chr" onclick="setEditMode('chr')">Personaje</button>
+      </div>
+      <select id="raceSelect" onchange="hdlRace(this.value)"></select>
+      <button class="btn btn-acc" onclick="toggleTheme()" id="themeBtn">Rosa</button>
+    </div>
+  </header>
+
+  <div id="lvPanel" class="glass lpp vis" style="border-radius:18px;margin-bottom:18px">
+    <div class="lph">
+      <div>
+        <h2 style="margin-bottom:3px">Progresion — editando: <span id="ctxLabel" style="color:var(--a3)">Bulk Nv1</span></h2>
+        <div style="font-size:.67rem;color:rgba(255,255,255,.34)">Usa el bulk para saltar varios niveles de golpe, luego asigna nivel a nivel</div>
+      </div>
+      <div id="ptBadge" class="ptbadge ok"><span id="ptText">46/46</span></div>
+    </div>
+    <div class="bulk-ctrl">
+      <span class="bulk-ctrl-label">Bulk hasta nivel:</span>
+      <button class="lb" onclick="adjSL(-1)">-</button>
+      <input type="number" id="startLvlInput" value="1" min="1">
+      <button class="lb" onclick="adjSL(1)">+</button>
+      <button class="apply-btn" onclick="applyBulk()">Aplicar</button>
+      <span class="bulk-hint">Los niveles 1 a X se agrupan en un pool unico. Luego asignas nivel a nivel desde X+1.</span>
+    </div>
+    <div class="tlscroll"><div class="tl" id="lvTimeline"></div></div>
+    <div class="poolbar">
+      <div class="poolbar-item">Editando: <strong id="ctxName2">—</strong></div>
+      <div class="poolbar-item">Pool: <strong id="poolTot">0</strong> pts</div>
+      <div class="poolbar-item">Gastados: <strong id="poolSpent">0</strong></div>
+      <div class="poolbar-item">Restantes: <strong id="poolRem">0</strong></div>
+    </div>
+    <div class="lvsum" id="lvSum"></div>
+  </div>
+
+  <div class="mgrid">
+    <div class="glass ap">
+      <div class="aphdr">
+        <h2 style="margin-bottom:0">Atributos Principales</h2>
+        <div style="display:flex;align-items:center;gap:7px">
+          <div id="editModeBadge" class="edit-mode-badge">NPC</div>
+          <div id="modeInd" class="mode-ind lvl"><div class="mdot"></div><span>Nivel a Nivel</span></div>
+        </div>
+      </div>
+      <div id="capInfoBar" class="cap-info"></div>
+      <div id="mainAttrs"></div>
+      <div class="sdiv"></div>
+      <h3>Poderes <span class="pbadge">Sin base · Sin auto · No en Radar</span></h3>
+      <div id="powerAttrs"></div>
+    </div>
+    <div class="rp">
+      <div class="glass chart-card"><h2>Radar de Stats</h2><div class="chart-wrap"><canvas id="radarChart"></canvas></div></div>
+      <div class="glass dcard"><h2>Stats Derivados</h2><div class="dgrid">
+        <div class="ditem"><div class="dlbl">VIT</div><div class="dval" id="vitV">0</div><div class="dname">Vitalidad</div></div>
+        <div class="ditem"><div class="dlbl">ENE</div><div class="dval" id="eneV">0</div><div class="dname">Energia</div></div>
+        <div class="ditem"><div class="dlbl">ESP</div><div class="dval" id="espV">0</div><div class="dname">Espiritu</div></div>
+      </div></div>
+      <div class="glass tcard"><h2>Umbrales de Dolor</h2>
+        <div class="tvol-row">
+          <div class="vpill">VOL total: <strong id="volTotD">0</strong></div>
+          <div class="vpill">Mult.: <strong id="bonusUD">x1 — x5</strong></div>
+          <div id="buccPill" class="buccp hidden"></div>
+        </div>
+        <div class="tlist" id="threshList"></div>
+        <div id="buccNote" class="bnote hidden"></div>
+      </div>
+      <div class="glass pcard"><h2>Raza: <span id="raceName" style="color:var(--a3)">—</span></h2>
+        <div class="rchips" id="raceChips"></div><div class="plist" id="passiveList"></div>
+      </div>
+      <div class="glass dthcard"><h2>Umbrales de Muerte e Inconsciencia</h2>
+        <div id="deathThreshCard"></div><div class="utility-bar" id="utilityThresh"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass bbar">
+    <a class="btn" href="index.html" onclick="saveState()">← Inicio</a>
+    <button class="btn btn-glow" onclick="saveChr()">Guardar</button>
+    <button class="btn btn-acc"  onclick="loadChr()">Cargar</button>
+    <button class="btn"          onclick="expJSON()">Exportar JSON</button>
+    <button class="btn"          onclick="impJSON()">Importar JSON</button>
+    <button class="btn btn-d"    onclick="resetChr()">Reset</button>
+  </div>
+</div>
+<input type="file" id="impFile" accept=".json" style="display:none" onchange="hdlImport(event)">
+<script src="op-engine.js"></script>
+<script src="op-import-modal.js"></script>
+<script>
+function renderAll() {
+  document.getElementById('charName').value      = S.name;
+  document.getElementById('levelInput').value    = S.level;
+  document.getElementById('startLvlInput').value = S.startLevel;
+  S.mode = 'level';
+  applyTheme(); renderModeInd(); renderRaceSelect();
+  renderTimeline(); renderLvlSummary(); renderAttrs();
+  updCapBar(); renderDerived(); renderThresh(); renderPassives(); updChart();
+}
+bootEngine(()=>{
+  S.mode = 'level';
+  if (S.levelCtx === 'free') S.levelCtx = 'bulk';
+  document.getElementById('charName').addEventListener('input', function(){ S.name=this.value; updChart(); });
+  renderRaceSelect(); renderAll(); initChart();
+  initImportModal('level');
+  if (localStorage.getItem('op_build_v3'))
+    setTimeout(()=>toast('Guardado encontrado — pulsa Cargar'), 900);
+});
+</script>
+</body>
+</html>
