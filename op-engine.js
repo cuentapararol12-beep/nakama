@@ -195,8 +195,8 @@ function effStat(stat) {
   const free = S.mode==='free' ? (S.freeFree[stat]||0) : totalFreeUpTo(stat, S.level);
   return BASE(stat) + AUTO(stat,S.level) + free + raceBonus(stat,S.level) + (S.extraBonus[stat]||0) + karmaPassiveDelta(stat);
 }
-/** Radar: solo visual; el valor real sigue en effStat (puede ser negativo). */
-function effStatRadar(stat) {
+/** Mínimo 0 para reglas que no admiten stat negativo: VIT/ENE/ESP, umbrales, radar, daño escalado, etc. La ficha sigue mostrando `effStat` tal cual. */
+function effStatNonNeg(stat) {
   return Math.max(0, effStat(stat));
 }
 function investedPart(stat) {
@@ -206,7 +206,7 @@ function investedPart(stat) {
 function atCap(stat) { return investedPart(stat) >= MAXCAP(S.level); }
 
 function calcDerived() {
-  const v = s => effStat(s), L = S.level;
+  const v = s => effStatNonNeg(s), L = S.level;
   return {
     VIT: Math.round((v('FUE')*5 + v('RES')*6 + v('DES')*2 + v('AGI') + v('VOL')) * (1 + L/33.33)),
     ENE: Math.round(v('FUE')*4 + v('RES')*5 + v('DES') + v('PRE') + v('AGI') + v('REF') + v('INT')*3 + v('VOL') + v('CA')
@@ -220,7 +220,7 @@ function buccBonus(lvl) {
   return (D.races['Buccaneer'].threshold_bonus||[]).filter(t=>lvl>=t.level).reduce((s,t)=>s+t.value, 0);
 }
 function calcThresholds() {
-  const vol=effStat('VOL'), bonusU=Math.floor(vol/150), bucc=buccBonus(S.level);
+  const vol=effStatNonNeg('VOL'), bonusU=Math.floor(vol/150), bucc=buccBonus(S.level);
   return THRESH.map((td,i)=>({...td, mult:(i+1)+bonusU, value:((i+1)+bonusU)*vol+bucc, bonusU, bucc, vol}));
 }
 
@@ -359,7 +359,7 @@ function initChart() {
   const canvas=document.getElementById('radarChart'); if (!canvas) return;
   chart=new Chart(canvas.getContext('2d'),{
     type:'radar',
-    data:{labels:MAIN,datasets:[{label:S.name,data:MAIN.map(a=>effStatRadar(a)),
+    data:{labels:MAIN,datasets:[{label:S.name,data:MAIN.map(a=>effStatNonNeg(a)),
       backgroundColor:'rgba(255,0,110,.17)',borderColor:'rgba(255,77,158,.88)',
       pointBackgroundColor:'#ff006e',pointBorderColor:'rgba(255,255,255,.3)',pointRadius:4,borderWidth:2}]},
     options:{responsive:true,animation:{duration:290},
@@ -372,7 +372,7 @@ function initChart() {
 }
 function updChart() {
   if (!chart) return;
-  chart.data.datasets[0].data=MAIN.map(a=>effStatRadar(a));
+  chart.data.datasets[0].data=MAIN.map(a=>effStatNonNeg(a));
   chart.data.datasets[0].label=S.name||'Personaje';
   chart.options.scales.r.max=MAXCAP(S.level);
   chart.options.scales.r.min = 0;
@@ -481,7 +481,7 @@ function renderDerived() {
   if(ve) ve.textContent=d.VIT.toLocaleString('es-ES'); if(ee) ee.textContent=d.ENE.toLocaleString('es-ES'); if(se) se.textContent=d.ESP.toLocaleString('es-ES');
 }
 function renderThresh() {
-  const th=calcThresholds(), vol=effStat('VOL');
+  const th=calcThresholds(), vol=effStatNonNeg('VOL');
   const vd=document.getElementById('volTotD'); if(vd) vd.textContent=vol;
   const bd=document.getElementById('bonusUD'); if(bd) bd.textContent=`x${th[0].bonusU+1} — x${th[4].bonusU+5}`;
   const pill=document.getElementById('buccPill'), note=document.getElementById('buccNote');
@@ -505,7 +505,7 @@ function renderThresh() {
 }
 function renderDeathThresh() {
   const el=document.getElementById('deathThreshCard'); if (!el) return;
-  const d=calcDerived(), vol=effStat('VOL'), res=effStat('RES');
+  const d=calcDerived(), vol=effStatNonNeg('VOL'), res=effStatNonNeg('RES');
   const espDeath=-Math.ceil(vol/2);
   const isBucc=S.race==='Buccaneer', th5=calcThresholds()[4], buccKill=isBucc?th5.value*2:null;
   const rows=[
@@ -795,7 +795,10 @@ function calcWeaponDmg(weapon, statsOv, opts={}) {
 }
 function calcWeaponDmgBreakdown(weapon, statsOv, opts={}) {
   if (!weapon) return { total:0, parts:[] };
-  const get = s => (statsOv && statsOv[s]!==undefined) ? statsOv[s] : effStat(s);
+  const get = s => {
+    const raw = (statsOv && statsOv[s] !== undefined) ? statsOv[s] : effStatNonNeg(s);
+    return Math.max(0, Number(raw) || 0);
+  };
   const parts = [{ label:'Base', value:weapon.baseDmg, detail:`${weapon.baseDmg}` }];
   let total = weapon.baseDmg;
   Object.entries(weapon.scaling||{}).forEach(([s, baseM]) => {
@@ -903,7 +906,7 @@ function calcTechniqueDmgBreakdown(tech, weapons) {
   const dualPenalty = dualWield && !hasAmbi;
 
   const stats = {};
-  ALL.forEach(s => { stats[s] = effStat(s); });
+  ALL.forEach(s => { stats[s] = effStatNonNeg(s); });
   (tech.buffs||[]).forEach(b => { stats[b.stat] = (stats[b.stat]||0)+b.bonus; });
   ALL.forEach(s => {
     const kb = karmaSituationalBonusForTech(tech, s);
@@ -932,7 +935,7 @@ function calcTechniqueDmgBreakdown(tech, weapons) {
     } else {
       const m = tok.match(/([\d,.]+)\s*[xX]\s*([\w\u00C0-\u024F]+)/);
       if (m) {
-        const mult=parseFloat(m[1].replace(',','.')), statKey=bStat(m[2]), statVal=stats[statKey]||0, val=mult*statVal;
+        const mult=parseFloat(m[1].replace(',','.')), statKey=bStat(m[2]), statVal=Math.max(0, stats[statKey]||0), val=mult*statVal;
         parts.push({ label:`${mult}×${statKey}`, value:val, detail:`${mult}×${statVal}` });
         total += val;
       } else {
@@ -942,7 +945,7 @@ function calcTechniqueDmgBreakdown(tech, weapons) {
   });
 
   if (tech.isCuerpoACuerpo && !detectWeaponSlots(tech.dmgFormula || '').length) {
-    const fue = stats.FUE || 0;
+    const fue = Math.max(0, stats.FUE || 0);
     const hasFueScale = formulaUsesFueScaling(tech.dmgFormula);
     const tier150 = fue >= 150 ? 50 : 0;
     const tier300 = fue >= 300 ? 100 : 0;
