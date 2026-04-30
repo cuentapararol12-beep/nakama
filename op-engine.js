@@ -195,6 +195,10 @@ function effStat(stat) {
   const free = S.mode==='free' ? (S.freeFree[stat]||0) : totalFreeUpTo(stat, S.level);
   return BASE(stat) + AUTO(stat,S.level) + free + raceBonus(stat,S.level) + (S.extraBonus[stat]||0) + karmaPassiveDelta(stat);
 }
+/** Radar: solo visual; el valor real sigue en effStat (puede ser negativo). */
+function effStatRadar(stat) {
+  return Math.max(0, effStat(stat));
+}
 function investedPart(stat) {
   const free = S.mode==='free' ? (S.freeFree[stat]||0) : totalFreeUpTo(stat, S.level);
   return BASE(stat) + AUTO(stat,S.level) + free;
@@ -355,7 +359,7 @@ function initChart() {
   const canvas=document.getElementById('radarChart'); if (!canvas) return;
   chart=new Chart(canvas.getContext('2d'),{
     type:'radar',
-    data:{labels:MAIN,datasets:[{label:S.name,data:MAIN.map(a=>effStat(a)),
+    data:{labels:MAIN,datasets:[{label:S.name,data:MAIN.map(a=>effStatRadar(a)),
       backgroundColor:'rgba(255,0,110,.17)',borderColor:'rgba(255,77,158,.88)',
       pointBackgroundColor:'#ff006e',pointBorderColor:'rgba(255,255,255,.3)',pointRadius:4,borderWidth:2}]},
     options:{responsive:true,animation:{duration:290},
@@ -368,11 +372,10 @@ function initChart() {
 }
 function updChart() {
   if (!chart) return;
-  chart.data.datasets[0].data=MAIN.map(a=>effStat(a));
+  chart.data.datasets[0].data=MAIN.map(a=>effStatRadar(a));
   chart.data.datasets[0].label=S.name||'Personaje';
   chart.options.scales.r.max=MAXCAP(S.level);
-  const mn = Math.min(0, ...MAIN.map(a => effStat(a)));
-  chart.options.scales.r.min = Number.isFinite(mn) ? mn : 0;
+  chart.options.scales.r.min = 0;
   const bl=S.theme==='blue';
   chart.data.datasets[0].backgroundColor=bl?'rgba(0,180,216,.14)':'rgba(255,0,110,.17)';
   chart.data.datasets[0].borderColor=bl?'rgba(76,201,240,.88)':'rgba(255,77,158,.88)';
