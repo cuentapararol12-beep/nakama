@@ -98,6 +98,42 @@ function raceBonus(stat, lvl) {
   return b;
 }
 
+function getKarmaCatalog() {
+  if (!D || !D.karmas) return [];
+  return [...(D.karmas.positivos || []), ...(D.karmas.negativos || [])];
+}
+function getKarmaDefById(id) {
+  return getKarmaCatalog().find(k => k.id === id);
+}
+function karmaPassiveDelta(stat) {
+  if (!S || !S.karmas || !stat) return 0;
+  let d = 0;
+  for (const id of Object.keys(S.karmas)) {
+    const k = getKarmaDefById(id);
+    if (!k || !k.statEffects) continue;
+    for (const se of k.statEffects) {
+      if (se.stat === stat) d += Number(se.delta) || 0;
+    }
+  }
+  return d;
+}
+function isKarmaSelected(id) {
+  return !!(S && S.karmas && Object.prototype.hasOwnProperty.call(S.karmas, id));
+}
+function karmaSituationalBonusForTech(tech, stat) {
+  if (!tech || !stat) return 0;
+  let b = 0;
+  if (stat === 'FUE' && tech.applyMusculosHierro && isKarmaSelected('musculos_hierro')) {
+    const k = getKarmaDefById('musculos_hierro');
+    if (k && k.situationalBonus) b += Number(k.situationalBonus) || 0;
+  }
+  if (stat === 'DES' && tech.applyDedosOro && isKarmaSelected('dedos_oro')) {
+    const k = getKarmaDefById('dedos_oro');
+    if (k && k.situationalBonus) b += Number(k.situationalBonus) || 0;
+  }
+  return b;
+}
+
 function freePool()  { return RULES.freePointsPerLevel * S.level; }
 function freeSpent() { return ALL.reduce((t,s) => t+(S.freeFree[s]||0), 0); }
 function maxFreeInvest(stat) {
@@ -141,7 +177,7 @@ function sliderMax(stat) {
 
 function effStat(stat) {
   const free = S.mode==='free' ? (S.freeFree[stat]||0) : totalFreeUpTo(stat, S.level);
-  return BASE(stat) + AUTO(stat,S.level) + free + raceBonus(stat,S.level) + (S.extraBonus[stat]||0);
+  return BASE(stat) + AUTO(stat,S.level) + free + raceBonus(stat,S.level) + (S.extraBonus[stat]||0) + karmaPassiveDelta(stat);
 }
 function investedPart(stat) {
   const free = S.mode==='free' ? (S.freeFree[stat]||0) : totalFreeUpTo(stat, S.level);
@@ -212,9 +248,14 @@ function patchSave(d) {
   (d.belico.techniques||[]).forEach(t => {
     if (!t.weaponSlots) t.weaponSlots = {};
     if (t.hasAmbi === undefined) t.hasAmbi = false;
+    if (t.applyMusculosHierro === undefined) t.applyMusculosHierro = false;
+    if (t.applyDedosOro === undefined) t.applyDedosOro = false;
     const wc = typeof detectWeaponSlots === 'function' ? detectWeaponSlots(t.dmgFormula || '').length : 0;
     if (wc < 2) t.hasAmbi = false;
     t.isDual = wc >= 2;
+    if (typeof detectCuerpoACuerpo === 'function')
+      t.isCuerpoACuerpo = detectCuerpoACuerpo(String(t._raw || '') + '\n' + String(t.effect || ''), t.reqStr || '');
+    else if (t.isCuerpoACuerpo === undefined) t.isCuerpoACuerpo = false;
   });
   for (const s of ALL) {
     if (d.freeFree[s]   === undefined) d.freeFree[s]   = 0;
@@ -741,6 +782,23 @@ function calcWeaponDmgBreakdown(weapon, statsOv, opts={}) {
   return { total:Math.round(total), parts };
 }
 
+function detectCuerpoACuerpo(raw, reqStr) {
+  const blob = String(raw || '') + '\n' + String(reqStr || '');
+  if (/\bcuerpo\s*a\s*cuerpo\b/i.test(blob)) return true;
+  if (/maestr[ií]a\s*:[^\n]*cuerpo\s*a\s*cuerpo/i.test(blob)) return true;
+  return false;
+}
+function formulaUsesFueScaling(formula) {
+  if (!formula || typeof ALL === 'undefined') return false;
+  for (const tok of String(formula).split(/\s*\+\s*/)) {
+    const m = tok.trim().match(/^([\d,.]+)\s*[xX]\s*(.+)$/i);
+    if (!m) continue;
+    const code = resolveStatFromLabel(m[2].trim());
+    if (code === 'FUE' && ALL.includes('FUE')) return true;
+  }
+  return false;
+}
+
 function parseTechniqueBlock(raw) {
   const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l&&!/^informaci[oó]n\s*\+\/-/i.test(l));
   let name='', tType='', tLevel=1;
@@ -781,13 +839,18 @@ function parseTechniqueBlock(raw) {
   while ((bm=bRe2.exec(effect))!==null){const s=bStat(bm[2]),k=s+bm[1];if(!seen.has(k)){seen.add(k);buffs.push({stat:s,bonus:parseInt(bm[1])});}}
   const autoSlots = detectWeaponSlots(_bFld(t,'Daño'));
   const isDualAuto = autoSlots.length >= 2;
+  const reqStrLine = _bFld(t,'Requisitos');
+  const isCuerpoACuerpo = detectCuerpoACuerpo(raw + '\n' + (effect || ''), reqStrLine);
   return {
     name, tType, tLevel,
-    reqStr:     _bFld(t,'Requisitos'),
+    reqStr:     reqStrLine,
     dmgFormula: _bFld(t,'Da\xf1o'),
     costStr:    _bFld(t,'Coste'),
     isDual:     isDualAuto,
     hasAmbi:    false,
+    isCuerpoACuerpo,
+    applyMusculosHierro: false,
+    applyDedosOro: false,
     effect, cooldown, desc, buffs,
     weaponSlots: {},
     code:(t.match(/C[oó]digo:\s*(\S+)/i)||[])[1]||'',
@@ -816,6 +879,10 @@ function calcTechniqueDmgBreakdown(tech, weapons) {
   const stats = {};
   ALL.forEach(s => { stats[s] = effStat(s); });
   (tech.buffs||[]).forEach(b => { stats[b.stat] = (stats[b.stat]||0)+b.bonus; });
+  ALL.forEach(s => {
+    const kb = karmaSituationalBonusForTech(tech, s);
+    if (kb) stats[s] = (stats[s] || 0) + kb;
+  });
 
   const parts=[], missing=[];
   let total=0;
@@ -847,6 +914,24 @@ function calcTechniqueDmgBreakdown(tech, weapons) {
       }
     }
   });
+
+  if (tech.isCuerpoACuerpo && !detectWeaponSlots(tech.dmgFormula || '').length) {
+    const fue = stats.FUE || 0;
+    const hasFueScale = formulaUsesFueScaling(tech.dmgFormula);
+    const tier150 = fue >= 150 ? 50 : 0;
+    const tier300 = fue >= 300 ? 100 : 0;
+    let meleeExtra = tier150 + tier300;
+    if (!hasFueScale) meleeExtra += fue;
+    if (meleeExtra > 0) {
+      const det = [];
+      if (!hasFueScale) det.push(`base FUE ${fue}`);
+      if (tier150) det.push('+50 (FUE ≥ 150)');
+      if (tier300) det.push('+100 (FUE ≥ 300)');
+      total += meleeExtra;
+      parts.push({ label: 'Melé (golpe blanco, maestría CaC)', value: meleeExtra, detail: det.join(' · ') });
+    }
+  }
+
   return { total:Math.round(total), parts, missing, buffs:tech.buffs||[], dualPenalty };
 }
 

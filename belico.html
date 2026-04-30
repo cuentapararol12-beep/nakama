@@ -89,6 +89,7 @@
 
     
     .bel-toggles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+    .bel-toggles-karma{margin-top:4px;}
     .bel-toggle-pill{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:20px;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);font-family:'Exo 2',sans-serif;font-size:.65rem;color:rgba(255,255,255,.4);transition:all .2s;user-select:none;}
     .bel-toggle-pill.on{background:rgba(161,80,255,.15);border-color:rgba(161,80,255,.35);color:var(--a1);}
     .bel-toggle-pill.on.ambi{background:rgba(0,220,110,.1);border-color:rgba(0,220,110,.3);color:#00dc6e;}
@@ -376,6 +377,18 @@ function toggleTechAmbi(idx) {
   saveState(); renderTechList();
 }
 
+function isKarmaSel(id) {
+  return S.karmas && Object.prototype.hasOwnProperty.call(S.karmas, id);
+}
+function toggleTechMusculos(idx) {
+  S.belico.techniques[idx].applyMusculosHierro = !S.belico.techniques[idx].applyMusculosHierro;
+  saveState(); renderTechList();
+}
+function toggleTechDedos(idx) {
+  S.belico.techniques[idx].applyDedosOro = !S.belico.techniques[idx].applyDedosOro;
+  saveState(); renderTechList();
+}
+
 function renderBreakdown(bd) {
   const rows=bd.parts.map(p=>{
     if(p.missing) return `<div class="bel-bd-row"><span class="bel-bd-lbl missing">${p.label} — sin asignar</span><span class="bel-bd-val missing">0</span><span class="bel-bd-detail"></span></div>`;
@@ -404,6 +417,16 @@ function renderTechList() {
     const showDual=slots.length>=2;
     const ambiToggle=showDual?`<div class="bel-toggle-pill${tech.hasAmbi?' on ambi':''}" onclick="toggleTechAmbi(${i})"><div class="bel-toggle-dot"></div>Ambidiestro (anula mitad en armas)</div>`:'';
 
+    const showMusculos=isKarmaSel('musculos_hierro');
+    const showDedos=isKarmaSel('dedos_oro');
+    const karmaToggles=(showMusculos||showDedos)
+      ?(showMusculos?`<div class="bel-toggle-pill${tech.applyMusculosHierro?' on':''}" onclick="toggleTechMusculos(${i})"><div class="bel-toggle-dot"></div>Músculos de hierro (+20 FUE)</div>`:'')
+       +(showDedos?`<div class="bel-toggle-pill${tech.applyDedosOro?' on':''}" onclick="toggleTechDedos(${i})"><div class="bel-toggle-dot"></div>Dedos de oro (+20 DES)</div>`:'')
+      :'';
+    const cacChip=tech.isCuerpoACuerpo&&!slots.length
+      ?'<span class="bel-badge warn" style="font-size:.58rem">Melé CaC (sin Arma en fórmula): aplica tiers de FUE</span>':'';
+    const cacChipMaestria=tech.isCuerpoACuerpo?'<span class="bel-chip gold" style="font-size:.58rem">Maestría CaC</span>':'';
+
     const reqs=checkReqs(tech.reqStr||'');
     const parsedReqs=reqs.filter(r=>r.parsed);
     const allMet=parsedReqs.length===0||parsedReqs.every(r=>r.met);
@@ -429,11 +452,13 @@ function renderTechList() {
         <span class="bel-badge ${typeClass}">${tech.tType||'—'}</span>
         <span class="bel-badge">Nv${tech.tLevel}</span>
         ${!allMet?'<span class="bel-badge err-reqs">Reqs no cumplidos</span>':''}
+        ${cacChipMaestria}${cacChip}
         ${buffNote}${dualNote}${missingNote}
       </div>
 
       ${slots.length?`<div class="bel-slot-group">${selectors}</div>`:''}
       ${showDual?`<div class="bel-toggles">${ambiToggle}</div>`:''}
+      ${karmaToggles?`<div class="bel-toggles bel-toggles-karma">${karmaToggles}</div>`:''}
 
       <div class="bel-tech-dmg-row">
         <div class="bel-tech-dmg-val${isPartial?' partial':''}">${bd.total}</div>
@@ -461,9 +486,12 @@ bootEngine(()=>{
   S.belico.techniques.forEach(t=>{
     if(!t.weaponSlots) t.weaponSlots={};
     if(t.hasAmbi===undefined) t.hasAmbi=false;
+    if(t.applyMusculosHierro===undefined) t.applyMusculosHierro=false;
+    if(t.applyDedosOro===undefined) t.applyDedosOro=false;
     const wc=detectWeaponSlots(t.dmgFormula||'').length;
     if(wc<2) t.hasAmbi=false;
     t.isDual=wc>=2;
+    t.isCuerpoACuerpo=detectCuerpoACuerpo(String(t._raw||'')+'\n'+String(t.effect||''),t.reqStr||'');
   });
   document.getElementById('charName').addEventListener('input',function(){S.name=this.value;});
   renderAll();
