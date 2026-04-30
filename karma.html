@@ -206,6 +206,7 @@ function toggleKarma(id,e){
     S.karmas[id] = k.variable ? k.varMax : true;
   }
   renderAll();
+  if (typeof saveState === 'function') saveState();
 }
 
 function onVarInput(id,el){
@@ -215,6 +216,7 @@ function onVarInput(id,el){
   v=Math.max(k.varMin,Math.min(k.varMax,v));
   S.karmas[id]=v;
   renderBalance(); renderChips();
+  if (typeof saveState === 'function') saveState();
 }
 
 let activeFilter='all';
@@ -312,6 +314,7 @@ function clearAll(){
   if(!Object.keys(S.karmas).length) return;
   if(!confirm('Limpiar todos los karmas seleccionados?')) return;
   S.karmas={}; renderAll(); toast('Karmas limpiados');
+  if (typeof saveState === 'function') saveState();
 }
 
 function renderAll(){

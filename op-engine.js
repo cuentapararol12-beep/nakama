@@ -62,6 +62,17 @@ const EMBEDDED = {
   }
 };
 
+/** Si falla one-piece-data.json (p. ej. file://), el motor sigue resolviendo pasivos y situacionales. */
+const KARMA_ENGINE_FALLBACK = {
+  tuerto: { statEffects: [{ stat: 'REF', delta: -50 }, { stat: 'PRE', delta: -50 }] },
+  ciego: { statEffects: [{ stat: 'REF', delta: -100 }, { stat: 'PRE', delta: -100 }] },
+  mal_oido: { statEffects: [{ stat: 'REF', delta: -25 }] },
+  sordo: { statEffects: [{ stat: 'REF', delta: -50 }] },
+  pierna_amputada: { statEffects: [{ stat: 'AGI', delta: -100 }] },
+  musculos_hierro: { situationalStat: 'FUE', situationalBonus: 20 },
+  dedos_oro: { situationalStat: 'DES', situationalBonus: 20 },
+};
+
 let D, RULES, MAIN, POWER, ALL, META, THRESH;
 let S = null;
 
@@ -103,7 +114,12 @@ function getKarmaCatalog() {
   return [...(D.karmas.positivos || []), ...(D.karmas.negativos || [])];
 }
 function getKarmaDefById(id) {
-  return getKarmaCatalog().find(k => k.id === id);
+  if (!id) return undefined;
+  const fromCat = getKarmaCatalog().find(k => k.id === id);
+  if (fromCat) return fromCat;
+  const fb = KARMA_ENGINE_FALLBACK[id];
+  if (fb) return { id, ...fb };
+  return undefined;
 }
 function karmaPassiveDelta(stat) {
   if (!S || !S.karmas || !stat) return 0;
@@ -348,12 +364,15 @@ function initChart() {
         pointLabels:{color:'rgba(255,255,255,.8)',font:{family:'Cinzel',size:11,weight:'700'}}}},
       plugins:{legend:{labels:{color:'rgba(255,255,255,.4)',font:{family:'Cinzel',size:9}}}}}
   });
+  updChart();
 }
 function updChart() {
   if (!chart) return;
   chart.data.datasets[0].data=MAIN.map(a=>effStat(a));
   chart.data.datasets[0].label=S.name||'Personaje';
   chart.options.scales.r.max=MAXCAP(S.level);
+  const mn = Math.min(0, ...MAIN.map(a => effStat(a)));
+  chart.options.scales.r.min = Number.isFinite(mn) ? mn : 0;
   const bl=S.theme==='blue';
   chart.data.datasets[0].backgroundColor=bl?'rgba(0,180,216,.14)':'rgba(255,0,110,.17)';
   chart.data.datasets[0].borderColor=bl?'rgba(76,201,240,.88)':'rgba(255,77,158,.88)';
@@ -365,6 +384,7 @@ function buildRow(stat, isMain) {
   const m=META[stat], tot=effStat(stat), cap=atCap(stat);
   const sv=sliderVal(stat), sm=sliderMax(stat);
   const xb=S.extraBonus[stat]||0, rb=raceBonus(stat,S.level);
+  const kb=karmaPassiveDelta(stat);
   const ab=isMain?AUTO(stat,S.level):0, base=BASE(stat);
   const pct=sm>0?Math.min(100,sv/sm*100):0;
   const slBg=`linear-gradient(90deg,var(--a1) ${pct}%,rgba(255,255,255,.07) ${pct}%)`;
@@ -375,6 +395,7 @@ function buildRow(stat, isMain) {
   parts.push(`${ctx}:<b>+${sv}</b>`);
   if (rb!==0) parts.push(`<span class="rb">Raza:<b>${rb>=0?'+':''}${rb}</b></span>`);
   if (xb>0)   parts.push(`<span class="xb">Extra:<b>+${xb}</b></span>`);
+  if (kb!==0) parts.push(`<span class="kb">Karma:<b>${kb>=0?'+':''}${kb}</b></span>`);
   return `
   <div class="stat-row${cap?' at-cap':''}" id="row-${stat}">
     <div class="slabel">
@@ -408,6 +429,7 @@ function updRowDisplay(stat, isMain) {
   const row=document.getElementById(`row-${stat}`); if (!row) return;
   const tot=effStat(stat), cap=atCap(stat), sv=sliderVal(stat), sm=sliderMax(stat);
   const xb=S.extraBonus[stat]||0, rb=raceBonus(stat,S.level);
+  const kb=karmaPassiveDelta(stat);
   const ab=isMain?AUTO(stat,S.level):0, base=BASE(stat);
   row.classList.toggle('at-cap',cap);
   const totEl=document.getElementById(`stot-${stat}`); if (totEl) totEl.textContent=tot+(cap?' *':'');
@@ -418,6 +440,7 @@ function updRowDisplay(stat, isMain) {
   parts.push(`${ctx}:<b>+${sv}</b>`);
   if (rb!==0) parts.push(`<span class="rb">Raza:<b>${rb>=0?'+':''}${rb}</b></span>`);
   if (xb>0)   parts.push(`<span class="xb">Extra:<b>+${xb}</b></span>`);
+  if (kb!==0) parts.push(`<span class="kb">Karma:<b>${kb>=0?'+':''}${kb}</b></span>`);
   const bdEl=document.getElementById(`bd-${stat}`); if (bdEl) bdEl.innerHTML=parts.join(sep);
   const lblEl=document.getElementById(`flbl-${stat}`); if (lblEl) lblEl.textContent=ctx;
   const slEl=document.getElementById(`sl-${stat}`);
@@ -612,7 +635,7 @@ function applyBulk() {
 
 async function bootEngine(onReady) {
   try { const r=await fetch('./one-piece-data.json'); if(!r.ok) throw 0; D=await r.json(); }
-  catch { D=EMBEDDED; }
+  catch { D = { ...EMBEDDED }; }
   RULES=D.rules;MAIN=D.mainAttributes;POWER=D.powerAttributes;
   ALL=[...MAIN,...POWER];META=D.attributesMeta;THRESH=D.thresholds;
   const saved=loadFromStorage(); S=saved||mkState();
